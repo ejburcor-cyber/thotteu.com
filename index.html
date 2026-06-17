@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thotteu — Universo de Aprendizaje</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --void:      #050A18;
+      --deep:      #0D1F3C;
+      --surface:   #112240;
+      --cyan:      #00E5FF;
+      --purple:    #A78BFA;
+      --text:      #F0F4FF;
+      --muted:     #8892A4;
+      --border:    rgba(0, 229, 255, 0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NEBULA CANVAS ── */
+    #nebula {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── LAYOUT ── */
+    .layer { position: relative; z-index: 1; }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(5, 10, 24, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.4rem;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      text-shadow: 0 0 24px rgba(0, 229, 255, 0.5);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--purple); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--cyan); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .line-glow {
+      display: block;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 32px rgba(0, 229, 255, 0.35));
+    }
+
+    .hero p {
+      max-width: 540px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: var(--void);
+      font-weight: 700;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.35);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 48px rgba(0, 229, 255, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+      transform: translateY(-2px);
+    }
+
+    /* ── SECTOR BADGE ── */
+    .sector {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(167, 139, 250, 0.08);
+      border: 1px solid rgba(167, 139, 250, 0.25);
+      border-radius: 99px;
+      padding: 0.35rem 1rem;
+      font-size: 0.75rem;
+      color: var(--purple);
+      letter-spacing: 0.08em;
+      margin-bottom: 3rem;
+    }
+
+    .sector::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--purple);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── GAMES SECTION ── */
+    .games {
+      padding: 5rem 2.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ── GAME CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0,229,255,0.2);
+      border-color: rgba(0,229,255,0.3);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      margin-bottom: 0.75rem;
+      font-family: 'Orbitron', monospace;
+    }
+
+    .tag-soon {
+      background: rgba(167,139,250,0.12);
+      color: var(--purple);
+      border: 1px solid rgba(167,139,250,0.2);
+    }
+
+    .tag-active {
+      background: rgba(0,229,255,0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0,229,255,0.2);
+    }
+
+    .card h3 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+
+    .card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .card { cursor: pointer; }
+      position: absolute;
+      bottom: 1.25rem;
+      right: 1.5rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* ── ABOUT ── */
+    .about {
+      padding: 5rem 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .about-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .about-inner p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    footer p {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    footer .logo { font-size: 1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      nav { padding: 1rem 1.5rem; }
+      .games { padding: 3rem 1.5rem; }
+      .about { padding: 3rem 1.5rem; }
+      footer { padding: 1.25rem 1.5rem; }
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="nebula"></canvas>
+
+  <!-- NAV -->
+  <nav class="layer">
+    <a href="#" class="logo">Thott<span>eu</span></a>
+    <ul>
+      <li><a href="#juegos">Juegos</a></li>
+      <li><a href="#universo">Universo</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero layer">
+    <p class="hero-eyebrow">Portal de defensa del sistema solar</p>
+    <h1>
+      Los aliens nos atacan,<br />
+      <span class="line-glow">¡únete a la Resistencia!</span>
+    </h1>
+    <p>Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.</p>
+    <div class="btn-group">
+      <a href="#juegos" class="btn btn-primary">Unirme a la resistencia</a>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section class="games layer" id="juegos">
+    <p class="section-label">Módulos de misión</p>
+    <h2 class="section-title">Juegos en el hangar</h2>
+
+    <div class="games-grid">
+
+      <div class="card">
+        <span class="card-icon">🌌</span>
+        <span class="card-tag tag-soon">Próximamente</span>
+        <h3>Nebula Cipher</h3>
+        <p>Descifra los mensajes ocultos de civilizaciones extintas usando lógica y criptografía básica.</p>
+        <span class="card-number">01</span>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🪐</span>
+        <span class="card-tag tag-soon">Próximamente</span>
+        <h3>Orbit & Math</h3>
+        <p>Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.</p>
+        <span class="card-number">02</span>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🧬</span>
+        <span class="card-tag tag-soon">Próximamente</span>
+        <h3>Xenobiología 101</h3>
+        <p>Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.</p>
+        <span class="card-number">03</span>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">⚡</span>
+        <span class="card-tag tag-soon">Próximamente</span>
+        <h3>Reactor Core</h3>
+        <p>Mantén el reactor de la nave estable resolviendo problemas de física y energía en tiempo real.</p>
+        <span class="card-number">04</span>
+      </div>
+
+      <a class="card" href="/mathcannon" style="text-decoration:none;">
+        <span class="card-icon">🔢</span>
+        <span class="card-tag tag-active">¡Jugar ahora!</span>
+        <h3>Math Cannon</h3>
+        <p>Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!</p>
+        <span class="card-number">05</span>
+      </a>
+
+      <div class="card">
+        <span class="card-icon">🔭</span>
+        <span class="card-tag tag-soon">Próximamente</span>
+        <h3>Signal Lost</h3>
+        <p>Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.</p>
+        <span class="card-number">06</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about layer" id="universo">
+    <div class="about-inner">
+      <p class="section-label" style="text-align:center; margin-bottom:1rem;">El universo Thotteu</p>
+      <h2 class="section-title" style="font-family:'Orbitron',monospace; font-size:1.8rem; margin-bottom:1.5rem;">Aprender tiene sentido cuando el contexto lo tiene</h2>
+      <p>Thotteu es un universo de ficción construido para que el conocimiento tenga un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que exige saber.</p>
+      <p>El proyecto está en sus primeras órbitas. Los módulos se irán activando conforme el universo tome forma. Si quieres ser parte del primer escuadrón, deja tu señal de radio.</p>
+      <br />
+      <a href="mailto:hola@thotteu.com" class="btn btn-ghost" id="contacto">Enviar señal → hola@thotteu.com</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="layer">
+    <a href="#" class="logo">Thott<span>eu</span></a>
+    <p>© 2026 Thotteu · Universo en construcción</p>
+  </footer>
+
+  <!-- NEBULA ANIMATION -->
+  <script>
+    const canvas = document.getElementById('nebula');
+    const ctx = canvas.getContext('2d');
+
+    let W, H, stars = [], clouds = [];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+      stars = Array.from({ length: 180 }, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2 + 0.2,
+        a: Math.random(),
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+      }));
+    }
+
+    function initClouds() {
+      clouds = [
+        { x: W * 0.2, y: H * 0.3, rx: 280, ry: 180, color: '167,139,250', a: 0.07 },
+        { x: W * 0.75, y: H * 0.6, rx: 320, ry: 200, color: '0,229,255',   a: 0.05 },
+        { x: W * 0.5, y: H * 0.15, rx: 200, ry: 120, color: '167,139,250', a: 0.04 },
+        { x: W * 0.85, y: H * 0.2, rx: 150, ry: 100, color: '0,229,255',   a: 0.03 },
+      ];
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+
+      // nebula clouds
+      clouds.forEach(c => {
+        const grad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, Math.max(c.rx, c.ry));
+        grad.addColorStop(0,   `rgba(${c.color},${c.a})`);
+        grad.addColorStop(1,   `rgba(${c.color},0)`);
+        ctx.save();
+        ctx.scale(1, c.ry / c.rx);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y * (c.rx / c.ry), c.rx, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // stars
+      stars.forEach(s => {
+        const alpha = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(240,244,255,${alpha})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { resize(); initStars(); initClouds(); });
+    resize();
+    initStars();
+    initClouds();
+    requestAnimationFrame(draw);
+  </script>
+
+</body>
+</html>
