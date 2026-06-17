@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Cannon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<!-- AdSense: uncomment and replace ca-pub-XXXXXXXXXXXXXXXX -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
+h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,200,255,.6)}
+#header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
+#game-wrap{position:relative}
+canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.15)}
+#hud{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 4px;margin-bottom:4px}
+#score-display{color:#ff0;font-size:.55rem;letter-spacing:1px}
+#math-area{background:#0d1020;border:2px solid #4af;border-top:none;padding:10px 16px;display:flex;align-items:center;gap:12px;width:100%}
+#answer-display{color:#ff0;font-size:.65rem;letter-spacing:2px}
+#overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;z-index:10;padding:12px 20px 20px;overflow-y:auto}
+#overlay h2{color:#4af;font-size:1rem;text-align:center;line-height:1.8}
+#overlay p{color:#fff;font-size:.5rem;text-align:center;line-height:2}
+.score-final{color:#ff0;font-size:.7rem}
+#lore-box{color:#4df;font-size:.42rem;line-height:1.9;text-align:center;max-width:620px;min-height:5rem;letter-spacing:.5px;border:1px solid rgba(68,170,255,.3);padding:10px 16px;background:rgba(0,10,30,.6)}
+#lore-cursor{display:inline-block;width:7px;height:.7em;background:#4df;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+#start-btn:hover{background:#7cf}
+.mode-btn{border:2px solid #4af;color:#4af;background:transparent;font-family:'Press Start 2P',monospace;font-size:.5rem;padding:10px 16px;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.mode-btn:hover,.mode-btn.selected{background:#4af;color:#000}
+.mode-btn.infantil{border-color:#4f4;color:#4f4}.mode-btn.infantil:hover,.mode-btn.infantil.selected{background:#4f4;color:#000}
+.mode-btn.colegio{border-color:#ff0;color:#ff0}.mode-btn.colegio:hover,.mode-btn.colegio.selected{background:#ff0;color:#000}
+.mode-btn.instituto{border-color:#f44;color:#f44}.mode-btn.instituto:hover,.mode-btn.instituto.selected{background:#f44;color:#000}
+.mode-btn.universidad{border-color:#f0f;color:#f0f}.mode-btn.universidad:hover,.mode-btn.universidad.selected{background:#f0f;color:#000}
+.mode-btn.arcade{border-color:#4af;color:#4af;text-shadow:0 0 8px rgba(68,170,255,.6);font-size:.55rem;padding:11px 28px}.mode-btn.arcade:hover,.mode-btn.arcade.selected{background:#4af;color:#000}
+#mode-select{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:4px}
+#mode-row-levels{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+#ad-footer{width:100%;max-width:728px;margin:18px auto 0;text-align:center}
+#ad-footer-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
+.ad-placeholder{background:rgba(255,255,255,.04);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.3);font-size:.4rem;letter-spacing:1px}
+.ad-slot{width:100%;max-width:728px;margin:0 auto;text-align:center}
+.ad-slot-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<h1>&#9889; MATH CANNON &#9889;</h1>
+<p style="color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center">CALCULATE FAST TO REPEL THE INVADERS</p>
+
+<svg id="header-banner" viewBox="0 0 700 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="gr" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff4444" stop-opacity=".9"/><stop offset="100%" stop-color="#ff4444" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gc" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#44ffff" stop-opacity=".8"/><stop offset="100%" stop-color="#44ffff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="gp" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff44ff" stop-opacity=".8"/><stop offset="100%" stop-color="#ff44ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="u1" cx="40%" cy="40%" r="60%"><stop offset="0%" stop-color="#ff88ff"/><stop offset="100%" stop-color="#880088"/></radialGradient>
+    <radialGradient id="u2" cx="40%" cy="40%" r="60%"><stop offset="0%" stop-color="#88ffff"/><stop offset="100%" stop-color="#006688"/></radialGradient>
+  </defs>
+  <rect width="700" height="80" fill="#0a0a1a" rx="4"/>
+  <circle cx="20" cy="10" r="1" fill="white" opacity=".6"/><circle cx="60" cy="25" r="1.2" fill="white" opacity=".5"/>
+  <circle cx="110" cy="8" r="1" fill="white" opacity=".7"/><circle cx="180" cy="18" r="1" fill="white" opacity=".4"/>
+  <circle cx="240" cy="6" r="1.2" fill="white" opacity=".6"/><circle cx="310" cy="20" r="1" fill="white" opacity=".5"/>
+  <circle cx="390" cy="9" r="1" fill="white" opacity=".7"/><circle cx="450" cy="22" r="1.2" fill="white" opacity=".4"/>
+  <circle cx="530" cy="7" r="1" fill="white" opacity=".6"/><circle cx="600" cy="18" r="1" fill="white" opacity=".5"/>
+  <circle cx="660" cy="11" r="1.2" fill="white" opacity=".7"/><circle cx="350" cy="35" r="1" fill="white" opacity=".3"/>
+  <rect x="0" y="72" width="700" height="2" fill="#5a4a1a" opacity=".6"/>
+  <!-- UFO left boss red -->
+  <ellipse cx="26" cy="44" rx="22" ry="22" fill="url(#gr)" opacity=".5"/>
+  <ellipse cx="100" cy="38" rx="28" ry="9" fill="#880000"/><ellipse cx="100" cy="38" rx="28" ry="9" fill="url(#u1)" opacity=".7"/>
+  <ellipse cx="100" cy="36" rx="24" ry="6" fill="none" stroke="#ff8888" stroke-width="1" opacity=".5"/>
+  <path d="M86,38 Q100,24 114,38" fill="#cc44cc" opacity=".85"/><path d="M89,38 Q100,27 111,38" fill="#ff88ff" opacity=".4"/>
+  <circle cx="80" cy="42" r="2.5" fill="#ff0" opacity=".9"/><circle cx="92" cy="45" r="2.5" fill="#ff44ff" opacity=".9"/>
+  <circle cx="108" cy="45" r="2.5" fill="#ff0" opacity=".9"/><circle cx="120" cy="42" r="2.5" fill="#ff44ff" opacity=".9"/>
+  <!-- UFO right cyan -->
+  <ellipse cx="560" cy="20" rx="18" ry="18" fill="url(#gc)" opacity=".4"/>
+  <ellipse cx="560" cy="20" rx="20" ry="6" fill="#005566"/><ellipse cx="560" cy="20" rx="20" ry="6" fill="url(#u2)" opacity=".7"/>
+  <ellipse cx="560" cy="18" rx="17" ry="4" fill="none" stroke="#88ffff" stroke-width=".8" opacity=".5"/>
+  <path d="M549,20 Q560,10 571,20" fill="#33aacc" opacity=".85"/><path d="M552,20 Q560,12 568,20" fill="#aaffff" opacity=".4"/>
+  <circle cx="545" cy="23" r="2" fill="#ff0" opacity=".9"/><circle cx="555" cy="25" r="2" fill="#0ff" opacity=".9"/>
+  <circle cx="565" cy="25" r="2" fill="#ff0" opacity=".9"/><circle cx="575" cy="23" r="2" fill="#0ff" opacity=".9"/>
+  <!-- UFO far right purple -->
+  <ellipse cx="650" cy="30" rx="20" ry="20" fill="url(#gp)" opacity=".35"/>
+  <ellipse cx="648" cy="28" rx="22" ry="7" fill="#440066"/><ellipse cx="648" cy="28" rx="22" ry="7" fill="#aa44ff" opacity=".6"/>
+  <ellipse cx="648" cy="26" rx="18" ry="5" fill="none" stroke="#dd88ff" stroke-width=".8" opacity=".5"/>
+  <path d="M637,28 Q648,18 659,28" fill="#7722aa" opacity=".85"/><path d="M640,28 Q648,20 656,28" fill="#cc88ff" opacity=".4"/>
+  <circle cx="632" cy="31" r="2" fill="#ff0" opacity=".85"/><circle cx="641" cy="34" r="2" fill="#f0f" opacity=".85"/>
+  <circle cx="655" cy="34" r="2" fill="#ff0" opacity=".85"/><circle cx="664" cy="31" r="2" fill="#f0f" opacity=".85"/>
+  <!-- Missile -->
+  <ellipse cx="330" cy="68" rx="4" ry="6" fill="#ff8800" opacity=".8"/><ellipse cx="330" cy="68" rx="2" ry="3" fill="#ffff88" opacity=".9"/>
+  <rect x="326" y="42" width="8" height="24" rx="1" fill="#cc8800"/><rect x="327" y="42" width="3" height="24" fill="#ffcc44" opacity=".5"/>
+  <polygon points="330,28 326,42 334,42" fill="#ffcc00"/>
+  <polygon points="326,62 320,70 326,66" fill="#aa6600"/><polygon points="334,62 340,70 334,66" fill="#aa6600"/>
+  <circle cx="330" cy="50" r="2.5" fill="#aaeeff"/>
+  <line x1="330" y1="74" x2="326" y2="80" stroke="#ff8800" stroke-width="1.5" opacity=".4"/>
+  <line x1="330" y1="74" x2="334" y2="80" stroke="#ff8800" stroke-width="1.5" opacity=".4"/>
+  <!-- Tank cannon -->
+  <ellipse cx="460" cy="74" rx="36" ry="4" fill="#000" opacity=".3"/>
+  <rect x="428" y="62" width="64" height="12" rx="3" fill="#3a3a1a"/><rect x="428" y="62" width="64" height="5" rx="2" fill="#5a5a2a"/>
+  <circle cx="438" cy="72" r="4" fill="#222"/><circle cx="438" cy="72" r="1.5" fill="#666"/>
+  <circle cx="452" cy="72" r="4" fill="#222"/><circle cx="452" cy="72" r="1.5" fill="#666"/>
+  <circle cx="466" cy="72" r="4" fill="#222"/><circle cx="466" cy="72" r="1.5" fill="#666"/>
+  <circle cx="480" cy="72" r="4" fill="#222"/><circle cx="480" cy="72" r="1.5" fill="#666"/>
+  <polygon points="432,62 488,62 484,52 436,52" fill="#3a4a1a"/>
+  <polygon points="432,62 488,62 486,58 434,58" fill="#5a6a2a"/>
+  <rect x="444" y="44" width="28" height="12" rx="2" fill="#2a3a0a"/><rect x="444" y="44" width="28" height="5" fill="#4a5a1a"/>
+  <rect x="390" y="47" width="56" height="8" rx="2" fill="#1a2a0a"/><rect x="390" y="47" width="56" height="3" fill="#3a4a1a"/>
+  <rect x="384" y="45" width="10" height="12" rx="1" fill="#0a1a00"/><rect x="385" y="46" width="4" height="5" fill="#2a3a0a"/>
+  <ellipse cx="384" cy="51" rx="6" ry="4" fill="#ffff44" opacity=".25"/>
+</svg>
+
+<div id="game-wrap">
+  <div id="hud">
+    <div id="score-display">SCORE: <span id="score">0</span> &nbsp;<span id="highscore-display" style="color:#f84;font-size:.4rem">BEST: <span id="highscore">0</span></span></div>
+    <div style="color:#4af;font-size:.45rem;letter-spacing:1px;text-align:center">LVL: <span id="level">1</span></div>
+    <div style="color:#fa0;font-size:.55rem;letter-spacing:1px">&#128640; <span id="missile-count">0</span> <span id="inflight-display" style="font-size:.4rem;color:#f84"></span></div>
+  </div>
+
+  <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
+
+  <div id="math-area">
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <div id="operation" style="color:#4df;font-size:.55rem;letter-spacing:1px">ENTER COORDINATES TO HIT TARGET:</div>
+        <div id="attempt-dots" style="font-size:.5rem">&#9679; &#9679; &#9679;</div>
+      </div>
+      <div id="math-op" style="color:#fff;font-size:1rem;letter-spacing:3px;margin-top:4px"></div>
+      <div id="hint" style="font-size:.5rem;margin-top:5px;min-height:.8rem"></div>
+      <div id="streak-display" style="font-size:.45rem;margin-top:3px"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <div id="phase-display" style="font-size:.5rem;padding:5px 10px;border:2px solid #4f4;color:#4f4;background:rgba(0,60,0,.4);letter-spacing:1px;text-align:center;min-width:100px">&#9889; LOAD</div>
+      <div id="answer-display" style="display:none">_</div>
+    </div>
+
+  <div id="overlay">
+    <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
+    <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:14px;margin-bottom:4px">INSTRUCTIONS</p>
+    <p style="margin-top:0;text-align:left">With ALT &mdash; Switch between LOAD and ATTACK modes<br>
+    LOAD MODE &mdash; Type answer + ENTER &rarr; earn &#128640; missiles<br>
+    ATTACK MODE &mdash; 4 &lt;-- / --&gt; 6 move &nbsp;|&nbsp; SPACE fires<br>
+    Hide in tunnels to dodge bullets!<br>
+    P &mdash; Pause game (costs 2 missiles)</p>
+    <p style="color:#4df;margin-top:2px">SELECT DIFFICULTY:</p>
+    <div id="mode-select">
+      <div id="mode-row-levels">
+        <button class="mode-btn infantil" onclick="selectMode('infantil')">&#11088; BABY</button>
+        <button class="mode-btn colegio" onclick="selectMode('colegio')">&#128218; KIDS</button>
+        <button class="mode-btn instituto" onclick="selectMode('instituto')">&#127891; TEENAGER</button>
+        <button class="mode-btn universidad" onclick="selectMode('universidad')">&#128300; TECHNICIAN</button>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <button class="mode-btn arcade" onclick="selectMode('arcade')">&#128377;&#65039; ARCADE &mdash; ALL LEVELS</button>
+      </div>
+      <div id="hall-of-fame" style="width:100%;max-width:620px;margin-top:6px;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.5);padding:8px 14px"></div>
+    </div>
+    <button id="start-btn" onclick="startGame()" style="display:none">START GAME</button>
+  </div>
+</div>
+
+<!-- AD SLOT 1 — before Hall of Fame -->
+<div class="ad-slot">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  [script](adsbygoogle = window.adsbygoogle || []).push({});[/script]
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense Leaderboard (slot 1)
+  </div>
+</div>
+
+<!-- STANDALONE HALL OF FAME (below page, outside overlay) -->
+<div id="hof-standalone" style="width:700px;max-width:100%;margin:10px auto 0;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px"></div>
+
+<!-- AD SLOT 2 — after Hall of Fame -->
+<div class="ad-slot" style="margin-top:10px">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  [script](adsbygoogle = window.adsbygoogle || []).push({});[/script]
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense Leaderboard (slot 2)
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const GROUND_Y    = H - 60;
+const TAU         = Math.PI * 2;
+const MAX_PARTICLES = 150;
+const ARCADE_MODES  = ['infantil','colegio','instituto','universidad'];
+const ARCADE_LABELS = ['\u2B50 BABY','\uD83D\uDCDA KIDS','\uD83C\uDF93 TEENAGER','\uD83D\uDD2C TECHNICIAN'];
+const ARCADE_COLORS = ['#4f4','#ff0','#f44','#f0f'];
+const RECENT_MAX  = 20;
+
+// ── OFFSCREEN BACKGROUND ──────────────────────────────────────────────────
+const bgCanvas = document.createElement('canvas');
+bgCanvas.width = W; bgCanvas.height = H;
+const bgCtx = bgCanvas.getContext('2d');
+let bgReady = false;
+
+// ── AUDIO ─────────────────────────────────────────────────────────────────
+let audioCtx = null;
+function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
+function playSound(type){
+  try {
+    const ac=getAudio(), o=ac.createOscillator(), g=ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime;
+    if(type==='fire'){      o.type='sawtooth'; o.frequency.setValueAtTime(400,t); o.frequency.exponentialRampToValueAtTime(80,t+.12);  g.gain.setValueAtTime(.15,t); g.gain.exponentialRampToValueAtTime(.001,t+.12); o.start(t); o.stop(t+.12); }
+    else if(type==='explode'){o.type='square'; o.frequency.setValueAtTime(180,t); o.frequency.exponentialRampToValueAtTime(30,t+.3);   g.gain.setValueAtTime(.3,t);  g.gain.exponentialRampToValueAtTime(.001,t+.3);  o.start(t); o.stop(t+.3); }
+    else if(type==='hit'){    o.type='square'; o.frequency.setValueAtTime(80,t);  o.frequency.exponentialRampToValueAtTime(40,t+.2);   g.gain.setValueAtTime(.4,t);  g.gain.exponentialRampToValueAtTime(.001,t+.2);  o.start(t); o.stop(t+.2); }
+    else if(type==='correct'){o.type='sine';   o.frequency.setValueAtTime(523,t); o.frequency.setValueAtTime(659,t+.08); o.frequency.setValueAtTime(784,t+.16); g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(.001,t+.3); o.start(t); o.stop(t+.3); }
+    else if(type==='super'){  o.type='square'; o.frequency.setValueAtTime(200,t); o.frequency.setValueAtTime(400,t+.1); o.frequency.setValueAtTime(600,t+.2);   g.gain.setValueAtTime(.25,t); g.gain.exponentialRampToValueAtTime(.001,t+.4); o.start(t); o.stop(t+.4); }
+    else if(type==='wrong'){  o.type='sawtooth';o.frequency.setValueAtTime(200,t);o.frequency.exponentialRampToValueAtTime(100,t+.15); g.gain.setValueAtTime(.15,t); g.gain.exponentialRampToValueAtTime(.001,t+.15);o.start(t); o.stop(t+.15); }
+  } catch(e){}
+}
+
+function playFanfare(){
+  try {
+    const ac=getAudio(), g=ac.createGain(); g.connect(ac.destination);
+    const notes=[523,659,784,1047]; // C E G C — ascending fanfare
+    notes.forEach((freq,i)=>{
+      const o=ac.createOscillator(); o.connect(g);
+      o.type='sine';
+      const t=ac.currentTime+i*.13;
+      o.frequency.setValueAtTime(freq,t);
+      g.gain.setValueAtTime(.25,t);
+      g.gain.exponentialRampToValueAtTime(.001,t+.25);
+      o.start(t); o.stop(t+.25);
+    });
+    // Add a warm harmonics layer
+    const o2=ac.createOscillator(); o2.connect(g);
+    o2.type='triangle'; o2.frequency.setValueAtTime(1047,ac.currentTime+.39);
+    g.gain.setValueAtTime(.15,ac.currentTime+.39);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.7);
+    o2.start(ac.currentTime+.39); o2.stop(ac.currentTime+.7);
+  } catch(e){}
+}
+const mountains = [
+  {x:0,  w:110,h:140,color:'#5a3a1a',snow:false,tunnel:false},
+  {x:60, w:130,h:200,color:'#4a5a2a',snow:true, tunnel:false},
+  {x:150,w:120,h:160,color:'#3a4a1a',snow:false,tunnel:true,tunnelX:180,tunnelW:40,tunnelH:28},
+  {x:230,w:140,h:220,color:'#5a4a1a',snow:true, tunnel:false},
+  {x:340,w:120,h:170,color:'#4a3a1a',snow:false,tunnel:true,tunnelX:365,tunnelW:44,tunnelH:28},
+  {x:420,w:130,h:190,color:'#3a5a2a',snow:true, tunnel:false},
+  {x:490,w:110,h:150,color:'#5a3a2a',snow:false,tunnel:false},
+  {x:540,w:100,h:130,color:'#4a4a1a',snow:false,tunnel:false},
+];
+const tunnels = mountains.filter(m=>m.tunnel).map(m=>({x:m.tunnelX,y:GROUND_Y-m.tunnelH,w:m.tunnelW,h:m.tunnelH}));
+
+// ── GAME STATE ────────────────────────────────────────────────────────────
+let state, cannon, aliens, bullets, missiles, particles, explosions;
+let score, lives, difficulty, aliensDestroyed, opCount, missileCount;
+let currentOp, answerStr, attemptsLeft, streak;
+let screenFlash, cannonShake, spawnAccum, gameLoopId, lastTime;
+let gameMode = 'colegio';
+let recentOps = [];
+let arcadeStage, arcadeLap, arcadeKills, arcadeBanner;
+let cannonRainbow = 0; // frames remaining for rainbow effect
+let highScore = parseInt(localStorage.getItem('mathcannon_hs')||'0');
+let correctOps = 0;   // correct answers this game
+let paused = false;   // pause state
+
+// ── HALL OF FAME ──────────────────────────────────────────────────────────
+const MODE_LABELS_HOF = {infantil:'\u2B50 BABY',colegio:'\uD83D\uDCDA KIDS',instituto:'\uD83C\uDF93 TEENAGER',universidad:'\uD83D\uDD2C TECHNICIAN',arcade:'\uD83D\uDD79\uFE0F ARCADE'};
+function loadHOF(){ try{ return JSON.parse(localStorage.getItem('mathcannon_hof')||'[]'); }catch(e){ return []; } }
+function saveHOF(h){ localStorage.setItem('mathcannon_hof', JSON.stringify(h)); }
+function recordHOF(s,mode,lv,correct){
+  const h=loadHOF();
+  h.push({score:s,mode,level:lv,correct,date:new Date().toLocaleDateString()});
+  h.sort((a,b)=>b.score-a.score); h.splice(5);
+  saveHOF(h);
+}
+function renderHOF(){
+  const el=$('hall-of-fame'); if(!el) return;
+  const h=loadHOF();
+  const html=buildHOFHtml(h);
+  el.innerHTML=html;
+  // Also update standalone HOF below the page
+  const el2=$('hof-standalone'); if(el2) el2.innerHTML=html;
+}
+
+function buildHOFHtml(h){
+  if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 HALL OF FAME \u2014 Play to set a record!</div>';
+  const medals=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49','4.','5.'];
+  const colors=['color:#ff0','color:#bbb','color:#c84','color:#888','color:#888'];
+  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 HALL OF FAME</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
+  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>SCORE</td><td>MODE</td><td>LV</td><td>CORRECT</td><td style="text-align:right">DATE</td></tr>';
+  h.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td style="font-size:.3rem">${MODE_LABELS_HOF[e.mode]||e.mode}</td><td>${e.level}</td><td>${e.correct}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
+  html+='</table>';
+  return html;
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+function updateAnswerDisplay(){
+  if(!currentOp) return;
+  const typed = answerStr === '' ? '<span style="color:#ff0">?</span>' : `<span style="color:#ff0">${answerStr}<span style="opacity:.6">_</span></span>`;
+  $('math-op').innerHTML = currentOp.text.replace('?', typed);
+}
+function updateAttempDots(){ $('attempt-dots').innerHTML=[0,1,2].map(i=>`<span style="color:${i<attemptsLeft?'#4f4':'#f44'}">\u25CF</span>`).join(' '); }
+function updateStreakDisplay(){ const el=$('streak-display'); if(streak>=2){ el.textContent=`\uD83D\uDD25 STREAK x${streak}${streak>=3?' \u2014 SUPER MISSILE READY!':''}`; el.style.color=streak>=3?'#ff0':'#f84'; } else el.textContent=''; }
+function updateScoreDisplay(){ $('score').textContent=score; }
+function updateMissileDisplay(){ $('missile-count').textContent=missileCount; }
+function updateLevelDisplay(){
+  const modeNames={infantil:'\u2B50 BABY',colegio:'\uD83D\uDCDA KIDS',instituto:'\uD83C\uDF93 TEENAGER',universidad:'\uD83D\uDD2C TECHNICIAN'};
+  if(gameMode==='arcade'){
+    $('level').textContent=`${ARCADE_LABELS[arcadeStage]} \xD7${arcadeLap+1} | LV${difficulty}`;
+  } else {
+    $('level').textContent=`${modeNames[gameMode]} | LV${difficulty}`;
+  }
+}
+function showHint(text,color,dur=1500){ const el=$('hint'); el.style.color=color; el.textContent=text; setTimeout(()=>{ el.style.color=''; el.textContent=''; },dur); }
+
+// ── MODE SELECT ───────────────────────────────────────────────────────────
+function selectMode(mode){
+  gameMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('selected'));
+  const s=document.querySelector(`.mode-btn.${mode}`); if(s) s.classList.add('selected');
+  $('start-btn').style.display='block';
+}
+
+// ── START GAME ────────────────────────────────────────────────────────────
+function startGame(){
+  $('overlay').style.display='none';
+  document.body.setAttribute('tabindex','-1'); document.body.focus();
+
+  state='playing'; score=0; lives=3; difficulty=1; aliensDestroyed=0; opCount=0; missileCount=0;
+  streak=0; screenFlash=0; cannonShake=0; spawnAccum=0; answerStr=''; attemptsLeft=3;
+  recentOps=[]; aliens=[]; bullets=[]; missiles=[]; particles=[]; explosions=[];
+  cannon={x:387, y:GROUND_Y-18}; correctOps=0; paused=false; cannonRainbow=0;
+  arcadeStage=0; arcadeLap=0; arcadeKills=0; arcadeBanner=null;
+  $('highscore').textContent=highScore; document.title='Math Cannon';
+
+  updateScoreDisplay(); updateMissileDisplay(); updateLevelDisplay();
+  newOperation(); updateAttempDots(); updateStreakDisplay();
+  gamePhase='carga'; updatePhaseDisplay();
+  if(gameMode==='arcade') showArcadeBanner('\u25B6 '+ARCADE_LABELS[0], ARCADE_COLORS[0]);
+
+  if(gameLoopId) cancelAnimationFrame(gameLoopId);
+  renderBackground();
+  lastTime=performance.now();
+  gameLoopId=requestAnimationFrame(loop);
+}
+
+// ── SPAWN ALIEN ───────────────────────────────────────────────────────────
+function spawnAlien(){
+  const col=aliens.length%8, row=Math.floor(aliens.length/8);
+
+  // Chance of a tougher wave: multi-hit UFO (2/3/4) or a twin pair.
+  // Grows with difficulty (1-10): ~3% at lvl1 up to ~16% at lvl10.
+  const specialChance = Math.min(0.16, 0.03 + (difficulty-1)*0.0144);
+  if(aliens.length>0 && Math.random()<specialChance){
+    const roll=Math.random();
+    if(roll<0.55)      { pushBossAlien(col,row,2,'#ff00ff'); return; }      // 2-hit — common
+    else if(roll<0.82) { pushBossAlien(col,row,3,'#ff6600'); return; }      // 3-hit — tougher
+    else if(roll<0.94) { pushBossAlien(col,row,4,'#ff0044'); return; }      // 4-hit — rare heavy
+    else { // Twin pair — two 2-hit UFOs side by side
+      pushBossAlien(col,row,2,'#ff00ff');
+      pushBossAlien((col+1)%8, row, 2, '#ff00ff');
+      return;
+    }
+  }
+
+  // Normal single-hit alien
+  const color=['#ff4444','#ff8844','#ffff00','#44ff44','#44ffff','#8844ff','#ff44ff','#ffffff'][col];
+  aliens.push({
+    x:40+col*65, y:30+row*40, w:36, h:24,
+    dir:1, color, colorRgb:hexToRgb(color), colorLight:lighten(color), colorDark:darken(color),
+    shootTimer:3000+Math.random()*3000, frame:0, frameTimer:0, hp:1, maxHp:1, boss:false
+  });
+}
+
+// Multi-hit "boss" UFO — size scales with hp (2/3/4 hits)
+function pushBossAlien(col,row,hp,color){
+  const w = 54 + (hp-2)*8;  // 2->54, 3->62, 4->70
+  const h = 36 + (hp-2)*6;  // 2->36, 3->42, 4->48
+  aliens.push({
+    x:40+col*65, y:30+row*40, w, h,
+    dir:1, color, colorRgb:hexToRgb(color), colorLight:lighten(color), colorDark:darken(color),
+    shootTimer:3000+Math.random()*3000, frame:0, frameTimer:0, hp, maxHp:hp, boss:true
+  });
+}
+
+// ── OPERATION GENERATOR ───────────────────────────────────────────────────
+function ri(n){ return Math.floor(Math.random()*n); }
+
+function newOperation(){
+  opCount++;
+  const eMode=gameMode==='arcade'?ARCADE_MODES[arcadeStage]:gameMode;
+  const lap=gameMode==='arcade'?arcadeLap:0;
+  let a,b,answer,text,attempts=0;
+  do {
+    a=b=answer=text=undefined;
+    if(eMode==='infantil'){
+      // Kids: sums and subs only, gentle ramp
+      const max=Math.min(5+difficulty*3+lap*10,50);
+      if(Math.random()<.5){ a=ri(max)+1; b=ri(max)+1; answer=a+b; text=`${a} + ${b} = ?`; }
+      else { a=ri(max)+2; b=ri(a-1)+1; answer=a-b; text=`${a} - ${b} = ?`; }
+
+    } else if(eMode==='colegio'){
+      // School: 4 ops, moderate scale
+      const t=ri(4);
+      const mA=Math.min(20+difficulty*15+lap*30,500),mM=Math.min(3+difficulty+lap*2,20),mD=Math.min(5+difficulty*4+lap*8,99),mDB=Math.min(2+difficulty+lap*2,12);
+      if(t===0){      answer=ri(mA)+2; a=ri(answer-1)+1; b=answer-a; text=`${a} + ${b} = ?`; }
+      else if(t===1){ a=ri(mA)+2; b=ri(a-1)+1; answer=a-b; text=`${a} - ${b} = ?`; }
+      else if(t===2){ a=ri(mM)+2; b=ri(mM)+2; answer=a*b; text=`${a} \xD7 ${b} = ?`; }
+      else {          b=ri(mDB)+2; answer=ri(mD)+1; a=answer*b; text=`${a} \xF7 ${b} = ?`; }
+
+    } else if(eMode==='instituto'){
+      // High school: 4 ops, large numbers
+      const t=ri(4);
+      const mA=Math.min(100+difficulty*50+lap*100,9999),mM=Math.min(10+difficulty*3+lap*5,60),mMB=Math.min(5+difficulty*2+lap*3,30),mD=Math.min(20+difficulty*8+lap*15,300),mDB=Math.min(5+difficulty*2+lap*3,30);
+      if(t===0){      answer=ri(mA)+10; a=ri(answer-1)+1; b=answer-a; text=`${a} + ${b} = ?`; }
+      else if(t===1){ a=ri(mA)+10; b=ri(a-1)+1; answer=a-b; text=`${a} - ${b} = ?`; }
+      else if(t===2){ a=ri(mM)+2; b=ri(mMB)+2; answer=a*b; text=`${a} \xD7 ${b} = ?`; }
+      else {          b=ri(mDB)+2; answer=ri(mD)+1; a=answer*b; text=`${a} \xF7 ${b} = ?`; }
+
+    } else {
+      // University: powers, roots, big muls
+      const r=Math.random();
+      if(r<.28){
+        const base=[2,3,4,5,6,7,8,9,10,11,12][ri(11)];
+        const maxE=Math.floor(Math.log(9999)/Math.log(base));
+        const e=Math.max(2,2+ri(Math.max(1,maxE-1)));
+        answer=Math.round(Math.pow(base,e)); text=`${base}^${e} = ?`;
+      } else if(r<.56){
+        const root=ri(Math.min(10+difficulty*4+lap*5,50)-1)+2; answer=root; text=`\u221A${root*root} = ?`;
+      } else if(r<.78){
+        const div=ri(Math.min(3+difficulty*2+lap*2,25))+2;
+        answer=ri(Math.min(10+difficulty*8+lap*10,200))+2; a=answer*div; text=`${a} \xF7 ${div} = ?`;
+      } else {
+        a=ri(Math.min(12+difficulty*4+lap*5,99))+2;
+        b=ri(Math.min(Math.min(10+difficulty*3+lap*4,99),Math.floor(9999/a)))+2;
+        answer=a*b; text=`${a} \xD7 ${b} = ?`;
+      }
+    }
+  } while(++attempts<20 && recentOps.includes(answer));
+
+  recentOps.push(answer); if(recentOps.length>RECENT_MAX) recentOps.shift();
+  currentOp={text,answer}; attemptsLeft=3;
+  $('operation').textContent='ENTER COORDINATES TO HIT TARGET:';
+  answerStr='';
+  updateAnswerDisplay();
+  updateAttempDots();
+}
+
+// ── ARCADE ────────────────────────────────────────────────────────────────
+function showArcadeBanner(text,color){ arcadeBanner={text,color,life:180,maxLife:180}; playSound('super'); }
+function advanceArcadeStage(){
+  arcadeKills=0; arcadeStage=(arcadeStage+1)%ARCADE_MODES.length;
+  if(arcadeStage===0) arcadeLap++;
+  updateLevelDisplay();
+  showArcadeBanner('\u25B6 '+ARCADE_LABELS[arcadeStage], ARCADE_COLORS[arcadeStage]);
+  newOperation();
+}
+
+// ── FIRE MISSILE ──────────────────────────────────────────────────────────
+function cannonInTunnel(){ return tunnels.some(t=>cannon.x+14>t.x&&cannon.x-14<t.x+t.w); }
+
+function fireMissile(){
+  if(cannonInTunnel()){ showHint('\u26D4 NO FIRE IN TUNNEL!','#f84'); return; }
+  if(missileCount<=0){  showHint('\u26A0 NO MISSILES \u2014 SOLVE OPERATIONS!','#f84'); return; }
+  missileCount--; updateMissileDisplay(); playSound('fire');
+  missiles.push({x:cannon.x, y:cannon.y-22, super:false});
+}
+
+// ── HANDLE MATH ANSWER ────────────────────────────────────────────────────
+function handleAnswer(){
+  const val=parseInt(answerStr);
+  if(isNaN(val)){ answerStr=''; updateAnswerDisplay(); return; }
+
+  if(val===currentOp.answer){
+    // Show answer in green briefly
+    $('math-op').innerHTML = currentOp.text.replace('?', `<span style="color:#4f4;font-weight:bold">${val}</span>`);
+    answerStr='';
+    streak++; correctOps++; updateStreakDisplay();
+    const isSuper=streak>=3; if(isSuper) streak=0;
+    const eMode=gameMode==='arcade'?ARCADE_MODES[arcadeStage]:gameMode;
+    const baseReward={infantil:3,colegio:4,instituto:5,universidad:6}[eMode]||3;
+    const reward = isSuper ? baseReward+2 : baseReward;
+    missileCount+=reward; updateMissileDisplay();
+
+    // Every 20 correct answers: life bonus + rainbow cannon + fanfare
+    if(correctOps % 20 === 0){
+      lives = Math.min(3, lives+1);
+      cannonRainbow = 60; // frames (~1 second at 60fps)
+      playFanfare();
+      showHint('\uD83C\uDF1F LIFE RESTORED! \u2764\uFE0F', '#ff0', 2500);
+    } else {
+      playSound(isSuper?'super':'correct');
+      if(isSuper){ screenFlash=8; }
+      showHint(isSuper?`\u26A1 SUPER CHARGE! +${reward} \uD83D\uDE80`:`\u2713 +${reward} \uD83D\uDE80 MISSILES!`,'#4f4',1500);
+    }
+    setTimeout(newOperation,1500);
+  } else {
+    // Show wrong answer in red briefly, then restore ?
+    $('math-op').innerHTML = currentOp.text.replace('?', `<span style="color:#f44">${val}</span>`);
+    answerStr='';
+    streak=0; updateStreakDisplay(); attemptsLeft--; updateAttempDots(); playSound('wrong');
+    // Lose 1 missile (defective coordinate)
+    if(missileCount>0){ missileCount--; updateMissileDisplay(); }
+    setTimeout(()=>updateAnswerDisplay(), 600);
+    if(attemptsLeft<=0){ showHint(`COORDINATE FAILED! Answer: ${currentOp.answer}`,'#f44',2000); setTimeout(newOperation,2000); }
+    else { showHint(`\u2717 WRONG \u2014 1 \uD83D\uDE80 DEFECTIVE \u2014 ${attemptsLeft} attempt${attemptsLeft>1?'s':''} left`,'#f84',1500); }
+  }
+}
+
+// ── BACKGROUND ────────────────────────────────────────────────────────────
+function renderBackground(){
+  const g=bgCtx.createLinearGradient(0,0,0,GROUND_Y);
+  g.addColorStop(0,'#0a1535'); g.addColorStop(.5,'#1a4a8a'); g.addColorStop(1,'#2a7abf');
+  bgCtx.fillStyle=g; bgCtx.fillRect(0,0,W,GROUND_Y);
+  bgCtx.fillStyle='rgba(255,255,255,.6)';
+  [[30,20],[80,45],[140,15],[200,55],[280,25],[360,40],[430,18],[510,50],[570,30],[90,80],[250,70],[440,65],[320,15],[160,70],[490,35]]
+    .forEach(([x,y])=>bgCtx.fillRect(x,y,2,2));
+  mountains.forEach(m=>drawMountainTo(bgCtx,m));
+  bgCtx.fillStyle='#3a2a0a'; bgCtx.fillRect(0,GROUND_Y,W,H-GROUND_Y);
+  bgCtx.fillStyle='#5a4a1a'; bgCtx.fillRect(0,GROUND_Y,W,4);
+  bgReady=true;
+}
+
+function drawMountainTo(c,m){
+  const bY=GROUND_Y,pY=bY-m.h,pX=m.x+m.w/2;
+  c.fillStyle='rgba(0,0,0,.2)'; c.beginPath(); c.moveTo(m.x+8,bY); c.lineTo(pX+6,pY+6); c.lineTo(m.x+m.w+8,bY); c.fill();
+  c.fillStyle=m.color; c.beginPath(); c.moveTo(m.x,bY); c.lineTo(pX,pY); c.lineTo(m.x+m.w,bY); c.fill();
+  if(m.h>120){ c.fillStyle='rgba(30,80,20,.6)'; c.beginPath(); c.moveTo(m.x,bY); c.lineTo(pX-m.w*.15,bY-m.h*.35); c.lineTo(pX+m.w*.15,bY-m.h*.35); c.lineTo(m.x+m.w,bY); c.fill(); }
+  if(m.snow){ c.fillStyle='#eef'; c.beginPath(); c.moveTo(pX,pY); c.lineTo(pX-m.w*.12,pY+m.h*.18); c.lineTo(pX+m.w*.12,pY+m.h*.18); c.fill(); }
+  if(m.tunnel){
+    const {tunnelX:tx,tunnelW:tw,tunnelH:th}=m;
+    c.fillStyle='#000'; c.fillRect(tx,bY-th,tw,th);
+    c.fillStyle='#111'; c.beginPath(); c.arc(tx+tw/2,bY-th,tw/2,Math.PI,0); c.fill();
+    c.fillStyle='rgba(50,30,0,.8)'; c.fillRect(tx+3,bY-th+2,tw-6,th-2);
+    c.strokeStyle='#654'; c.lineWidth=2; c.beginPath(); c.arc(tx+tw/2,bY-th,tw/2,Math.PI,0); c.stroke(); c.strokeRect(tx,bY-th,tw,th);
+  }
+}
+
+// ── DRAW CANNON (4 skins by mode) ─────────────────────────────────────────
+function drawCannon(){
+  const cx=cannon.x, cy=cannon.y;
+  const mode=gameMode==='arcade'?ARCADE_MODES[arcadeStage]:gameMode;
+
+  // Rainbow overlay when life bonus active
+  if(cannonRainbow>0){
+    const hue=(Date.now()/8)%360;
+    ctx.save();
+    ctx.shadowColor=`hsl(${hue},100%,60%)`;
+    ctx.shadowBlur=18+8*Math.sin(Date.now()*.02);
+  }
+
+  if(mode==='infantil'){
+    // Toy cannon — round body, single wheel
+    ctx.fillStyle='#4a8a4a'; ctx.beginPath(); ctx.arc(cx,cy+4,12,0,TAU); ctx.fill();
+    ctx.fillStyle='#6ab86a'; ctx.beginPath(); ctx.arc(cx-3,cy+1,5,0,TAU); ctx.fill();
+    ctx.fillStyle='#2a5a2a'; ctx.beginPath(); ctx.arc(cx,cy+14,8,0,TAU); ctx.fill();
+    ctx.fillStyle='#5a9a5a'; ctx.beginPath(); ctx.arc(cx,cy+14,3,0,TAU); ctx.fill();
+    ctx.fillStyle='#2a6a2a'; ctx.fillRect(cx-4,cy-14,8,14);
+    ctx.fillStyle='#4a8a4a'; ctx.fillRect(cx-3,cy-14,3,14);
+    ctx.fillStyle='#1a4a1a'; ctx.fillRect(cx-5,cy-17,10,5);
+
+  } else if(mode==='colegio'){
+    // Classic 2-wheel cannon
+    ctx.fillStyle='#555'; ctx.beginPath(); ctx.arc(cx-10,cy+10,7,0,TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx+10,cy+10,7,0,TAU); ctx.fill();
+    ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(cx-10,cy+10,3,0,TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx+10,cy+10,3,0,TAU); ctx.fill();
+    ctx.fillStyle='#2a4a2a'; ctx.fillRect(cx-14,cy-4,28,14); ctx.fillStyle='#3a6a3a'; ctx.fillRect(cx-14,cy-4,28,5);
+    ctx.fillStyle='#1a3a1a'; ctx.fillRect(cx-5,cy-18,10,18); ctx.fillStyle='#2a5a2a'; ctx.fillRect(cx-4,cy-18,4,18);
+    ctx.fillStyle='#0a2a0a'; ctx.fillRect(cx-6,cy-22,12,6);
+
+  } else if(mode==='instituto'){
+    // Military tank with tracks
+    ctx.fillStyle='#3a3a1a'; ctx.fillRect(cx-16,cy+6,32,10); ctx.fillStyle='#5a5a2a'; ctx.fillRect(cx-16,cy+6,32,4);
+    [-10,-2,6,14].forEach(wx=>{ ctx.fillStyle='#2a2a0a'; ctx.beginPath(); ctx.arc(cx-13+wx,cy+14,4,0,TAU); ctx.fill(); ctx.fillStyle='#6a6a3a'; ctx.beginPath(); ctx.arc(cx-13+wx,cy+14,1.5,0,TAU); ctx.fill(); });
+    ctx.fillStyle='#3a4a1a'; ctx.beginPath(); ctx.moveTo(cx-16,cy+6); ctx.lineTo(cx+16,cy+6); ctx.lineTo(cx+12,cy-6); ctx.lineTo(cx-12,cy-6); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#5a6a2a'; ctx.beginPath(); ctx.moveTo(cx-16,cy+6); ctx.lineTo(cx+16,cy+6); ctx.lineTo(cx+14,cy+2); ctx.lineTo(cx-14,cy+2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#2a3a0a'; ctx.fillRect(cx-9,cy-14,18,10); ctx.fillStyle='#4a5a1a'; ctx.fillRect(cx-9,cy-14,18,4);
+    ctx.fillStyle='#1a2a0a'; ctx.fillRect(cx-4,cy-24,8,20); ctx.fillStyle='#3a4a1a'; ctx.fillRect(cx-3,cy-24,3,20);
+    ctx.fillStyle='#0a1a00'; ctx.fillRect(cx-6,cy-27,12,5); ctx.fillStyle='#2a3a0a'; ctx.fillRect(cx-5,cy-25,4,3);
+
+  } else {
+    // Sci-fi railgun hover
+    const gp=.5+.5*Math.sin(Date.now()*.006);
+    ctx.fillStyle=`rgba(0,200,255,${.15+.1*gp})`; ctx.beginPath(); ctx.ellipse(cx,cy+18,20,5,0,0,TAU); ctx.fill();
+    ctx.fillStyle=`rgba(0,200,255,${.4+.2*gp})`; ctx.beginPath(); ctx.ellipse(cx-10,cy+14,8,3,0,0,TAU); ctx.fill(); ctx.beginPath(); ctx.ellipse(cx+10,cy+14,8,3,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#1a1a4a'; ctx.beginPath(); ctx.moveTo(cx-16,cy+12); ctx.lineTo(cx+16,cy+12); ctx.lineTo(cx+14,cy-2); ctx.lineTo(cx+8,cy-6); ctx.lineTo(cx-8,cy-6); ctx.lineTo(cx-14,cy-2); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='#3a3a8a'; ctx.beginPath(); ctx.moveTo(cx-16,cy+12); ctx.lineTo(cx+16,cy+12); ctx.lineTo(cx+15,cy+8); ctx.lineTo(cx-15,cy+8); ctx.closePath(); ctx.fill();
+    ctx.fillStyle=`rgba(0,180,255,${.6+.4*gp})`; ctx.beginPath(); ctx.arc(cx,cy+3,5,0,TAU); ctx.fill();
+    ctx.fillStyle=`rgba(180,240,255,${.8+.2*gp})`; ctx.beginPath(); ctx.arc(cx,cy+3,2,0,TAU); ctx.fill();
+    ctx.fillStyle='#0a0a3a'; ctx.fillRect(cx-3,cy-26,6,26); ctx.fillStyle='#2a2a7a'; ctx.fillRect(cx-2,cy-26,2,26);
+    [-22,-15,-8].forEach(ry=>{ ctx.strokeStyle=`rgba(0,200,255,${.5+.3*gp})`; ctx.lineWidth=1.5; ctx.strokeRect(cx-4,cy+ry,8,3); });
+    ctx.fillStyle='#050520'; ctx.fillRect(cx-5,cy-28,10,4);
+    ctx.fillStyle=`rgba(0,220,255,${.7+.3*gp})`; ctx.beginPath(); ctx.arc(cx,cy-27,3,0,TAU); ctx.fill();
+  }
+  if(cannonRainbow>0) ctx.restore();
+}
+
+// ── DRAW ALIEN ────────────────────────────────────────────────────────────
+function drawAlien(a){
+  const cx=a.x+a.w/2, cy=a.y+a.h/2, f=Math.floor(a.frame);
+  if(a.boss){
+    const rx=a.w/2-2, ry=a.h*.28;
+    ctx.fillStyle='rgba(255,0,255,.15)'; ctx.beginPath(); ctx.ellipse(cx,cy+ry+4,rx*.8,5,0,0,TAU); ctx.fill();
+    const g=ctx.createRadialGradient(cx,cy,2,cx,cy,rx); g.addColorStop(0,'#fff'); g.addColorStop(.55,a.color); g.addColorStop(1,'#404');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,TAU); ctx.fill();
+    ctx.strokeStyle='#f8f'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(cx,cy-2,rx*.9,ry*.7,0,0,TAU); ctx.stroke();
+    const dg=ctx.createRadialGradient(cx-5,cy-ry-4,1,cx,cy-ry,12); dg.addColorStop(0,'rgba(255,255,255,.9)'); dg.addColorStop(1,`rgba(${a.colorRgb},.7)`);
+    ctx.fillStyle=dg; ctx.beginPath(); ctx.ellipse(cx,cy-ry,14,11,0,Math.PI,0); ctx.fill();
+    ctx.strokeStyle='#f0f'; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(cx,cy-ry,14,11,0,Math.PI,0); ctx.stroke();
+    ['#ff0','#f0f','#0ff','#f80'].forEach((c,i)=>{ const ang=(i/4)*TAU+(f%2)*.4,lx=cx+Math.cos(ang)*rx*.65,ly=cy+ry*.3; ctx.fillStyle=c; ctx.globalAlpha=.5+(f%2===i%2?.5:0); ctx.beginPath(); ctx.arc(lx,ly,3,0,TAU); ctx.fill(); });
+    ctx.globalAlpha=1;
+    // Health bar — segments equal to maxHp
+    ctx.fillStyle='#500'; ctx.fillRect(a.x,a.y-14,a.w,4);
+    ctx.fillStyle=a.color; ctx.fillRect(a.x,a.y-14,a.w*(a.hp/a.maxHp),4);
+    for(let i=1;i<a.maxHp;i++){ ctx.fillStyle='#000'; ctx.fillRect(a.x+(a.w/a.maxHp)*i-1,a.y-14,2,4); }
+  } else {
+    const rx=18,ry=6;
+    ctx.fillStyle=`rgba(${a.colorRgb},.12)`; ctx.beginPath(); ctx.ellipse(cx,cy+ry+3,rx*.7,3,0,0,TAU); ctx.fill();
+    const g=ctx.createRadialGradient(cx,cy,1,cx,cy,rx); g.addColorStop(0,a.colorLight); g.addColorStop(.7,a.color); g.addColorStop(1,a.colorDark);
+    ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,TAU); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(cx,cy-1,rx*.85,ry*.6,0,0,TAU); ctx.stroke();
+    const dg=ctx.createRadialGradient(cx-3,cy-ry-2,1,cx,cy-ry,8); dg.addColorStop(0,'rgba(220,255,255,.95)'); dg.addColorStop(1,`rgba(${a.colorRgb},.6)`);
+    ctx.fillStyle=dg; ctx.beginPath(); ctx.ellipse(cx,cy-ry,9,7,0,Math.PI,0); ctx.fill();
+    ctx.fillStyle=f%2===0?'#ff0':'#fa0'; ctx.globalAlpha=.9; ctx.beginPath(); ctx.arc(cx,cy+ry-1,2.5,0,TAU); ctx.fill(); ctx.globalAlpha=1;
+  }
+}
+
+// ── DRAW MISSILE ──────────────────────────────────────────────────────────
+function drawMissile(m){
+  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(-Math.PI/2);
+  const col=m.super?'#f0f':'#ff0', col2=m.super?'#a0a':'#f80';
+  const fl=.7+Math.random()*.3, fLen=m.super?18:12;
+  ctx.fillStyle=m.super?`rgba(255,100,255,${.9*fl})`:`rgba(255,160,0,${.9*fl})`;
+  ctx.beginPath(); ctx.moveTo(-10,-3); ctx.lineTo(-10-fLen*fl,0); ctx.lineTo(-10,3); ctx.fill();
+  const bw=m.super?24:20;
+  ctx.fillStyle=col2; ctx.fillRect(-bw/2,-4,bw,8); ctx.fillStyle=col; ctx.fillRect(-bw/2+2,-4,bw-4,3);
+  ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(bw/2,-4); ctx.lineTo(bw/2+10,0); ctx.lineTo(bw/2,4); ctx.fill();
+  ctx.fillStyle=col2;
+  ctx.beginPath(); ctx.moveTo(-bw/2+2,-4); ctx.lineTo(-bw/2-6,-10); ctx.lineTo(-bw/2+2,0); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-bw/2+2,4); ctx.lineTo(-bw/2-6,10); ctx.lineTo(-bw/2+2,0); ctx.fill();
+  ctx.fillStyle=m.super?'#f8f':'#aef'; ctx.beginPath(); ctx.arc(bw/2-8,0,2.5,0,TAU); ctx.fill();
+  ctx.restore();
+}
+
+// ── DRAW MISC ─────────────────────────────────────────────────────────────
+function drawBullet(b){ ctx.fillStyle='#f44'; ctx.fillRect(b.x-2,b.y,4,8); ctx.fillStyle='rgba(255,100,100,.4)'; ctx.fillRect(b.x-1,b.y+8,2,6); }
+function drawParticle(p){ ctx.globalAlpha=p.life/p.maxLife; ctx.fillStyle=p.color; ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size); ctx.globalAlpha=1; }
+function drawExplosion(e){
+  const p=e.life/e.maxLife;
+  if(e.super){
+    const r=e.radius*(1-p);
+    ctx.strokeStyle=`rgba(255,100,255,${p*.9})`; ctx.lineWidth=4*p; ctx.beginPath(); ctx.arc(e.x,e.y,r,0,TAU); ctx.stroke();
+    if(p>.5){ ctx.fillStyle=`rgba(255,0,255,${(p-.5)*.3})`; ctx.beginPath(); ctx.arc(e.x,e.y,r,0,TAU); ctx.fill(); }
+    ctx.strokeStyle=`rgba(255,200,255,${p*.6})`; ctx.lineWidth=2*p; ctx.beginPath(); ctx.arc(e.x,e.y,r*.7,0,TAU); ctx.stroke();
+    ctx.fillStyle=`rgba(255,255,255,${p*.8})`; ctx.beginPath(); ctx.arc(e.x,e.y,12*p,0,TAU); ctx.fill();
+  } else {
+    ctx.fillStyle=`rgba(255,${Math.floor(200*p)},0,${p})`; ctx.beginPath(); ctx.arc(e.x,e.y,(1-p)*30,0,TAU); ctx.fill();
+    ctx.fillStyle=`rgba(255,255,200,${p*.8})`; ctx.beginPath(); ctx.arc(e.x,e.y,(1-p)*15,0,TAU); ctx.fill();
+  }
+}
+function drawLives(){
+  const bX=W-20, bY=H-12;
+  for(let i=0;i<3;i++){
+    const cx=bX-i*36, alive=i<lives, c1=alive?'#4f4':'#f44', c2=alive?'#2a2':'#a00';
+    ctx.fillStyle=alive?'#3a3':'#733'; ctx.beginPath(); ctx.arc(cx-7,bY-2,4,0,TAU); ctx.fill(); ctx.beginPath(); ctx.arc(cx+7,bY-2,4,0,TAU); ctx.fill();
+    ctx.fillStyle=c2; ctx.fillRect(cx-10,bY-10,20,8); ctx.fillStyle=c1; ctx.fillRect(cx-10,bY-10,20,3);
+    ctx.fillStyle=c2; ctx.fillRect(cx+4,bY-14,10,5); ctx.fillStyle=c1; ctx.fillRect(cx+4,bY-13,4,3);
+  }
+}
+function drawArcadeBanner(){
+  if(!arcadeBanner||arcadeBanner.life<=0) return;
+  const b=arcadeBanner, fi=b.maxLife-b.life;
+  const alpha=fi<20?fi/20:b.life<40?b.life/40:1;
+  ctx.save(); ctx.globalAlpha=alpha;
+  ctx.fillStyle='rgba(0,0,0,.75)'; ctx.fillRect(0,H/2-44,W,88);
+  ctx.strokeStyle=b.color; ctx.lineWidth=3; ctx.strokeRect(0,H/2-44,W,88);
+  ctx.fillStyle=b.color; ctx.font='bold 18px "Press Start 2P",monospace'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.shadowColor=b.color; ctx.shadowBlur=16;
+  ctx.fillText(b.text,W/2,H/2-12);
+  ctx.font='11px "Press Start 2P",monospace'; ctx.fillStyle='#fff'; ctx.shadowBlur=0;
+  ctx.fillText(arcadeLap>0?`ROUND ${arcadeLap+1} \u2014 DIFFICULTY \xD7${arcadeLap+1}`:'GET READY!',W/2,H/2+18);
+  ctx.restore(); b.life--;
+}
+
+// ── FRAGMENTS / KILL ──────────────────────────────────────────────────────
+function spawnFragments(x,y,color){
+  for(let i=0;i<16;i++){
+    const ang=(i/16)*TAU, spd=2+Math.random()*4;
+    particles.push({x,y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,color:i%2===0?color:'#ff0',size:2+Math.random()*4,life:25+ri(15),maxLife:40});
+  }
+}
+function killAlien(idx){
+  const a=aliens[idx];
+  spawnFragments(a.x+a.w/2, a.y+a.h/2, a.color);
+  explosions.push({x:a.x+a.w/2, y:a.y+a.h/2, life:30, maxLife:30});
+  score += a.boss ? 100 + a.maxHp*100 : 100; aliensDestroyed++;
+  if(gameMode==='arcade'){ arcadeKills++; if(arcadeKills>=40) advanceArcadeStage(); }
+  aliens.splice(idx,1); updateScoreDisplay();
+}
+
+// ── GAME LOOP ─────────────────────────────────────────────────────────────
+function loop(ts){
+  const dt=Math.min(ts-lastTime,50); lastTime=ts;
+  if(paused){ gameLoopId=requestAnimationFrame(loop); return; }
+  if(state==='playing'){ update(dt); render(); }
+  else if(state==='invasion'){ updateInvasion(dt); renderInvasion(); }
+  else return;
+  // Update in-flight missile indicator
+  const inFlight=missiles.length;
+  $('inflight-display').textContent = inFlight>0 ? `+${inFlight}\u{1F4A8}` : '';
+  // Dynamic title with score
+  if(state==='playing') document.title=`[${score}] Math Cannon`;
+  gameLoopId=requestAnimationFrame(loop);
+}
+
+
+function renderInvasion(){
+  if(!invasion) return;
+  const inv=invasion;
+  ctx.clearRect(0,0,W,H);
+  const sx=cannonShake>0?(Math.random()-.5)*8:0, sy=cannonShake>0?(Math.random()-.5)*8:0;
+  ctx.save(); ctx.translate(sx,sy);
+  if(bgReady) ctx.drawImage(bgCanvas,0,0);
+  aliens.filter(a=>a.y+a.h<GROUND_Y).forEach(drawAlien);
+  particles.forEach(drawParticle); explosions.forEach(drawExplosion);
+  // UFO on the ground (all phases except exploding)
+  if(inv.phase!=='exploding'){
+    const ux=inv.ufoX, uy=inv.ufoY;
+    // Green tractor beam while landing
+    if(inv.phase==='landing'){
+      const beamH=GROUND_Y-inv.ufoY-7;
+      if(beamH>0){
+        const grad=ctx.createLinearGradient(0,inv.ufoY+7,0,inv.ufoY+7+beamH);
+        grad.addColorStop(0,'rgba(100,255,100,.45)'); grad.addColorStop(1,'rgba(100,255,100,0)');
+        ctx.fillStyle=grad; ctx.fillRect(ux-14,inv.ufoY+7,28,beamH);
+      }
+    }
+    ctx.fillStyle='rgba(0,200,0,.15)'; ctx.beginPath(); ctx.ellipse(ux,uy+10,26,6,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#224422'; ctx.beginPath(); ctx.ellipse(ux,uy,22,8,0,0,TAU); ctx.fill();
+    ctx.fillStyle=inv.ufoColor; ctx.beginPath(); ctx.ellipse(ux,uy,22,8,0,0,TAU); ctx.fill();
+    ctx.fillStyle='rgba(100,255,100,.4)'; ctx.beginPath(); ctx.ellipse(ux,uy-2,16,4,0,0,TAU); ctx.fill();
+    ctx.fillStyle='#2a4'; ctx.beginPath(); ctx.ellipse(ux,uy,11,7,0,Math.PI,0); ctx.fill();
+  }
+  // Soldier — insect alien with wings
+  if(inv.soldierSpawned && inv.phase!=='exploding'){
+    const x=inv.soldierX, y=inv.soldierY, step=inv.soldierStep, fl=cannon.x<inv.soldierX;
+    const wingFlap = Math.sin(Date.now()*.018) * 4; // wing animation
+
+    // Wings (behind body) — two pairs, translucent
+    ctx.save(); ctx.globalAlpha=.75;
+    // Upper wings
+    ctx.fillStyle='#8f8'; ctx.strokeStyle='#4a4'; ctx.lineWidth=.8;
+    ctx.beginPath(); ctx.ellipse(x-14, y-14+wingFlap, 10, 5, -0.4, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x+14, y-14+wingFlap, 10, 5,  0.4, 0, TAU); ctx.fill(); ctx.stroke();
+    // Lower wings (smaller)
+    ctx.fillStyle='#6d6';
+    ctx.beginPath(); ctx.ellipse(x-11, y-6-wingFlap,  7, 3, -0.5, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(x+11, y-6-wingFlap,  7, 3,  0.5, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.restore();
+
+    // Abdomen (segmented insect body)
+    ctx.fillStyle='#1a3a1a'; ctx.beginPath(); ctx.ellipse(x, y-4, 5, 8, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle='#2a2'; ctx.fillRect(x-4,y-10,8,2); // segment 1
+    ctx.fillStyle='#3a3'; ctx.fillRect(x-4,y-8, 8,2); // segment 2
+    ctx.fillStyle='#2a2'; ctx.fillRect(x-4,y-6, 8,2); // segment 3
+
+    // Thorax
+    ctx.fillStyle='#3a5a3a'; ctx.beginPath(); ctx.ellipse(x, y-14, 6, 5, 0, 0, TAU); ctx.fill();
+
+    // Head — bug-like, wider than tall
+    ctx.fillStyle='#4a6a4a'; ctx.beginPath(); ctx.ellipse(x, y-21, 7, 5, 0, 0, TAU); ctx.fill();
+
+    // Compound eyes — big and round
+    ctx.fillStyle='#f00';
+    ctx.beginPath(); ctx.arc(x-4, y-22, 3.5, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+4, y-22, 3.5, 0, TAU); ctx.fill();
+    ctx.fillStyle='rgba(255,180,180,.5)';
+    ctx.beginPath(); ctx.arc(x-3, y-23, 1.2, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+3, y-23, 1.2, 0, TAU); ctx.fill();
+
+    // Antennae
+    ctx.strokeStyle='#4f4'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x-3,y-26); ctx.quadraticCurveTo(x-10,y-34,x-8,y-38); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+3,y-26); ctx.quadraticCurveTo(x+10,y-34,x+8,y-38); ctx.stroke();
+    // Antenna tips
+    ctx.fillStyle='#ff0';
+    ctx.beginPath(); ctx.arc(x-8,y-38,2,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+8,y-38,2,0,TAU); ctx.fill();
+
+    // Legs (3 pairs, insect-style)
+    ctx.strokeStyle='#2a2'; ctx.lineWidth=1.5;
+    // Front legs
+    ctx.beginPath(); ctx.moveTo(x-5,y-12); ctx.lineTo(x-14,y-8); ctx.lineTo(x-16,y-4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+5,y-12); ctx.lineTo(x+14,y-8); ctx.lineTo(x+16,y-4); ctx.stroke();
+    // Mid legs (animated)
+    const legOff = step===0 ? 3 : -3;
+    ctx.beginPath(); ctx.moveTo(x-5,y-8); ctx.lineTo(x-13,y-4+legOff); ctx.lineTo(x-15,y+2+legOff); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+5,y-8); ctx.lineTo(x+13,y-4-legOff); ctx.lineTo(x+15,y+2-legOff); ctx.stroke();
+    // Hind legs
+    ctx.beginPath(); ctx.moveTo(x-4,y-4); ctx.lineTo(x-10,y+2); ctx.lineTo(x-8,y+8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x+4,y-4); ctx.lineTo(x+10,y+2); ctx.lineTo(x+8,y+8); ctx.stroke();
+
+    // Claw arm holding grenade
+    ctx.strokeStyle='#3a3'; ctx.lineWidth=2;
+    if(fl){ ctx.beginPath(); ctx.moveTo(x-5,y-14); ctx.lineTo(x-16,y-18); ctx.stroke();
+            ctx.fillStyle='#4f4'; ctx.beginPath(); ctx.arc(x-16,y-18,3,0,TAU); ctx.fill(); }
+    else  { ctx.beginPath(); ctx.moveTo(x+5,y-14); ctx.lineTo(x+16,y-18); ctx.stroke();
+            ctx.fillStyle='#4f4'; ctx.beginPath(); ctx.arc(x+16,y-18,3,0,TAU); ctx.fill(); }
+  }
+  // Grenade in arc
+  if(inv.grenadeActive){
+    ctx.fillStyle='#4a4'; ctx.beginPath(); ctx.arc(inv.gx,inv.gy,5,0,TAU); ctx.fill();
+    ctx.fillStyle='#6f6'; ctx.beginPath(); ctx.arc(inv.gx-1,inv.gy-1,2,0,TAU); ctx.fill();
+    ctx.fillStyle='#fa0'; ctx.fillRect(inv.gx-1,inv.gy-8,2,4);
+    ctx.fillStyle='#ff0'; ctx.beginPath(); ctx.arc(inv.gx,inv.gy-8,2,0,TAU); ctx.fill();
+    if(Math.random()<.6) particles.push({x:inv.gx,y:inv.gy-8,vx:(Math.random()-.5)*2,vy:-Math.random()*2,color:'#ff0',size:2,life:8,maxLife:8});
+  }
+  // Cannon — flickers and hides when exploding
+  if(inv.phase!=='exploding' || (inv.explodeTimer<20 && Math.floor(inv.explodeTimer/3)%2===0)){
+    drawCannon();
+  }
+  missiles.forEach(drawMissile); drawLives();
+  ctx.restore();
+  if(screenFlash>0){ ctx.fillStyle=`rgba(255,80,0,${(screenFlash/30)*.6})`; ctx.fillRect(0,0,W,H); }
+}
+
+// ── UPDATE ────────────────────────────────────────────────────────────────
+function update(dt){
+  const nd=Math.min(10,1+Math.floor(aliensDestroyed/10));
+  if(nd!==difficulty){ difficulty=nd; updateLevelDisplay(); }
+
+  const eMode=gameMode==='arcade'?ARCADE_MODES[arcadeStage]:gameMode;
+  const spawnRate=eMode==='infantil'?Math.max(1500,8000-difficulty*650):eMode==='colegio'?Math.max(1500,6500-difficulty*500):eMode==='instituto'?Math.max(1500,5500-difficulty*400):Math.max(1500,4500-difficulty*300);
+  spawnAccum+=dt; if(spawnAccum>=spawnRate){ spawnAccum=0; spawnAlien(); }
+  if(screenFlash>0) screenFlash--; if(cannonShake>0) cannonShake--;
+  if(cannonRainbow>0) cannonRainbow--;
+
+  const alienSpeed=.35+difficulty*.08;
+  let hitEdge=false;
+  aliens.forEach(a=>{ a.x+=a.dir*alienSpeed; a.frameTimer+=dt; if(a.frameTimer>500){a.frame=(a.frame+1)%2;a.frameTimer=0;} if(a.x+a.w>=W-30||a.x<=30) hitEdge=true; });
+  if(hitEdge){ const drop=Math.random()<.5; aliens.forEach(a=>{ a.dir*=-1; if(drop) a.y+=18; }); }
+  aliens.forEach(a=>{ a.shootTimer-=dt; if(a.shootTimer<=0){ a.shootTimer=Math.max(2000,4000-difficulty*100)+Math.random()*3000; bullets.push({x:a.x+a.w/2,y:a.y+a.h,speed:2.5+aliens.length*.15+difficulty*.1}); } });
+
+  bullets.forEach(b=>b.y+=b.speed);
+  const inTunnel=cannonInTunnel();
+  bullets=bullets.filter(b=>{
+    if(b.y>H) return false;
+    for(const t of tunnels){ if(b.x>t.x&&b.x<t.x+t.w&&b.y<=t.y&&b.y+b.speed*2>=t.y){ explosions.push({x:b.x,y:t.y,life:10,maxLife:10}); return false; } }
+    if(!inTunnel&&b.x>cannon.x-16&&b.x<cannon.x+16&&b.y>cannon.y-22&&b.y<cannon.y+16){
+      lives--; screenFlash=20; cannonShake=12; playSound('hit');
+      for(let i=0;i<12;i++) particles.push({x:cannon.x,y:cannon.y,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,color:'#f84',size:3+Math.random()*3,life:20,maxLife:20});
+      explosions.push({x:cannon.x,y:cannon.y,life:30,maxLife:30});
+      if(lives<=0){ endGame(); return false; }
+      return false;
+    }
+    return true;
+  });
+
+  missiles=missiles.filter(m=>{
+    if(m.y<-20) return false;
+    if(Math.random()<.5) particles.push({x:m.x+(Math.random()-.5)*4,y:m.y+10,vx:Math.random()-.5,vy:Math.random(),color:m.super?'#f0f':'#fa0',size:2+Math.random()*2,life:8,maxLife:8});
+    m.y-=7;
+    for(let i=0;i<aliens.length;i++){
+      const a=aliens[i];
+      if(m.x>a.x-4&&m.x<a.x+a.w+4&&m.y>a.y-4&&m.y<a.y+a.h+4){
+        if(m.super){
+          const bX=a.x+a.w/2, bY=a.y+a.h/2, BR=120;
+          explosions.push({x:bX,y:bY,life:40,maxLife:40,super:true,radius:BR});
+          for(let j=aliens.length-1;j>=0;j--){ if(Math.hypot(aliens[j].x+aliens[j].w/2-bX,aliens[j].y+aliens[j].h/2-bY)<=BR) killAlien(j); }
+          playSound('explode'); return false;
+        }
+        a.hp--;
+        if(a.hp<=0){ killAlien(i); }
+        else {
+          if(!a.baseColor) a.baseColor = a.color;
+          a.color='#fff';
+          a.flashToken = (a.flashToken||0)+1;
+          const token = a.flashToken;
+          setTimeout(()=>{ if(a.flashToken===token) a.color=a.baseColor; },100);
+          explosions.push({x:a.x+a.w/2,y:a.y+a.h/2,life:15,maxLife:15}); score+=50; updateScoreDisplay();
+        }
+        playSound('explode'); return false;
+      }
+    }
+    return true;
+  });
+
+  particles=particles.filter(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.1; return --p.life>0; });
+  if(particles.length>MAX_PARTICLES) particles.splice(0,particles.length-MAX_PARTICLES);
+  explosions=explosions.filter(e=>--e.life>0);
+
+  if(aliens.some(a=>a.y+a.h>=GROUND_Y)) startInvasion();
+  checkBreachWarning();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function render(){
+  ctx.clearRect(0,0,W,H);
+  const sx=cannonShake>0?(Math.random()-.5)*6:0, sy=cannonShake>0?(Math.random()-.5)*6:0;
+  ctx.save(); ctx.translate(sx,sy);
+  if(bgReady) ctx.drawImage(bgCanvas,0,0);
+  aliens.forEach(drawAlien); bullets.forEach(drawBullet); particles.forEach(drawParticle);
+  missiles.forEach(drawMissile); explosions.forEach(drawExplosion);
+  drawCannon(); drawLives();
+  if(gameMode==='arcade') drawArcadeBanner();
+  ctx.restore();
+  if(screenFlash>0){ ctx.fillStyle=`rgba(255,${screenFlash<8?'255,100':'0,0'},${(screenFlash/20)*.5})`; ctx.fillRect(0,0,W,H); }
+}
+
+// ── INVASION SEQUENCE ─────────────────────────────────────────────────────
+let invaders = [];       // kept for compatibility but unused
+let invaderBullets = []; // kept for compatibility but unused
+
+function startInvasion(){
+  if(state==='invasion') return;
+  state='invasion';
+  const lander = aliens.reduce((a,b)=>a.y>b.y?a:b);
+  invasion = {
+    ufoX: lander.x + lander.w/2,
+    ufoY: lander.y + lander.h/2,
+    ufoTargetY: GROUND_Y - 30,
+    ufoColor: lander.color,
+    phase: 'landing',
+    soldierX: 0, soldierY: GROUND_Y - 14,
+    soldierSpawned: false, soldierStep: 0, soldierStepTimer: 0,
+    grenadeActive: false, gx:0, gy:0, gvx:0, gvy:0,
+    explodeTimer: 0,
+  };
+  bullets=[];
+}
+
+function updateInvasion(dt){
+  if(!invasion) return;
+  const inv=invasion;
+
+  if(inv.phase==='landing'){
+    inv.ufoY += 2.5;
+    if(inv.ufoY >= inv.ufoTargetY){
+      inv.ufoY = inv.ufoTargetY;
+      inv.phase = 'marching';
+      inv.soldierSpawned = true;
+      inv.soldierX = inv.ufoX;
+    }
+  }
+
+  else if(inv.phase==='marching'){
+    const dir = cannon.x < inv.soldierX ? -1 : 1;
+    inv.soldierStepTimer += dt;
+    if(inv.soldierStepTimer > 150){ inv.soldierStep=(inv.soldierStep+1)%2; inv.soldierStepTimer=0; }
+    inv.soldierX += dir * 1.8;
+    // Throw grenade when within range
+    if(Math.abs(inv.soldierX - cannon.x) < 130){
+      inv.phase = 'throwing';
+      inv.grenadeActive = true;
+      inv.gx = inv.soldierX;
+      inv.gy = inv.soldierY - 16;
+      const dx = cannon.x - inv.soldierX;
+      const frames = 45;
+      inv.gvx = dx / frames;
+      inv.gvy = -6; // throw upward, gravity brings it down
+    }
+  }
+
+  else if(inv.phase==='throwing'){
+    inv.gvy += 0.28; // gravity
+    inv.gx += inv.gvx;
+    inv.gy += inv.gvy;
+    // Hit cannon
+    if(Math.abs(inv.gx - cannon.x) < 22 && Math.abs(inv.gy - cannon.y) < 24){
+      inv.phase = 'exploding'; inv.grenadeActive = false; inv.explodeTimer = 0;
+      playSound('explode');
+      for(let i=0;i<28;i++){
+        const ang=(i/28)*TAU, spd=3+Math.random()*6;
+        particles.push({x:cannon.x,y:cannon.y,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,
+          color:i%3===0?'#f84':i%3===1?'#ff0':'#f44',size:3+Math.random()*5,life:40+ri(25),maxLife:65});
+      }
+      explosions.push({x:cannon.x,y:cannon.y,life:60,maxLife:60,super:true,radius:90});
+      screenFlash=30; cannonShake=25;
+    }
+    // Missed — hit ground
+    if(inv.gy > GROUND_Y){
+      inv.phase='exploding'; inv.grenadeActive=false; inv.explodeTimer=0;
+      explosions.push({x:inv.gx,y:GROUND_Y,life:30,maxLife:30}); playSound('explode');
+    }
+  }
+
+  else if(inv.phase==='exploding'){
+    inv.explodeTimer++;
+    if(screenFlash>0) screenFlash--; if(cannonShake>0) cannonShake--;
+    if(inv.explodeTimer > 90) endGame();
+  }
+
+  particles=particles.filter(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.1; return --p.life>0; });
+  if(particles.length>MAX_PARTICLES) particles.splice(0,particles.length-MAX_PARTICLES);
+  explosions=explosions.filter(e=>--e.life>0);
+}
+
+// ── END GAME ──────────────────────────────────────────────────────────────
+function endGame(){
+  state='over';
+  paused=false;
+  // Save highscore
+  const isNewRecord = score > highScore;
+  if(isNewRecord){ highScore=score; localStorage.setItem('mathcannon_hs',highScore); }
+  recordHOF(score, gameMode, difficulty, correctOps);
+  document.title=`Math Cannon | SCORE: ${score}`;
+  const ml=gameMode==='arcade'
+    ? `\uD83D\uDD79\uFE0F ARCADE (Round ${arcadeLap+1}, ${ARCADE_LABELS[arcadeStage]})`
+    : {infantil:'\u2B50 BABY',colegio:'\uD83D\uDCDA KIDS',instituto:'\uD83C\uDF93 TEENAGER',universidad:'\uD83D\uDD2C TECHNICIAN'}[gameMode];
+  const ov=$('overlay'); ov.style.display='flex';
+  ov.innerHTML=`
+    <h2>GAME OVER</h2>
+    ${isNewRecord?'<p style="color:#ff0;font-size:.6rem;letter-spacing:2px;animation:blink .5s step-end infinite">\u2B50 NEW RECORD! \u2B50</p>':''}
+    <div class="score-final">SCORE: ${score}${isNewRecord?'':` &nbsp;<span style="color:#f84;font-size:.5rem">BEST: ${highScore}</span>`}</div>
+    <p>Mode: ${ml}<br>Aliens destroyed: ${aliensDestroyed} &nbsp;|&nbsp; Correct answers: ${correctOps} &nbsp;|&nbsp; Level: ${difficulty}</p>
+    <div id="mode-select" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px">
+      <div id="mode-row-levels" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="mode-btn infantil${gameMode==='infantil'?' selected':''}" onclick="selectMode('infantil')">\u2B50 BABY</button>
+        <button class="mode-btn colegio${gameMode==='colegio'?' selected':''}" onclick="selectMode('colegio')">\uD83D\uDCDA KIDS</button>
+        <button class="mode-btn instituto${gameMode==='instituto'?' selected':''}" onclick="selectMode('instituto')">\uD83C\uDF93 TEENAGER</button>
+        <button class="mode-btn universidad${gameMode==='universidad'?' selected':''}" onclick="selectMode('universidad')">\uD83D\uDD2C TECHNICIAN</button>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <button class="mode-btn arcade${gameMode==='arcade'?' selected':''}" onclick="selectMode('arcade')">\uD83D\uDD79\uFE0F ARCADE &mdash; ALL LEVELS</button>
+      </div>
+    </div>
+    <button onclick="startGame()" style="background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">PLAY AGAIN</button>`;
+  renderHOF();
+  // Also inject HOF into game over overlay
+  const hofEl=document.createElement('div');
+  hofEl.id='hall-of-fame';
+  hofEl.style.cssText='width:100%;max-width:620px;margin-top:8px;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.5);padding:8px 14px';
+  ov.appendChild(hofEl);
+  renderHOF();
+}
+
+// ── PHASE DISPLAY ─────────────────────────────────────────────────────────
+let gamePhase = 'carga'; // 'carga' | 'ataque'
+
+function updatePhaseDisplay(){
+  const el=$('phase-display'), isLoad=gamePhase==='carga';
+  el.textContent      = isLoad ? '\u26A1 LOAD' : '\uD83D\uDD25 ATTACK';
+  el.style.borderColor= isLoad ? '#4f4' : '#f84';
+  el.style.color      = isLoad ? '#4f4' : '#f84';
+  el.style.background = isLoad ? 'rgba(0,60,0,.4)' : 'rgba(60,20,0,.4)';
+}
+
+// ── PAUSE ─────────────────────────────────────────────────────────────────
+function togglePause(){
+  if(state!=='playing') return;
+  paused=!paused;
+  if(paused){
+    // Penalty: -2 missiles (min 0)
+    missileCount=Math.max(0,missileCount-2); updateMissileDisplay();
+    // Draw pause overlay on canvas
+    ctx.save();
+    ctx.fillStyle='rgba(0,0,0,.7)'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#ff0'; ctx.font='bold 22px "Press Start 2P",monospace';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor='#ff0'; ctx.shadowBlur=20;
+    ctx.fillText('PAUSED',W/2,H/2-20);
+    ctx.font='10px "Press Start 2P",monospace';
+    ctx.fillStyle='#f84'; ctx.shadowColor='#f84'; ctx.shadowBlur=8;
+    ctx.fillText('-2 MISSILES PENALTY',W/2,H/2+14);
+    ctx.font='9px "Press Start 2P",monospace';
+    ctx.fillStyle='#aaa'; ctx.shadowBlur=0;
+    ctx.fillText('Press P to resume',W/2,H/2+36);
+    ctx.restore();
+  }
+}
+
+// ── BREACH WARNING ────────────────────────────────────────────────────────
+let breachWarningShown = false;
+function checkBreachWarning(){
+  if(!aliens.length) return;
+  const lowestY = Math.max(...aliens.map(a=>a.y+a.h));
+  const threshold = GROUND_Y - 80;
+  if(lowestY >= threshold && !breachWarningShown){
+    breachWarningShown = true;
+    showHint('\u26A0 ALIEN BREACH IMMINENT!', '#f44', 2500);
+  }
+  if(lowestY < threshold) breachWarningShown = false;
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────
+const keys={};
+canvas.addEventListener('click',()=>document.body.focus());
+
+document.addEventListener('keydown',e=>{
+  // Pause toggle works from playing state
+  if(e.key==='p'||e.key==='P'){ e.preventDefault(); togglePause(); return; }
+  if(paused) return; // block all other input while paused
+
+  if(state!=='playing' && state!=='invasion') return;
+
+  // ALT toggles phase
+  if(e.key==='Alt'){ e.preventDefault(); gamePhase=gamePhase==='carga'?'ataque':'carga'; updatePhaseDisplay(); return; }
+
+  // ATTACK phase: move with 4/6, fire with Space
+  if(gamePhase==='ataque'){
+    if(e.key==='4'){ e.preventDefault(); cannon.x=Math.max(20,cannon.x-8); return; }
+    if(e.key==='6'){ e.preventDefault(); cannon.x=Math.min(W-20,cannon.x+8); return; }
+    if(e.key===' '){ e.preventDefault(); fireMissile(); return; }
+    return;
+  }
+
+  // LOAD phase: math input only
+  if(e.key>='0'&&e.key<='9'){ e.preventDefault(); if(answerStr.length<4) answerStr+=e.key; updateAnswerDisplay(); return; }
+  if(e.key==='Backspace'){ answerStr=answerStr.slice(0,-1); updateAnswerDisplay(); return; }
+  if(e.key==='Enter'){ handleAnswer(); return; }
+});
+
+// Smooth movement — attack phase only
+document.addEventListener('keydown',e=>keys[e.key]=true);
+document.addEventListener('keyup',  e=>keys[e.key]=false);
+
+// Smooth held-key movement — attack phase only
+setInterval(()=>{
+  if(paused) return;
+  if((state==='playing'||state==='invasion') && gamePhase==='ataque'){
+    if(keys['4']) cannon.x=Math.max(20,cannon.x-4);
+    if(keys['6']) cannon.x=Math.min(W-20,cannon.x+4);
+  }
+},16);
+function hexToRgb(hex){
+  if(hex.length===4) hex='#'+hex[1]+hex[1]+hex[2]+hex[2]+hex[3]+hex[3];
+  return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`;
+}
+function lighten(hex){ return `rgb(${Math.min(255,parseInt(hex.slice(1,3),16)+80)},${Math.min(255,parseInt(hex.slice(3,5),16)+80)},${Math.min(255,parseInt(hex.slice(5,7),16)+80)})`; }
+function darken(hex){  return `rgb(${Math.max(0,parseInt(hex.slice(1,3),16)-60)},${Math.max(0,parseInt(hex.slice(3,5),16)-60)},${Math.max(0,parseInt(hex.slice(5,7),16)-60)})`; }
+
+// ── TYPEWRITER LORE ───────────────────────────────────────────────────────
+const LORE='YEAR 2050. Early in the year, an alien invasion fleet was detected in the Oort Cloud. A drone artillery army is being deployed to defend Earth... only the best will repel the attack. Are you ready? Select your level and defend every inch of Earth with your cannon.';
+window.addEventListener('load',()=>{
+  const el=$('lore-text'); if(!el) return;
+  let i=0; (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,22); } })();
+  $('highscore').textContent = highScore;
+  renderHOF();
+});
+</script>
+</body>
+</html>
