@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Heimdall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
+h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,200,255,.6)}
+#game-wrap{position:relative}
+canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.15);cursor:none}
+#hud{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 4px;margin-bottom:4px}
+#score-display{color:#ff0;font-size:.55rem;letter-spacing:1px}
+#highscore-display{color:#f84;font-size:.4rem}
+#detection-area{background:#0d1020;border:2px solid #4af;border-top:none;padding:10px 16px;width:100%}
+#detection-label{color:#4df;font-size:.5rem;letter-spacing:1px;display:flex;justify-content:space-between;margin-bottom:6px}
+#detection-bar-bg{width:100%;height:14px;background:#1a1030;border:1px solid #844;position:relative;overflow:hidden}
+#detection-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#4f4,#ff0,#f44);transition:width .3s linear}
+#speed-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+#speed-label{color:#4af;font-size:.42rem;letter-spacing:1px;white-space:nowrap}
+#speed-slider{flex:1;-webkit-appearance:none;height:8px;background:#1a1030;border:1px solid #4af;outline:none}
+#speed-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:#4af;cursor:pointer;border:2px solid #fff;box-shadow:0 0 8px #4af}
+#speed-slider::-moz-range-thumb{width:18px;height:18px;background:#4af;cursor:pointer;border:2px solid #fff;box-shadow:0 0 8px #4af}
+#speed-val{color:#ff0;font-size:.5rem;min-width:18px;text-align:center}
+#overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;z-index:10;padding:12px 20px 20px;overflow-y:auto}
+#overlay h2{color:#4af;font-size:1rem;text-align:center;line-height:1.8}
+#overlay p{color:#fff;font-size:.5rem;text-align:center;line-height:2}
+.score-final{color:#ff0;font-size:.7rem}
+#lore-box{color:#4df;font-size:.42rem;line-height:1.9;text-align:center;max-width:620px;min-height:6.5rem;letter-spacing:.5px;border:1px solid rgba(68,170,255,.3);padding:10px 16px;background:rgba(0,10,30,.6)}
+#lore-cursor{display:inline-block;width:7px;height:.7em;background:#4df;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+#start-btn:hover{background:#7cf}
+.subtitle{color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center}
+#combo-tip{color:#4df;font-size:.36rem;letter-spacing:.5px;text-align:center;margin-top:8px;opacity:.7}
+</style>
+</head>
+<body>
+
+<h1>&#128225; PROJECT HEIMDALL &#128225;</h1>
+<p class="subtitle">SPOT THE UNKNOWN BEFORE THEY SPOT YOU</p>
+
+<div id="game-wrap">
+  <div id="hud">
+    <div id="score-display">SCORE: <span id="score">0</span> &nbsp;<span id="highscore-display">BEST: <span id="highscore">0</span></span></div>
+    <div style="color:#4af;font-size:.42rem;letter-spacing:1px">CAPTURES: <span id="capture-count">0</span></div>
+  </div>
+
+  <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
+
+  <div id="detection-area">
+    <div id="detection-label">
+      <span>&#128225; ALIEN DETECTION</span>
+      <span id="detection-pct">0%</span>
+    </div>
+    <div id="detection-bar-bg"><div id="detection-bar-fill"></div></div>
+    <div id="speed-row">
+      <span id="speed-label">RADIOTELESCOPE SPEED</span>
+      <input type="range" id="speed-slider" min="1" max="10" value="1" step="1">
+      <span id="speed-val">1</span>
+    </div>
+    <div id="combo-tip">TIP: A higher speed brings more anomalies into range &mdash; and more risk.</div>
+  </div>
+
+  <div id="overlay">
+    <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
+    <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:14px;margin-bottom:4px">INSTRUCTIONS</p>
+    <p style="margin-top:0">Move your mouse across the deep field view.<br>
+    CLICK on anomalies (UFOs) to photograph and identify them.<br>
+    New anomaly types are worth 2 points &mdash; repeats are worth 1.<br>
+    Rocks and shooting stars are decoys &mdash; clicking them does nothing.<br>
+    Adjust the RADIOTELESCOPE SPEED slider anytime to bring in more targets.<br>
+    You have 100 seconds before the signal gives away your position.</p>
+    <button id="start-btn" onclick="startGame()">START GAME</button>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const TAU = Math.PI * 2;
+const GAME_DURATION = 100; // seconds
+
+const $ = id => document.getElementById(id);
+
+// UFO archetypes — color + shape variant. Matches Math Cannon's alien palette.
+const UFO_TYPES = [
+  {id:'red',    color:'#ff4444'},
+  {id:'orange', color:'#ff8844'},
+  {id:'yellow', color:'#ffff00'},
+  {id:'green',  color:'#44ff44'},
+  {id:'cyan',   color:'#44ffff'},
+  {id:'purple', color:'#8844ff'},
+  {id:'pink',   color:'#ff44ff'},
+  {id:'white',  color:'#ffffff'},
+];
+
+// ── AUDIO ─────────────────────────────────────────────────────────────────
+let audioCtx = null;
+function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
+function playSound(type){
+  try {
+    const ac=getAudio(), o=ac.createOscillator(), g=ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime;
+    if(type==='capture'){
+      // Camera shutter — quick bright click + tone
+      o.type='square'; o.frequency.setValueAtTime(1800,t); o.frequency.exponentialRampToValueAtTime(600,t+.05);
+      g.gain.setValueAtTime(.22,t); g.gain.exponentialRampToValueAtTime(.001,t+.07);
+      o.start(t); o.stop(t+.07);
+    } else if(type==='captureNew'){
+      o.type='sine'; o.frequency.setValueAtTime(700,t); o.frequency.setValueAtTime(1100,t+.06); o.frequency.setValueAtTime(1500,t+.12);
+      g.gain.setValueAtTime(.22,t); g.gain.exponentialRampToValueAtTime(.001,t+.22);
+      o.start(t); o.stop(t+.22);
+    } else if(type==='miss'){
+      o.type='sine'; o.frequency.setValueAtTime(300,t); o.frequency.exponentialRampToValueAtTime(150,t+.08);
+      g.gain.setValueAtTime(.06,t); g.gain.exponentialRampToValueAtTime(.001,t+.08);
+      o.start(t); o.stop(t+.08);
+    } else if(type==='alarm'){
+      o.type='sawtooth'; o.frequency.setValueAtTime(220,t); o.frequency.setValueAtTime(180,t+.15); o.frequency.setValueAtTime(220,t+.3);
+      g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(.001,t+.45);
+      o.start(t); o.stop(t+.45);
+    } else if(type==='destroyed'){
+      o.type='square'; o.frequency.setValueAtTime(160,t); o.frequency.exponentialRampToValueAtTime(20,t+.6);
+      g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.6);
+      o.start(t); o.stop(t+.6);
+    }
+  } catch(e){}
+}
+
+// ── STARFIELD BACKGROUND (parallax, scrolls leftward) ─────────────────────
+let stars = [];
+function initStars(){
+  stars = [];
+  for(let i=0;i<140;i++){
+    stars.push({
+      x: Math.random()*W*2, y: Math.random()*H,
+      r: Math.random()*1.4+.3,
+      layer: Math.random()<.7?1:2, // 1=far/slow, 2=near/fast
+      tw: Math.random()*TAU
+    });
+  }
+}
+
+// ── GAME STATE ──────────────────────────────────────────────────────────────
+let state = 'menu'; // menu | playing | destroyed
+let scrollX = 0;
+let speed = 1; // 1-10 from slider
+let objects = []; // rocks, shooting stars, ufos all share array, scroll left
+let particles = [];
+let score = 0;
+let captures = 0;
+let discoveredTypes = new Set();
+let elapsed = 0; // seconds since first capture
+let detectionActive = false;
+let lastTime = 0;
+let gameLoopId = null;
+let spawnAccum = 0;
+let mouseX = W/2, mouseY = H/2;
+let cameraFlash = 0; // frames remaining
+let flashBurst = null; // {x,y,life,color}
+let highScore = parseInt(localStorage.getItem('heimdall_hs')||'0');
+
+$('highscore').textContent = highScore;
+
+// ── SPEED SLIDER ────────────────────────────────────────────────────────────
+const slider = $('speed-slider');
+slider.addEventListener('input', ()=>{
+  speed = parseInt(slider.value);
+  $('speed-val').textContent = speed;
+});
+
+// ── SPAWNING ─────────────────────────────────────────────────────────────────
+function spawnObject(){
+  const roll = Math.random();
+  const baseY = 30 + Math.random()*(H-160);
+
+  if(roll < 0.16){
+    // UFO — pick a type, slightly biased toward already-seen types as game progresses
+    const type = UFO_TYPES[Math.floor(Math.random()*UFO_TYPES.length)];
+    objects.push({
+      kind:'ufo', type, x:W+40, y:baseY, w:36, h:24,
+      bobPhase:Math.random()*TAU, bobSpeed:0.02+Math.random()*0.02,
+      caught:false
+    });
+  } else if(roll < 0.55){
+    // Rock / meteorite — decoy
+    const size = 14+Math.random()*22;
+    objects.push({
+      kind:'rock', x:W+40, y:baseY, r:size,
+      rotation:Math.random()*TAU, rotSpeed:(Math.random()-0.5)*0.04,
+      sides: 5+Math.floor(Math.random()*3)
+    });
+  } else {
+    // Shooting star — fast diagonal decoy, different motion
+    objects.push({
+      kind:'star', x:W+40, y:Math.random()*H*0.5, len:40+Math.random()*30,
+      vy: 0.6+Math.random()*0.8, caught:false
+    });
+  }
+}
+
+// ── DRAW HELPERS ─────────────────────────────────────────────────────────────
+function hexToRgb(hex){ return `${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)}`; }
+function lighten(hex){ return `rgb(${Math.min(255,parseInt(hex.slice(1,3),16)+80)},${Math.min(255,parseInt(hex.slice(3,5),16)+80)},${Math.min(255,parseInt(hex.slice(5,7),16)+80)})`; }
+function darken(hex){  return `rgb(${Math.max(0,parseInt(hex.slice(1,3),16)-60)},${Math.max(0,parseInt(hex.slice(3,5),16)-60)},${Math.max(0,parseInt(hex.slice(5,7),16)-60)})`; }
+
+function drawStarfield(dt){
+  ctx.fillStyle = '#070714';
+  ctx.fillRect(0,0,W,H);
+  // nebula tint
+  const grad = ctx.createRadialGradient(W*0.7,H*0.3,0,W*0.7,H*0.3,400);
+  grad.addColorStop(0,'rgba(80,40,120,.12)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+  stars.forEach(s=>{
+    s.x -= speed * (s.layer===1?0.4:1.1);
+    if(s.x < -5) s.x += W+10;
+    s.tw += 0.02;
+    const a = 0.4 + 0.4*Math.sin(s.tw);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, TAU); ctx.fill();
+  });
+}
+
+function drawUFO(o){
+  const cx=o.x+o.w/2, cy=o.y+Math.sin(o.bobPhase)*6+o.h/2;
+  const rx=18, ry=6;
+  const c = o.type.color, cRgb=hexToRgb(c), cLight=lighten(c), cDark=darken(c);
+  ctx.fillStyle=`rgba(${cRgb},.12)`; ctx.beginPath(); ctx.ellipse(cx,cy+ry+3,rx*.7,3,0,0,TAU); ctx.fill();
+  const g=ctx.createRadialGradient(cx,cy,1,cx,cy,rx); g.addColorStop(0,cLight); g.addColorStop(.7,c); g.addColorStop(1,cDark);
+  ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(cx,cy,rx,ry,0,0,TAU); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1; ctx.beginPath(); ctx.ellipse(cx,cy-1,rx*.85,ry*.6,0,0,TAU); ctx.stroke();
+  const dg=ctx.createRadialGradient(cx-3,cy-ry-2,1,cx,cy-ry,8); dg.addColorStop(0,'rgba(220,255,255,.95)'); dg.addColorStop(1,`rgba(${cRgb},.6)`);
+  ctx.fillStyle=dg; ctx.beginPath(); ctx.ellipse(cx,cy-ry,9,7,0,Math.PI,0); ctx.fill();
+  const blink = Math.floor(Date.now()/200)%2;
+  ctx.fillStyle=blink===0?'#ff0':'#fa0'; ctx.globalAlpha=.9; ctx.beginPath(); ctx.arc(cx,cy+ry-1,2.5,0,TAU); ctx.fill(); ctx.globalAlpha=1;
+
+  // store hit center for click detection (with extra tolerance margin)
+  o._hitX = cx; o._hitY = cy; o._hitR = Math.max(rx,ry)+10;
+}
+
+function drawRock(o){
+  ctx.save();
+  ctx.translate(o.x, o.y);
+  ctx.rotate(o.rotation);
+  ctx.fillStyle = '#5a5248';
+  ctx.beginPath();
+  for(let i=0;i<o.sides;i++){
+    const ang = (i/o.sides)*TAU;
+    const rr = o.r * (0.8+Math.sin(i*1.7)*0.15);
+    const px = Math.cos(ang)*rr, py = Math.sin(ang)*rr;
+    if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle = 'rgba(0,0,0,.2)';
+  ctx.beginPath(); ctx.arc(o.r*0.2, o.r*0.1, o.r*0.25, 0, TAU); ctx.fill();
+  ctx.restore();
+}
+
+function drawShootingStar(o){
+  ctx.save();
+  const grad = ctx.createLinearGradient(o.x, o.y, o.x+o.len, o.y-o.len*0.4);
+  grad.addColorStop(0,'rgba(255,255,255,.95)');
+  grad.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(o.x,o.y); ctx.lineTo(o.x+o.len,o.y-o.len*0.4); ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(o.x,o.y,2.2,0,TAU); ctx.fill();
+  ctx.restore();
+}
+
+function drawCameraCursor(){
+  const flashing = cameraFlash > 0;
+  ctx.save();
+  ctx.translate(mouseX, mouseY);
+  // body
+  ctx.fillStyle = '#222';
+  ctx.fillRect(-16,-10,32,20);
+  ctx.fillStyle = '#444';
+  ctx.fillRect(-16,-10,32,5);
+  // lens
+  ctx.fillStyle = flashing ? '#fff' : '#0af';
+  ctx.beginPath(); ctx.arc(0,2,8,0,TAU); ctx.fill();
+  ctx.strokeStyle = '#000'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(0,2,8,0,TAU); ctx.stroke();
+  // viewfinder bump
+  ctx.fillStyle = '#333';
+  ctx.fillRect(-6,-16,12,7);
+  // flash bulb
+  ctx.fillStyle = flashing ? '#ff0' : '#888';
+  ctx.beginPath(); ctx.arc(11,-7,3,0,TAU); ctx.fill();
+  ctx.restore();
+
+  if(flashing){
+    ctx.fillStyle = `rgba(255,255,255,${cameraFlash/8})`;
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+function drawHUDOverlayElements(){
+  // breach warning style pulse near end of timer
+  if(detectionActive && elapsed > GAME_DURATION-15 && state==='playing'){
+    const pulse = 0.3+0.3*Math.sin(Date.now()/120);
+    ctx.fillStyle = `rgba(255,0,0,${pulse*0.15})`;
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+// ── CLICK / CAPTURE LOGIC ───────────────────────────────────────────────────
+canvas.addEventListener('mousemove', e=>{
+  const rect = canvas.getBoundingClientRect();
+  mouseX = (e.clientX-rect.left) * (W/rect.width);
+  mouseY = (e.clientY-rect.top) * (H/rect.height);
+});
+
+canvas.addEventListener('click', e=>{
+  if(state!=='playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const cx = (e.clientX-rect.left) * (W/rect.width);
+  const cy = (e.clientY-rect.top) * (H/rect.height);
+
+  cameraFlash = 8;
+
+  // Start detection timer on first shot
+  if(!detectionActive){
+    detectionActive = true;
+    elapsed = 0;
+  }
+
+  // Check UFOs only — rocks/stars are inert decoys
+  let hit = false;
+  for(const o of objects){
+    if(o.kind!=='ufo' || o.caught) continue;
+    const dx = cx-o._hitX, dy = cy-o._hitY;
+    if(Math.sqrt(dx*dx+dy*dy) <= o._hitR){
+      o.caught = true;
+      hit = true;
+      const isNew = !discoveredTypes.has(o.type.id);
+      if(isNew) discoveredTypes.add(o.type.id);
+      const pts = isNew ? 2 : 1;
+      score += pts;
+      captures++;
+      updateScoreUI();
+      spawnCaptureBurst(o._hitX, o._hitY, o.type.color, isNew);
+      playSound(isNew?'captureNew':'capture');
+      break;
+    }
+  }
+  if(!hit) playSound('miss');
+});
+
+function spawnCaptureBurst(x,y,color,isNew){
+  flashBurst = {x,y,life:18,maxLife:18,color,isNew};
+}
+
+function drawCaptureBurst(){
+  if(!flashBurst) return;
+  const p = flashBurst.life/flashBurst.maxLife;
+  ctx.save();
+  ctx.globalAlpha = p;
+  ctx.strokeStyle = flashBurst.isNew ? '#ff0' : '#0ff';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(flashBurst.x, flashBurst.y, (1-p)*40+10, 0, TAU); ctx.stroke();
+  ctx.font = '10px "Press Start 2P",monospace';
+  ctx.fillStyle = flashBurst.isNew ? '#ff0' : '#0ff';
+  ctx.textAlign = 'center';
+  ctx.fillText('+'+(flashBurst.isNew?2:1), flashBurst.x, flashBurst.y - 30*(1-p) - 10);
+  ctx.restore();
+  flashBurst.life--;
+  if(flashBurst.life<=0) flashBurst=null;
+}
+
+// ── UI UPDATES ───────────────────────────────────────────────────────────────
+function updateScoreUI(){
+  $('score').textContent = score;
+  $('capture-count').textContent = captures;
+}
+function updateDetectionUI(){
+  const pct = detectionActive ? Math.min(100, (elapsed/GAME_DURATION)*100) : 0;
+  $('detection-bar-fill').style.width = pct+'%';
+  $('detection-pct').textContent = Math.floor(pct)+'%';
+}
+
+// ── GAME LOOP ────────────────────────────────────────────────────────────────
+function loop(t){
+  const dt = Math.min(40, t-lastTime); lastTime=t;
+
+  drawStarfield(dt);
+
+  // spawn rate scales with speed
+  spawnAccum += dt * (0.4 + speed*0.18);
+  const spawnInterval = 900;
+  if(spawnAccum > spawnInterval){
+    spawnAccum = 0;
+    spawnObject();
+  }
+
+  // move + draw + cleanup
+  const moveSpeed = speed * 0.09 * dt;
+  for(let i=objects.length-1;i>=0;i--){
+    const o = objects[i];
+    if(o.kind==='ufo'){
+      o.x -= moveSpeed;
+      o.bobPhase += o.bobSpeed*dt;
+      if(!o.caught) drawUFO(o);
+      if(o.x < -60) objects.splice(i,1);
+    } else if(o.kind==='rock'){
+      o.x -= moveSpeed*0.85;
+      o.rotation += o.rotSpeed*dt*0.06;
+      drawRock(o);
+      if(o.x < -60) objects.splice(i,1);
+    } else if(o.kind==='star'){
+      o.x -= moveSpeed*1.3;
+      o.y += o.vy*dt*0.06;
+      drawShootingStar(o);
+      if(o.x < -80 || o.y > H+40) objects.splice(i,1);
+    }
+  }
+
+  drawCaptureBurst();
+  drawHUDOverlayElements();
+  drawCameraCursor();
+  if(cameraFlash>0) cameraFlash--;
+
+  if(detectionActive && state==='playing'){
+    elapsed += dt/1000;
+    updateDetectionUI();
+    if(elapsed >= GAME_DURATION){
+      endGame();
+      return;
+    }
+  }
+
+  if(state==='playing') gameLoopId = requestAnimationFrame(loop);
+}
+
+// ── START / END ──────────────────────────────────────────────────────────────
+function startGame(){
+  $('overlay').style.display='none';
+  state='playing';
+  score=0; captures=0; discoveredTypes=new Set();
+  elapsed=0; detectionActive=false;
+  objects=[]; particles=[]; spawnAccum=0;
+  speed = parseInt(slider.value)||1;
+  cameraFlash=0; flashBurst=null;
+  updateScoreUI(); updateDetectionUI();
+  initStars();
+  if(gameLoopId) cancelAnimationFrame(gameLoopId);
+  lastTime = performance.now();
+  gameLoopId = requestAnimationFrame(loop);
+}
+
+function endGame(){
+  state='destroyed';
+  cancelAnimationFrame(gameLoopId);
+  playSound('alarm');
+  setTimeout(()=>playSound('destroyed'), 300);
+
+  if(score>highScore){ highScore=score; localStorage.setItem('heimdall_hs', highScore); }
+
+  // White flash then overlay
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,H);
+
+  setTimeout(()=>{
+    const ov = $('overlay');
+    ov.style.display='flex';
+    ov.innerHTML = `
+      <h2 style="color:#f44">&#9888; SIGNAL LOST</h2>
+      <p style="color:#fff">Radiotelescope <span style="color:#f84">HEIMDALL-2504</span> has been destroyed.<br>The anomaly fleet detected our position.</p>
+      <p class="score-final">FINAL SCORE: ${score}</p>
+      <p style="color:#4af;font-size:.45rem">Anomalies captured: ${captures} &nbsp;|&nbsp; Types identified: ${discoveredTypes.size}/8</p>
+      <p style="color:#f84;font-size:.45rem">BEST: ${highScore}</p>
+      <button id="start-btn" onclick="startGame()">TRY AGAIN</button>
+    `;
+  }, 900);
+}
+
+// ── TYPEWRITER LORE ───────────────────────────────────────────────────────
+const LORE = "YEAR 2050. Unusual signals have been detected at the edge of the Solar System. Humanity has deployed a network of radiotelescopes across the Oort Cloud to track the deep field and identify the source. Volunteers are needed to operate Heimdall and photograph every anomaly before our position is compromised. You have 100 seconds once detection begins. Adjust the radiotelescope speed to bring more of the field into view \u2014 at your own risk.";
+window.addEventListener('load', ()=>{
+  const el = $('lore-text');
+  let i=0;
+  (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,16); } })();
+  initStars();
+  drawStarfield(16);
+});
+</script>
+</body>
+</html>
