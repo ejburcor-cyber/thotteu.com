@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thotteu — Universo de Aprendizaje</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Michroma&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -85,38 +85,99 @@
 
     nav a:hover { color: var(--cyan); }
 
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+
+    .lang-selector { position: relative; }
+
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: border-color 0.2s;
+    }
+
+    .lang-btn:hover { border-color: var(--cyan); }
+
+    .lang-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 0.5rem);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      z-index: 100;
+      min-width: 150px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .lang-dropdown.open { display: block; }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .lang-option:hover { background: rgba(0,229,255,0.06); color: var(--text); }
+    .lang-option.active { color: var(--cyan); }
+
+    .lang-btn:not(.active):hover { color: var(--cyan); }
+
     /* ── HERO ── */
     .hero {
-      min-height: 92vh;
+      min-height: 68vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 4rem 2rem;
+      padding: 2.5rem 2rem;
     }
 
     .hero-eyebrow {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.3em;
+      font-family: 'Michroma', 'Orbitron', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--cyan);
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
       opacity: 0.8;
     }
 
     .hero h1 {
-      font-family: 'Orbitron', monospace;
-      font-weight: 900;
-      font-size: clamp(2.8rem, 8vw, 6rem);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
+      font-family: 'Michroma', monospace;
+      font-weight: 400;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
     }
 
     .hero h1 .line-glow {
       display: block;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6.5vw, 3.8rem);
+      letter-spacing: 0.02em;
+      margin-top: 0.4rem;
       background: linear-gradient(90deg, var(--cyan), var(--purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -127,9 +188,9 @@
     .hero p {
       max-width: 540px;
       color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.7;
-      margin-bottom: 2.5rem;
+      font-size: 1rem;
+      line-height: 1.65;
+      margin-bottom: 2rem;
     }
 
     .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
@@ -306,6 +367,8 @@
     }
 
     .card { cursor: pointer; }
+
+    .card-number {
       position: absolute;
       bottom: 1.25rem;
       right: 1.5rem;
@@ -376,77 +439,96 @@
   <!-- NAV -->
   <nav class="layer">
     <a href="#" class="logo">Thott<span>eu</span></a>
-    <ul>
-      <li><a href="#juegos">Juegos</a></li>
-      <li><a href="#universo">Universo</a></li>
-    </ul>
+    <div class="nav-right">
+      <ul>
+        <li><a href="#juegos" data-i18n="nav.games">Juegos</a></li>
+        <li><a href="#universo" data-i18n="nav.universe">Universo</a></li>
+      </ul>
+      <div class="lang-selector">
+        <button class="lang-btn" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
+          <span id="lang-current">EN</span> ▾
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-option" data-lang="en" onclick="setLang('en')">EN — English</div>
+          <div class="lang-option active" data-lang="es" onclick="setLang('es')">ES — Español</div>
+          <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
+          <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero layer">
-    <p class="hero-eyebrow">Portal de defensa del sistema solar</p>
+    <p class="hero-eyebrow" data-i18n="hero.eyebrow">Portal de defensa del sistema solar</p>
     <h1>
-      Los aliens nos atacan,<br />
-      <span class="line-glow">¡únete a la Resistencia!</span>
+      <span data-i18n="hero.title1">Los aliens nos atacan</span>
+      <span class="line-glow" data-i18n="hero.title2">¡ÚNETE A LA RESISTENCIA!</span>
     </h1>
-    <p>Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.</p>
+    <p data-i18n="hero.desc">Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.</p>
     <div class="btn-group">
-      <a href="#juegos" class="btn btn-primary">Unirme a la resistencia</a>
+      <a href="#juegos" class="btn btn-primary" data-i18n="hero.cta">Unirme a la resistencia</a>
     </div>
   </section>
 
   <!-- GAMES -->
   <section class="games layer" id="juegos">
-    <p class="section-label">Módulos de misión</p>
-    <h2 class="section-title">Juegos en el hangar</h2>
+    <p class="section-label" data-i18n="games.label">Módulos de misión</p>
+    <h2 class="section-title" data-i18n="games.title">Misiones en el hangar</h2>
 
     <div class="games-grid">
 
       <a class="card" href="/heimdall" style="text-decoration:none;">
         <span class="card-icon">📡</span>
-        <span class="card-tag tag-active">¡Jugar ahora!</span>
-        <h3>Project Heimdall <span style="font-size:0.7rem; color:var(--muted)">· Misión 1</span></h3>
-        <p>Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.</p>
+        <span class="card-tag tag-active" data-i18n="games.playNow">¡Jugar ahora!</span>
+        <h3>Project Heimdall <span style="font-size:0.7rem; color:var(--muted)" data-i18n="games.mission1">· Misión 1</span></h3>
+        <p data-i18n="games.heimdallDesc">Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.</p>
+        <p style="font-size:0.78rem; color:var(--cyan); margin-top:0.6rem; font-style:italic;" data-i18n="games.heimdallChallenge">¡Sé el más rápido con el ratón para fotografiar el mayor número de ovnis!</p>
         <span class="card-number">01</span>
       </a>
 
       <div class="card">
         <span class="card-icon">🪐</span>
-        <span class="card-tag tag-soon">Próximamente</span>
-        <h3>Orbit & Math</h3>
-        <p>Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.</p>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <h3 data-i18n="games.orbitTitle">Orbit & Math</h3>
+        <p data-i18n="games.orbitDesc">Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.</p>
+        <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.orbitChallenge">¡Encuentra la ruta exacta antes de quedarte sin combustible!</p>
         <span class="card-number">02</span>
       </div>
 
       <div class="card">
         <span class="card-icon">🧬</span>
-        <span class="card-tag tag-soon">Próximamente</span>
-        <h3>Xenobiología 101</h3>
-        <p>Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.</p>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <h3 data-i18n="games.xenoTitle">Xenobiología 101</h3>
+        <p data-i18n="games.xenoDesc">Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.</p>
+        <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.xenoChallenge">¡Identifica cada espécimen antes de que se te escape!</p>
         <span class="card-number">03</span>
       </div>
 
       <div class="card">
         <span class="card-icon">⚡</span>
-        <span class="card-tag tag-soon">Próximamente</span>
-        <h3>Reactor Core</h3>
-        <p>Mantén el reactor de la nave estable resolviendo problemas de física y energía en tiempo real.</p>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <h3 data-i18n="games.reactorTitle">Reactor Core</h3>
+        <p data-i18n="games.reactorDesc">Mantén el reactor de la nave estable resolviendo problemas de física y energía en tiempo real.</p>
+        <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.reactorChallenge">¡Aguanta el pulso firme antes de que el núcleo colapse!</p>
         <span class="card-number">04</span>
       </div>
 
       <a class="card" href="/mathcannon" style="text-decoration:none;">
         <span class="card-icon">🔢</span>
-        <span class="card-tag tag-active">¡Jugar ahora!</span>
-        <h3>Math Cannon <span style="font-size:0.7rem; color:var(--muted)">· Misión 5</span></h3>
-        <p>Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!</p>
+        <span class="card-tag tag-active" data-i18n="games.playNow">¡Jugar ahora!</span>
+        <h3>Math Cannon <span style="font-size:0.7rem; color:var(--muted)" data-i18n="games.mission5">· Misión 5</span></h3>
+        <p data-i18n="games.mathDesc">Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!</p>
+        <p style="font-size:0.78rem; color:var(--cyan); margin-top:0.6rem; font-style:italic;" data-i18n="games.mathChallenge">¡Sé el más rápido con el number pad para destruir todos los ovnis que puedas!</p>
         <span class="card-number">05</span>
       </a>
 
       <div class="card">
         <span class="card-icon">🔭</span>
-        <span class="card-tag tag-soon">Próximamente</span>
-        <h3>Signal Lost</h3>
-        <p>Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.</p>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <h3 data-i18n="games.signalTitle">Signal Lost</h3>
+        <p data-i18n="games.signalDesc">Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.</p>
+        <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.signalChallenge">¡Descifra el mensaje antes de que la señal se pierda!</p>
         <span class="card-number">06</span>
       </div>
 
@@ -456,17 +538,198 @@
   <!-- ABOUT -->
   <section class="about layer" id="universo">
     <div class="about-inner">
-      <p class="section-label" style="text-align:center; margin-bottom:1rem;">El universo Thotteu</p>
-      <h2 class="section-title" style="font-family:'Orbitron',monospace; font-size:1.8rem; margin-bottom:1.5rem;">¿Sabrás encontrar el contexto?</h2>
-      <p>Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.</p>
+      <p class="section-label" style="text-align:center; margin-bottom:1rem;" data-i18n="about.label">El universo Thotteu</p>
+      <h2 class="section-title" style="font-family:'Orbitron',monospace; font-size:1.8rem; margin-bottom:1.5rem;" data-i18n="about.title">¿Sabrás encontrar el contexto?</h2>
+      <p data-i18n="about.desc">Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.</p>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer class="layer">
     <a href="#" class="logo">Thott<span>eu</span></a>
-    <p>© 2026 Thotteu · Universo en construcción</p>
+    <p data-i18n="footer.tag">© 2026 Thotteu · Universo en construcción</p>
   </footer>
+
+  <!-- LANGUAGE SYSTEM -->
+  <script>
+    var i18n = {
+      en: {
+        'nav.games': 'Games',
+        'nav.universe': 'Universe',
+        'hero.eyebrow': 'Solar system defense portal',
+        'hero.title1': 'The aliens are attacking us',
+        'hero.title2': 'JOIN THE RESISTANCE!',
+        'hero.desc': 'Year 2050. An alien fleet has been detected heading toward Earth. Embark on our missions to save the world.',
+        'hero.cta': 'Join the resistance',
+        'games.label': 'Mission modules',
+        'games.title': 'Mission games in the hangar',
+        'games.playNow': 'Play now!',
+        'games.mission1': '· Mission 1',
+        'games.mission5': '· Mission 5',
+        'games.heimdallDesc': 'Operate the Heimdall radiotelescope and photograph every anomaly before they detect your position. You have 100 seconds.',
+        'games.heimdallChallenge': 'Be the fastest with the mouse to photograph as many UFOs as you can!',
+        'games.comingSoon': 'Coming soon',
+        'games.orbitTitle': 'Orbit & Math',
+        'games.orbitDesc': 'Calculate trajectories and orbital speeds. Math decides if you reach your destination.',
+        'games.orbitChallenge': 'Find the exact route before you run out of fuel!',
+        'games.xenoTitle': 'Xenobiology 101',
+        'games.xenoDesc': 'Classify new alien life forms using principles of biology and taxonomy.',
+        'games.xenoChallenge': 'Identify each specimen before it gets away!',
+        'games.reactorTitle': 'Reactor Core',
+        'games.reactorDesc': 'Keep the ship reactor stable by solving real-time physics and energy problems.',
+        'games.reactorChallenge': 'Keep a steady hand before the core collapses!',
+        'games.mathDesc': 'Solve math operations to load your cannon and repel the alien invasion. Time is running out!',
+        'games.mathChallenge': 'Be the fastest with the number pad to destroy as many UFOs as you can!',
+        'games.signalTitle': 'Signal Lost',
+        'games.signalDesc': 'Intercept and analyze alien radio signals. Linguistics and pattern recognition for first contact.',
+        'games.signalChallenge': 'Crack the message before the signal is lost!',
+        'about.label': 'The Thotteu universe',
+        'about.title': 'Will you find the context?',
+        'about.desc': 'Thotteu is a fictional universe built to reinforce what we already know through narrative purpose. Each game is a mission within a bigger story: explore, discover and survive in a cosmos that wants to bring out the best in you.',
+        'footer.tag': '© 2026 Thotteu · Universe under construction'
+      },
+      es: {
+        'nav.games': 'Juegos',
+        'nav.universe': 'Universo',
+        'hero.eyebrow': 'Portal de defensa del sistema solar',
+        'hero.title1': 'Los aliens nos atacan',
+        'hero.title2': '¡ÚNETE A LA RESISTENCIA!',
+        'hero.desc': 'Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.',
+        'hero.cta': 'Unirme a la resistencia',
+        'games.label': 'Módulos de misión',
+        'games.title': 'Misiones en el hangar',
+        'games.playNow': '¡Jugar ahora!',
+        'games.mission1': '· Misión 1',
+        'games.mission5': '· Misión 5',
+        'games.heimdallDesc': 'Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.',
+        'games.heimdallChallenge': '¡Sé el más rápido con el ratón para fotografiar el mayor número de ovnis!',
+        'games.comingSoon': 'Próximamente',
+        'games.orbitTitle': 'Orbit & Math',
+        'games.orbitDesc': 'Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.',
+        'games.orbitChallenge': '¡Encuentra la ruta exacta antes de quedarte sin combustible!',
+        'games.xenoTitle': 'Xenobiología 101',
+        'games.xenoDesc': 'Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.',
+        'games.xenoChallenge': '¡Identifica cada espécimen antes de que se te escape!',
+        'games.reactorTitle': 'Reactor Core',
+        'games.reactorDesc': 'Mantén el reactor de la nave estable resolviendo problemas de física y energía en tiempo real.',
+        'games.reactorChallenge': '¡Aguanta el pulso firme antes de que el núcleo colapse!',
+        'games.mathDesc': 'Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!',
+        'games.mathChallenge': '¡Sé el más rápido con el number pad para destruir todos los ovnis que puedas!',
+        'games.signalTitle': 'Signal Lost',
+        'games.signalDesc': 'Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.',
+        'games.signalChallenge': '¡Descifra el mensaje antes de que la señal se pierda!',
+        'about.label': 'El universo Thotteu',
+        'about.title': '¿Sabrás encontrar el contexto?',
+        'about.desc': 'Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.',
+        'footer.tag': '© 2026 Thotteu · Universo en construcción'
+      },
+      fr: {
+        'nav.games': 'Jeux',
+        'nav.universe': 'Univers',
+        'hero.eyebrow': 'Portail de défense du système solaire',
+        'hero.title1': 'Les aliens nous attaquent',
+        'hero.title2': 'REJOIGNEZ LA RÉSISTANCE !',
+        'hero.desc': 'Année 2050. Une flotte extraterrestre a été détectée en direction de la Terre. Embarquez dans nos missions pour sauver le monde.',
+        'hero.cta': 'Rejoindre la résistance',
+        'games.label': 'Modules de mission',
+        'games.title': 'Missions dans le hangar',
+        'games.playNow': 'Jouer maintenant !',
+        'games.mission1': '· Mission 1',
+        'games.mission5': '· Mission 5',
+        'games.heimdallDesc': 'Pilotez le radiotélescope Heimdall et photographiez chaque anomalie avant qu\'elle ne détecte votre position. Vous avez 100 secondes.',
+        'games.heimdallChallenge': 'Soyez le plus rapide à la souris pour photographier un maximum d\'ovnis !',
+        'games.comingSoon': 'Bientôt disponible',
+        'games.orbitTitle': 'Orbit & Math',
+        'games.orbitDesc': 'Calculez trajectoires et vitesses orbitales. Les mathématiques décident si vous atteignez votre destination.',
+        'games.orbitChallenge': 'Trouvez la trajectoire exacte avant de manquer de carburant !',
+        'games.xenoTitle': 'Xénobiologie 101',
+        'games.xenoDesc': 'Classifiez de nouvelles formes de vie extraterrestres selon les principes de la biologie et de la taxonomie.',
+        'games.xenoChallenge': 'Identifiez chaque spécimen avant qu\'il ne s\'échappe !',
+        'games.reactorTitle': 'Reactor Core',
+        'games.reactorDesc': 'Maintenez le réacteur du vaisseau stable en résolvant des problèmes de physique et d\'énergie en temps réel.',
+        'games.reactorChallenge': 'Gardez la main ferme avant que le noyau ne s\'effondre !',
+        'games.mathDesc': 'Résolvez des opérations mathématiques pour charger votre canon et repousser l\'invasion extraterrestre. Le temps presse !',
+        'games.mathChallenge': 'Soyez le plus rapide au pavé numérique pour détruire un maximum d\'ovnis !',
+        'games.signalTitle': 'Signal Lost',
+        'games.signalDesc': 'Interceptez et analysez les signaux radio extraterrestres. Linguistique et reconnaissance de motifs au service du premier contact.',
+        'games.signalChallenge': 'Décodez le message avant que le signal ne soit perdu !',
+        'about.label': 'L\'univers Thotteu',
+        'about.title': 'Saurez-vous trouver le contexte ?',
+        'about.desc': 'Thotteu est un univers de fiction conçu pour renforcer ce que nous savons déjà à travers un objectif narratif. Chaque jeu est une mission au sein d\'une histoire plus vaste : explorer, découvrir et survivre dans un cosmos qui cherche à révéler le meilleur de vous-même.',
+        'footer.tag': '© 2026 Thotteu · Univers en construction'
+      },
+      pt: {
+        'nav.games': 'Jogos',
+        'nav.universe': 'Universo',
+        'hero.eyebrow': 'Portal de defesa do sistema solar',
+        'hero.title1': 'Os alienígenas nos atacam',
+        'hero.title2': 'JUNTE-SE À RESISTÊNCIA!',
+        'hero.desc': 'Ano de 2050. Uma frota alienígena foi detectada rumo à Terra. Embarque em nossas missões para salvar o mundo.',
+        'hero.cta': 'Juntar-me à resistência',
+        'games.label': 'Módulos de missão',
+        'games.title': 'Missões no hangar',
+        'games.playNow': 'Jogar agora!',
+        'games.mission1': '· Missão 1',
+        'games.mission5': '· Missão 5',
+        'games.heimdallDesc': 'Opere o radiotelescópio Heimdall e fotografe cada anomalia antes que detectem sua posição. Você tem 100 segundos.',
+        'games.heimdallChallenge': 'Seja o mais rápido com o mouse para fotografar o maior número de OVNIs!',
+        'games.comingSoon': 'Em breve',
+        'games.orbitTitle': 'Orbit & Math',
+        'games.orbitDesc': 'Calcule trajetórias e velocidades orbitais. A matemática decide se você chega ao seu destino.',
+        'games.orbitChallenge': 'Encontre a rota exata antes de ficar sem combustível!',
+        'games.xenoTitle': 'Xenobiologia 101',
+        'games.xenoDesc': 'Classifique novas formas de vida alienígena aplicando princípios de biologia e taxonomia.',
+        'games.xenoChallenge': 'Identifique cada espécime antes que ele escape!',
+        'games.reactorTitle': 'Reactor Core',
+        'games.reactorDesc': 'Mantenha o reator da nave estável resolvendo problemas de física e energia em tempo real.',
+        'games.reactorChallenge': 'Mantenha o pulso firme antes que o núcleo entre em colapso!',
+        'games.mathDesc': 'Resolva operações matemáticas para carregar seu canhão e repelir a invasão alienígena. O tempo está passando!',
+        'games.mathChallenge': 'Seja o mais rápido com o teclado numérico para destruir o maior número de OVNIs possível!',
+        'games.signalTitle': 'Signal Lost',
+        'games.signalDesc': 'Intercepte e analise sinais de rádio alienígenas. Linguística e reconhecimento de padrões a serviço do primeiro contato.',
+        'games.signalChallenge': 'Decifre a mensagem antes que o sinal se perca!',
+        'about.label': 'O universo Thotteu',
+        'about.title': 'Você vai encontrar o contexto?',
+        'about.desc': 'Thotteu é um universo de ficção construído para reforçar o que já sabemos através de um propósito narrativo. Cada jogo é uma missão dentro de uma história maior: explorar, descobrir e sobreviver em um cosmos que busca trazer o melhor de você.',
+        'footer.tag': '© 2026 Thotteu · Universo em construção'
+      }
+    };
+
+    function applyLang(lang) {
+      var t = i18n[lang];
+      if (!t) return;
+      localStorage.setItem('thotteu_lang', lang);
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+      var cur = document.getElementById('lang-current');
+      if (cur) cur.textContent = lang.toUpperCase();
+      document.querySelectorAll('.lang-option').forEach(function (o) {
+        o.classList.toggle('active', o.dataset.lang === lang);
+      });
+    }
+
+    function setLang(lang) {
+      applyLang(lang);
+      var dd = document.getElementById('lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    }
+
+    document.addEventListener('click', function () {
+      var dd = document.getElementById('lang-dropdown');
+      if (dd) dd.classList.remove('open');
+    });
+
+    (function initLang() {
+      var saved = localStorage.getItem('thotteu_lang');
+      var browserLang = (navigator.language || 'en').split('-')[0];
+      var supported = ['en', 'es', 'fr', 'pt'];
+      var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
+      applyLang(initial);
+    })();
+  </script>
 
   <!-- NEBULA ANIMATION -->
   <script>

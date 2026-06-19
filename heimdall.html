@@ -41,6 +41,14 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
 #hall-of-fame{margin-top:6px}
 #hof-standalone{margin:10px auto 0}
+.lang-selector{position:relative;display:inline-block;margin-top:6px}
+.lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
+.lang-btn-toggle:hover{border-color:#7cf}
+.lang-dropdown{display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:#0d1020;border:1.5px solid #4af;border-radius:6px;overflow:hidden;z-index:100;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.lang-dropdown.open{display:block}
+.lang-option{padding:8px 14px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#8aa;transition:background .15s}
+.lang-option:hover{background:rgba(68,170,255,.12);color:#fff}
+.lang-option.active{color:#4df}
 </style>
 </head>
 <body>
@@ -113,44 +121,56 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
   </g>
 </svg>
 
-<h1>&#128225; PROJECT HEIMDALL &#128225;</h1>
-<p class="subtitle">SPOT THE UNKNOWN BEFORE THEY SPOT YOU</p>
+<h1>&#128225; <span data-i18n="title">PROJECT HEIMDALL</span> &#128225;</h1>
+<p class="subtitle" data-i18n="subtitle">SPOT THE UNKNOWN BEFORE THEY SPOT YOU</p>
+
+<div class="lang-selector">
+  <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
+    <span id="lang-current">EN</span> ▾
+  </button>
+  <div class="lang-dropdown" id="lang-dropdown">
+    <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
+    <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
+    <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
+    <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+  </div>
+</div>
 
 <div id="game-wrap">
   <div id="hud">
-    <div id="score-display">SCORE: <span id="score">0</span> &nbsp;<span id="highscore-display">BEST: <span id="highscore">0</span></span></div>
-    <div style="color:#4af;font-size:.42rem;letter-spacing:1px">CAPTURES: <span id="capture-count">0</span></div>
+    <div id="score-display"><span data-i18n="score">SCORE</span>: <span id="score">0</span> &nbsp;<span id="highscore-display"><span data-i18n="best">BEST</span>: <span id="highscore">0</span></span></div>
+    <div style="color:#4af;font-size:.42rem;letter-spacing:1px"><span data-i18n="captures">CAPTURES</span>: <span id="capture-count">0</span></div>
   </div>
 
   <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
   <div id="finale-warning" style="display:none;position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(40,0,0,.92);border:2px solid #f44;color:#ff4444;font-size:.5rem;letter-spacing:1px;padding:10px 18px;text-align:center;line-height:1.8;z-index:5;max-width:90%">
-    &#9888; UFO APPROACHING &mdash; WE'VE BEEN SPOTTED!<br>SHOOT AS MANY PHOTOS AS YOU CAN!
+    &#9888; <span data-i18n="finaleWarning">UFO APPROACHING — WE'VE BEEN SPOTTED!</span><br><span data-i18n="finaleSub">SHOOT AS MANY PHOTOS AS YOU CAN!</span>
   </div>
 
   <div id="detection-area">
     <div id="detection-label">
-      <span>&#128225; ALIEN DETECTION</span>
+      <span>&#128225; <span data-i18n="alienDetection">ALIEN DETECTION</span></span>
       <span id="detection-pct">0%</span>
     </div>
     <div id="detection-bar-bg"><div id="detection-bar-fill"></div></div>
     <div id="speed-row">
-      <span id="speed-label">RADIOTELESCOPE SPEED</span>
+      <span id="speed-label" data-i18n="radiotelescopeSpeed">RADIOTELESCOPE SPEED</span>
       <input type="range" id="speed-slider" min="1" max="10" value="1" step="1">
       <span id="speed-val">1</span>
     </div>
-    <div id="combo-tip">TIP: A higher speed brings more anomalies into range &mdash; and more risk.</div>
+    <div id="combo-tip" data-i18n="speedTip">TIP: A higher speed brings more anomalies into range — and more risk.</div>
   </div>
 
   <div id="overlay">
     <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
-    <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:14px;margin-bottom:4px">INSTRUCTIONS</p>
-    <p style="margin-top:0">Move your mouse across the deep field view.<br>
+    <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:14px;margin-bottom:4px" data-i18n="instructions">INSTRUCTIONS</p>
+    <p style="margin-top:0" id="instructions-body" data-i18n="instructionsBody">Move your mouse across the deep field view.<br>
     CLICK on anomalies (UFOs) to photograph and identify them.<br>
     New anomaly types are worth 2 points &mdash; repeats are worth 1.<br>
     Rocks and shooting stars are decoys &mdash; clicking them does nothing.<br>
     Adjust the RADIOTELESCOPE SPEED slider anytime to bring in more targets.<br>
     You have 100 seconds before the signal gives away your position.</p>
-    <button id="start-btn" onclick="startGame()">START GAME</button>
+    <button id="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
     <div id="hall-of-fame"></div>
   </div>
 </div>
@@ -251,6 +271,133 @@ let finaleWarningShown = false;
 
 $('highscore').textContent = highScore;
 
+// ── i18n ──────────────────────────────────────────────────────────────────
+var i18n = {
+  en: {
+    title:'PROJECT HEIMDALL',
+    subtitle:'SPOT THE UNKNOWN BEFORE THEY SPOT YOU',
+    score:'SCORE', best:'BEST', captures:'CAPTURES',
+    finaleWarning:'UFO APPROACHING — WE\'VE BEEN SPOTTED!',
+    finaleSub:'SHOOT AS MANY PHOTOS AS YOU CAN!',
+    alienDetection:'ALIEN DETECTION',
+    radiotelescopeSpeed:'RADIOTELESCOPE SPEED',
+    speedTip:'TIP: A higher speed brings more anomalies into range — and more risk.',
+    instructions:'INSTRUCTIONS',
+    instructionsBody:'Move your mouse across the deep field view.<br>CLICK on anomalies (UFOs) to photograph and identify them.<br>New anomaly types are worth 2 points — repeats are worth 1.<br>Rocks and shooting stars are decoys — clicking them does nothing.<br>The RADIOTELESCOPE SPEED slider is adjustable.<br>You have 100 seconds before the signal gives away your position.',
+    startGame:'START GAME',
+    tryAgain:'TRY AGAIN',
+    signalLost:'SIGNAL LOST',
+    destroyedMsg:'Radiotelescope <span style="color:#f84">HEIMDALL-2504</span> has been destroyed.<br>The anomaly fleet detected our position.',
+    finalScore:'FINAL SCORE',
+    anomaliesCaptured:'Anomalies captured',
+    typesIdentified:'Types identified',
+    hofTitle:'HALL OF FAME',
+    hofEmpty:'HALL OF FAME — Play to set a record!',
+    hofScore:'SCORE', hofCaptures:'CAPTURES', hofTypes:'TYPES ID\'D', hofDate:'DATE',
+    lore:'YEAR 2050. Unusual signals have been detected at the edge of the Solar System. Humanity has deployed a network of radiotelescopes across the Oort Cloud to track the deep field and identify the source. Volunteers are needed to operate Heimdall and photograph every anomaly before our position is compromised. You have 100 seconds once detection begins. Adjust the radiotelescope speed to bring more of the field into view — at your own risk.'
+  },
+  es: {
+    title:'PROJECT HEIMDALL',
+    subtitle:'DETECTA LO DESCONOCIDO ANTES DE QUE TE DETECTEN',
+    score:'PUNTOS', best:'MEJOR', captures:'CAPTURAS',
+    finaleWarning:'¡UFO ACERCÁNDOSE — NOS HAN DETECTADO!',
+    finaleSub:'¡DISPARA TODAS LAS FOTOS QUE PUEDAS!',
+    alienDetection:'DETECCIÓN ALIENÍGENA',
+    radiotelescopeSpeed:'VELOCIDAD DEL RADIOTELESCOPIO',
+    speedTip:'CONSEJO: una velocidad mayor trae más anomalías a la vista — y más riesgo.',
+    instructions:'INSTRUCCIONES',
+    instructionsBody:'Mueve el ratón por el campo de visión profundo.<br>HAZ CLICK en las anomalías (ovnis) para fotografiarlas e identificarlas.<br>Los tipos nuevos de anomalía valen 2 puntos — los repetidos valen 1.<br>Las rocas y estrellas fugaces son señuelos — hacerles clic no hace nada.<br>El slider de VELOCIDAD DEL RADIOTELESCOPIO es ajustable.<br>Tienes 100 segundos antes de que la señal delate tu posición.',
+    startGame:'EMPEZAR PARTIDA',
+    tryAgain:'INTENTAR DE NUEVO',
+    signalLost:'SEÑAL PERDIDA',
+    destroyedMsg:'El radiotelescopio <span style="color:#f84">HEIMDALL-2504</span> ha sido destruido.<br>La flota de anomalías detectó nuestra posición.',
+    finalScore:'PUNTUACIÓN FINAL',
+    anomaliesCaptured:'Anomalías capturadas',
+    typesIdentified:'Tipos identificados',
+    hofTitle:'SALÓN DE LA FAMA',
+    hofEmpty:'SALÓN DE LA FAMA — ¡Juega para conseguir un récord!',
+    hofScore:'PUNTOS', hofCaptures:'CAPTURAS', hofTypes:'TIPOS ID.', hofDate:'FECHA',
+    lore:'AÑO 2050. Se han detectado señales inusuales en el borde del Sistema Solar. La humanidad ha desplegado una red de radiotelescopios por la Nube de Oort para rastrear el campo profundo e identificar el origen. Se necesitan voluntarios para operar Heimdall y fotografiar cada anomalía antes de que nuestra posición quede comprometida. Tienes 100 segundos una vez que comience la detección. Ajusta la velocidad del radiotelescopio para traer más del campo a la vista — bajo tu propio riesgo.'
+  },
+  fr: {
+    title:'PROJECT HEIMDALL',
+    subtitle:'REPÉREZ L\'INCONNU AVANT D\'ÊTRE REPÉRÉ',
+    score:'SCORE', best:'MEILLEUR', captures:'CAPTURES',
+    finaleWarning:'UN OVNI APPROCHE — NOUS SOMMES REPÉRÉS !',
+    finaleSub:'PRENEZ UN MAXIMUM DE PHOTOS !',
+    alienDetection:'DÉTECTION ALIEN',
+    radiotelescopeSpeed:'VITESSE DU RADIOTÉLESCOPE',
+    speedTip:'ASTUCE : une vitesse plus élevée fait apparaître plus d\'anomalies — et plus de risques.',
+    instructions:'INSTRUCTIONS',
+    instructionsBody:'Déplacez la souris sur le champ profond.<br>CLIQUEZ sur les anomalies (ovnis) pour les photographier et les identifier.<br>Les nouveaux types d\'anomalies valent 2 points — les répétitions valent 1.<br>Les rochers et étoiles filantes sont des leurres — cliquer dessus ne fait rien.<br>Le curseur de VITESSE DU RADIOTÉLESCOPE est réglable.<br>Vous avez 100 secondes avant que le signal ne trahisse votre position.',
+    startGame:'COMMENCER',
+    tryAgain:'RÉESSAYER',
+    signalLost:'SIGNAL PERDU',
+    destroyedMsg:'Le radiotélescope <span style="color:#f84">HEIMDALL-2504</span> a été détruit.<br>La flotte d\'anomalies a détecté notre position.',
+    finalScore:'SCORE FINAL',
+    anomaliesCaptured:'Anomalies capturées',
+    typesIdentified:'Types identifiés',
+    hofTitle:'TABLEAU D\'HONNEUR',
+    hofEmpty:'TABLEAU D\'HONNEUR — Jouez pour établir un record !',
+    hofScore:'SCORE', hofCaptures:'CAPTURES', hofTypes:'TYPES ID.', hofDate:'DATE',
+    lore:'ANNÉE 2050. Des signaux inhabituels ont été détectés aux confins du système solaire. L\'humanité a déployé un réseau de radiotélescopes à travers le nuage d\'Oort pour scruter le champ profond et identifier la source. Des volontaires sont nécessaires pour piloter Heimdall et photographier chaque anomalie avant que notre position ne soit compromise. Vous avez 100 secondes une fois la détection commencée. Ajustez la vitesse du radiotélescope pour élargir le champ visible — à vos risques et périls.'
+  },
+  pt: {
+    title:'PROJECT HEIMDALL',
+    subtitle:'DETECTE O DESCONHECIDO ANTES QUE ELE TE DETECTE',
+    score:'PONTOS', best:'MELHOR', captures:'CAPTURAS',
+    finaleWarning:'UM OVNI SE APROXIMA — FOMOS DETECTADOS!',
+    finaleSub:'TIRE QUANTAS FOTOS PUDER!',
+    alienDetection:'DETECÇÃO ALIENÍGENA',
+    radiotelescopeSpeed:'VELOCIDADE DO RADIOTELESCÓPIO',
+    speedTip:'DICA: uma velocidade maior traz mais anomalias ao alcance — e mais risco.',
+    instructions:'INSTRUÇÕES',
+    instructionsBody:'Mova o mouse pelo campo profundo.<br>CLIQUE nas anomalias (OVNIs) para fotografá-las e identificá-las.<br>Novos tipos de anomalia valem 2 pontos — repetições valem 1.<br>Rochas e estrelas cadentes são iscas — clicar nelas não faz nada.<br>O controle de VELOCIDADE DO RADIOTELESCÓPIO é ajustável.<br>Você tem 100 segundos antes que o sinal revele sua posição.',
+    startGame:'INICIAR JOGO',
+    tryAgain:'TENTAR NOVAMENTE',
+    signalLost:'SINAL PERDIDO',
+    destroyedMsg:'O radiotelescópio <span style="color:#f84">HEIMDALL-2504</span> foi destruído.<br>A frota de anomalias detectou nossa posição.',
+    finalScore:'PONTUAÇÃO FINAL',
+    anomaliesCaptured:'Anomalias capturadas',
+    typesIdentified:'Tipos identificados',
+    hofTitle:'GALERIA DA FAMA',
+    hofEmpty:'GALERIA DA FAMA — Jogue para bater um recorde!',
+    hofScore:'PONTOS', hofCaptures:'CAPTURAS', hofTypes:'TIPOS ID.', hofDate:'DATA',
+    lore:'ANO 2050. Sinais incomuns foram detectados na borda do Sistema Solar. A humanidade implantou uma rede de radiotelescópios pela Nuvem de Oort para rastrear o campo profundo e identificar a origem. Voluntários são necessários para operar o Heimdall e fotografar cada anomalia antes que nossa posição seja comprometida. Você tem 100 segundos assim que a detecção começar. Ajuste a velocidade do radiotelescópio para trazer mais do campo à vista — por sua conta e risco.'
+  }
+};
+
+var currentLang = 'en';
+
+function applyLang(lang){
+  var t = i18n[lang];
+  if(!t) return;
+  currentLang = lang;
+  localStorage.setItem('heimdall_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(t[key]) el.innerHTML = t[key];
+  });
+  var cur = document.getElementById('lang-current');
+  if(cur) cur.textContent = lang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(function(o){
+    o.classList.toggle('active', o.dataset.lang === lang);
+  });
+  renderHOF();
+}
+
+function setLang(lang){
+  applyLang(lang);
+  var dd = document.getElementById('lang-dropdown');
+  if(dd) dd.classList.remove('open');
+}
+
+document.addEventListener('click', function(){
+  var dd = document.getElementById('lang-dropdown');
+  if(dd) dd.classList.remove('open');
+});
+
 // ── HALL OF FAME ──────────────────────────────────────────────────────────
 function loadHOF(){ try{ return JSON.parse(localStorage.getItem('heimdall_hof')||'[]'); }catch(e){ return []; } }
 function saveHOF(h){ localStorage.setItem('heimdall_hof', JSON.stringify(h)); }
@@ -261,12 +408,13 @@ function recordHOF(s,cap,types){
   saveHOF(h);
 }
 function buildHOFHtml(h){
-  if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 HALL OF FAME \u2014 Play to set a record!</div>';
+  var t = i18n[currentLang] || i18n.en;
+  if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 '+t.hofEmpty+'</div>';
   const medals=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49','4.','5.'];
   const colors=['color:#ff0','color:#bbb','color:#c84','color:#888','color:#888'];
-  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 HALL OF FAME</div>';
+  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
   html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
-  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>SCORE</td><td>CAPTURES</td><td>TYPES ID\'D</td><td style="text-align:right">DATE</td></tr>';
+  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofCaptures+'</td><td>'+t.hofTypes+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
   h.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.captures}</td><td>${e.types}/8</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
   html+='</table>';
   return html;
@@ -727,14 +875,15 @@ function endGame(){
 
   setTimeout(()=>{
     const ov = $('overlay');
+    const t = i18n[currentLang] || i18n.en;
     ov.style.display='flex';
     ov.innerHTML = `
-      <h2 style="color:#f44">&#9888; SIGNAL LOST</h2>
-      <p style="color:#fff">Radiotelescope <span style="color:#f84">HEIMDALL-2504</span> has been destroyed.<br>The anomaly fleet detected our position.</p>
-      <p class="score-final">FINAL SCORE: ${score}</p>
-      <p style="color:#4af;font-size:.45rem">Anomalies captured: ${captures} &nbsp;|&nbsp; Types identified: ${discoveredTypes.size}/8</p>
-      <p style="color:#f84;font-size:.45rem">BEST: ${highScore}</p>
-      <button id="start-btn" onclick="startGame()">TRY AGAIN</button>
+      <h2 style="color:#f44">&#9888; ${t.signalLost}</h2>
+      <p style="color:#fff">${t.destroyedMsg}</p>
+      <p class="score-final">${t.finalScore}: ${score}</p>
+      <p style="color:#4af;font-size:.45rem">${t.anomaliesCaptured}: ${captures} &nbsp;|&nbsp; ${t.typesIdentified}: ${discoveredTypes.size}/8</p>
+      <p style="color:#f84;font-size:.45rem">${t.best}: ${highScore}</p>
+      <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
       <div id="hall-of-fame"></div>
     `;
     renderHOF();
@@ -742,10 +891,16 @@ function endGame(){
 }
 
 // ── TYPEWRITER LORE ───────────────────────────────────────────────────────
-const LORE = "YEAR 2050. Unusual signals have been detected at the edge of the Solar System. Humanity has deployed a network of radiotelescopes across the Oort Cloud to track the deep field and identify the source. Volunteers are needed to operate Heimdall and photograph every anomaly before our position is compromised. You have 100 seconds once detection begins. Adjust the radiotelescope speed to bring more of the field into view \u2014 at your own risk.";
 window.addEventListener('load', ()=>{
+  var saved = localStorage.getItem('heimdall_lang');
+  var browserLang = (navigator.language || 'en').split('-')[0];
+  var supported = ['en','es','fr','pt'];
+  var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
+  applyLang(initial);
+
   const el = $('lore-text');
   let i=0;
+  const LORE = (i18n[currentLang] || i18n.en).lore;
   (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,16); } })();
   initStars();
   drawStarfield(16);
