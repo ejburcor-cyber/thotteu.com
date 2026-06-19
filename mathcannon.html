@@ -56,9 +56,13 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .lang-option{padding:8px 14px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#8aa;transition:background .15s}
 .lang-option:hover{background:rgba(68,170,255,.12);color:#fff}
 .lang-option.active{color:#4df}
+.back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:7px 12px;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#4df;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50;transition:border-color .2s,color .2s}
+.back-btn:hover{border-color:#7cf;color:#fff}
 </style>
 </head>
 <body>
+
+<a href="/" class="back-btn" data-i18n="backBtn">&#8592; THOTTEU</a>
 
 <h1>&#9889; <span data-i18n="title">MATH CANNON</span> &#9889;</h1>
 <p style="color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center" data-i18n="subtitle">CALCULATE FAST TO REPEL THE INVADERS</p>
@@ -225,7 +229,10 @@ const GROUND_Y    = H - 60;
 const TAU         = Math.PI * 2;
 const MAX_PARTICLES = 150;
 const ARCADE_MODES  = ['infantil','colegio','instituto','universidad'];
-const ARCADE_LABELS = ['\u2B50 BABY','\uD83D\uDCDA KIDS','\uD83C\uDF93 TEENAGER','\uD83D\uDD2C TECHNICIAN'];
+function getArcadeLabels(){
+  const t = (typeof i18n!=='undefined' && i18n[currentLang]) || (typeof i18n!=='undefined' && i18n.en) || {baby:'BABY',kids:'KID',teenager:'TEENAGER',technician:'TECHNICIAN'};
+  return ['\u2B50 '+t.baby, '\uD83D\uDCDA '+t.kids, '\uD83C\uDF93 '+t.teenager, '\uD83D\uDD2C '+t.technician];
+}
 const ARCADE_COLORS = ['#4f4','#ff0','#f44','#f0f'];
 const RECENT_MAX  = 20;
 
@@ -322,8 +329,10 @@ var i18n = {
     earnedMissiles:'✓ +{n} 🚀 MISSILES!',
     coordFailed:'COORDINATE FAILED! Answer: {a}',
     wrongAttempt:'✗ WRONG — 1 🚀 DEFECTIVE — {n} attempt{s} left',
+    streak:'STREAK', superMissileReady:'SUPER MISSILE READY!',
     alienBreach:'⚠ ALIEN BREACH IMMINENT!',
     arcadeRound:'🗙️ ARCADE (Round {n}, {stage})',
+    backBtn:'← THOTTEU',
     lore:'YEAR 2050. Early in the year, an alien invasion fleet was detected in the Oort Cloud. A drone artillery army is being deployed to defend Earth... only the best will repel the attack. Are you ready? Select your level and defend every inch of Earth with your cannon.'
   },
   es: {
@@ -348,8 +357,10 @@ var i18n = {
     earnedMissiles:'✓ ¡+{n} 🚀 MISILES!',
     coordFailed:'¡COORDENADA FALLIDA! Respuesta: {a}',
     wrongAttempt:'✗ INCORRECTO — 1 🚀 DEFECTUOSO — {n} intento{s} restante{s}',
+    streak:'RACHA', superMissileReady:'¡SÚPER MISIL LISTO!',
     alienBreach:'⚠ ¡BRECHA ALIENÍGENA INMINENTE!',
     arcadeRound:'🗙️ ARCADE (Ronda {n}, {stage})',
+    backBtn:'← THOTTEU',
     lore:'AÑO 2050. A principios de año se detectó una flota de invasión alienígena en la Nube de Oort. Se está desplegando un ejército de artillería con drones para defender la Tierra... solo los mejores repelerán el ataque. ¿Estás listo? Selecciona tu nivel y defiende cada centímetro de la Tierra con tu cañón.'
   },
   fr: {
@@ -374,8 +385,10 @@ var i18n = {
     earnedMissiles:'✓ +{n} 🚀 MISSILES !',
     coordFailed:'COORDONNÉE ÉCHOUÉE ! Réponse : {a}',
     wrongAttempt:'✗ FAUX — 1 🚀 DÉFECTUEUX — {n} essai{s} restant{s}',
+    streak:'SÉRIE', superMissileReady:'SUPER MISSILE PRÊT !',
     alienBreach:'⚠ BRÈCHE ALIEN IMMINENTE !',
     arcadeRound:'🗙️ ARCADE (Manche {n}, {stage})',
+    backBtn:'← THOTTEU',
     lore:'ANNÉE 2050. Au début de l\'année, une flotte d\'invasion extraterrestre a été détectée dans le nuage d\'Oort. Une armée de drones d\'artillerie est déployée pour défendre la Terre... seuls les meilleurs repousseront l\'attaque. Êtes-vous prêt ? Choisissez votre niveau et défendez chaque centimètre de la Terre avec votre canon.'
   },
   pt: {
@@ -400,8 +413,10 @@ var i18n = {
     earnedMissiles:'✓ +{n} 🚀 MÍSSEIS!',
     coordFailed:'COORDENADA FALHOU! Resposta: {a}',
     wrongAttempt:'✗ ERRADO — 1 🚀 DEFEITUOSO — {n} tentativa{s} restante{s}',
+    streak:'SEQUÊNCIA', superMissileReady:'SUPER MÍSSIL PRONTO!',
     alienBreach:'⚠ INVASÃO ALIENÍGENA IMINENTE!',
     arcadeRound:'🗙️ ARCADE (Rodada {n}, {stage})',
+    backBtn:'← THOTTEU',
     lore:'ANO 2050. No início do ano, uma frota de invasão alienígena foi detectada na Nuvem de Oort. Um exército de artilharia com drones está sendo implantado para defender a Terra... só os melhores repelirão o ataque. Você está pronto? Selecione seu nível e defenda cada centímetro da Terra com seu canhão.'
   }
 };
@@ -485,13 +500,13 @@ function updateAnswerDisplay(){
   $('math-op').innerHTML = currentOp.text.replace('?', typed);
 }
 function updateAttempDots(){ $('attempt-dots').innerHTML=[0,1,2].map(i=>`<span style="color:${i<attemptsLeft?'#4f4':'#f44'}">\u25CF</span>`).join(' '); }
-function updateStreakDisplay(){ const el=$('streak-display'); if(streak>=2){ el.textContent=`\uD83D\uDD25 STREAK x${streak}${streak>=3?' \u2014 SUPER MISSILE READY!':''}`; el.style.color=streak>=3?'#ff0':'#f84'; } else el.textContent=''; }
+function updateStreakDisplay(){ const el=$('streak-display'); const t=i18n[currentLang]||i18n.en; if(streak>=2){ el.textContent=`\uD83D\uDD25 ${t.streak} x${streak}${streak>=3?' \u2014 '+t.superMissileReady:''}`; el.style.color=streak>=3?'#ff0':'#f84'; } else el.textContent=''; }
 function updateScoreDisplay(){ $('score').textContent=score; }
 function updateMissileDisplay(){ $('missile-count').textContent=missileCount; }
 function updateLevelDisplay(){
   const modeNames={infantil:'\u2B50 BABY',colegio:'\uD83D\uDCDA KIDS',instituto:'\uD83C\uDF93 TEENAGER',universidad:'\uD83D\uDD2C TECHNICIAN'};
   if(gameMode==='arcade'){
-    $('level').textContent=`${ARCADE_LABELS[arcadeStage]} \xD7${arcadeLap+1} | LV${difficulty}`;
+    $('level').textContent=`${getArcadeLabels()[arcadeStage]} \xD7${arcadeLap+1} | LV${difficulty}`;
   } else {
     $('level').textContent=`${modeNames[gameMode]} | LV${difficulty}`;
   }
@@ -521,7 +536,7 @@ function startGame(){
   updateScoreDisplay(); updateMissileDisplay(); updateLevelDisplay();
   newOperation(); updateAttempDots(); updateStreakDisplay();
   gamePhase='carga'; updatePhaseDisplay();
-  if(gameMode==='arcade') showArcadeBanner('\u25B6 '+ARCADE_LABELS[0], ARCADE_COLORS[0]);
+  if(gameMode==='arcade') showArcadeBanner('\u25B6 '+getArcadeLabels()[0], ARCADE_COLORS[0]);
 
   if(gameLoopId) cancelAnimationFrame(gameLoopId);
   renderBackground();
@@ -637,7 +652,7 @@ function advanceArcadeStage(){
   arcadeKills=0; arcadeStage=(arcadeStage+1)%ARCADE_MODES.length;
   if(arcadeStage===0) arcadeLap++;
   updateLevelDisplay();
-  showArcadeBanner('\u25B6 '+ARCADE_LABELS[arcadeStage], ARCADE_COLORS[arcadeStage]);
+  showArcadeBanner('\u25B6 '+getArcadeLabels()[arcadeStage], ARCADE_COLORS[arcadeStage]);
   newOperation();
 }
 
@@ -1189,7 +1204,7 @@ function endGame(){
   recordHOF(score, gameMode, difficulty, correctOps);
   document.title=`Math Cannon | SCORE: ${score}`;
   const ml=gameMode==='arcade'
-    ? t.arcadeRound.replace('{n}',arcadeLap+1).replace('{stage}',ARCADE_LABELS[arcadeStage])
+    ? t.arcadeRound.replace('{n}',arcadeLap+1).replace('{stage}',getArcadeLabels()[arcadeStage])
     : {infantil:'\u2B50 '+t.baby,colegio:'\uD83D\uDCDA '+t.kids,instituto:'\uD83C\uDF93 '+t.teenager,universidad:'\uD83D\uDD2C '+t.technician}[gameMode];
   const ov=$('overlay'); ov.style.display='flex';
   ov.innerHTML=`

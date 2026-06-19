@@ -54,9 +54,13 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .lang-option{padding:8px 14px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#8aa;transition:background .15s}
 .lang-option:hover{background:rgba(68,170,255,.12);color:#fff}
 .lang-option.active{color:#4df}
+.back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:7px 12px;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#4df;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50;transition:border-color .2s,color .2s}
+.back-btn:hover{border-color:#7cf;color:#fff}
 </style>
 </head>
 <body>
+
+<a href="/" class="back-btn" data-i18n="backBtn">&#8592; THOTTEU</a>
 
 <svg id="header-banner" viewBox="0 0 700 80" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -299,6 +303,7 @@ var i18n = {
     hofTitle:'HALL OF FAME',
     hofEmpty:'HALL OF FAME — Play to set a record!',
     hofScore:'SCORE', hofCaptures:'CAPTURES', hofTypes:'TYPES ID\'D', hofDate:'DATE',
+    backBtn:'← THOTTEU',
     lore:'YEAR 2050. Unusual signals have been detected at the edge of the Solar System. Humanity has deployed a network of radiotelescopes across the Oort Cloud to track the deep field and identify the source. Volunteers are needed to operate Heimdall and photograph every anomaly before our position is compromised. You have 100 seconds once detection begins. Adjust the radiotelescope speed to bring more of the field into view — at your own risk.'
   },
   es: {
@@ -322,6 +327,7 @@ var i18n = {
     hofTitle:'SALÓN DE LA FAMA',
     hofEmpty:'SALÓN DE LA FAMA — ¡Juega para conseguir un récord!',
     hofScore:'PUNTOS', hofCaptures:'CAPTURAS', hofTypes:'TIPOS ID.', hofDate:'FECHA',
+    backBtn:'← THOTTEU',
     lore:'AÑO 2050. Se han detectado señales inusuales en el borde del Sistema Solar. La humanidad ha desplegado una red de radiotelescopios por la Nube de Oort para rastrear el campo profundo e identificar el origen. Se necesitan voluntarios para operar Heimdall y fotografiar cada anomalía antes de que nuestra posición quede comprometida. Tienes 100 segundos una vez que comience la detección. Ajusta la velocidad del radiotelescopio para traer más del campo a la vista — bajo tu propio riesgo.'
   },
   fr: {
@@ -345,6 +351,7 @@ var i18n = {
     hofTitle:'TABLEAU D\'HONNEUR',
     hofEmpty:'TABLEAU D\'HONNEUR — Jouez pour établir un record !',
     hofScore:'SCORE', hofCaptures:'CAPTURES', hofTypes:'TYPES ID.', hofDate:'DATE',
+    backBtn:'← THOTTEU',
     lore:'ANNÉE 2050. Des signaux inhabituels ont été détectés aux confins du système solaire. L\'humanité a déployé un réseau de radiotélescopes à travers le nuage d\'Oort pour scruter le champ profond et identifier la source. Des volontaires sont nécessaires pour piloter Heimdall et photographier chaque anomalie avant que notre position ne soit compromise. Vous avez 100 secondes une fois la détection commencée. Ajustez la vitesse du radiotélescope pour élargir le champ visible — à vos risques et périls.'
   },
   pt: {
@@ -368,6 +375,7 @@ var i18n = {
     hofTitle:'GALERIA DA FAMA',
     hofEmpty:'GALERIA DA FAMA — Jogue para bater um recorde!',
     hofScore:'PONTOS', hofCaptures:'CAPTURAS', hofTypes:'TIPOS ID.', hofDate:'DATA',
+    backBtn:'← THOTTEU',
     lore:'ANO 2050. Sinais incomuns foram detectados na borda do Sistema Solar. A humanidade implantou uma rede de radiotelescópios pela Nuvem de Oort para rastrear o campo profundo e identificar a origem. Voluntários são necessários para operar o Heimdall e fotografar cada anomalia antes que nossa posição seja comprometida. Você tem 100 segundos assim que a detecção começar. Ajuste a velocidade do radiotelescópio para trazer mais do campo à vista — por sua conta e risco.'
   }
 };
