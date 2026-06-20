@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0CCWBZ6VKX"></script>
+<!-- Google Consent Mode v2 — default denied until user accepts -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0CCWBZ6VKX');
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied'
+  });
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,6 +69,16 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .lang-option.active{color:#4df}
 .back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:7px 12px;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#4df;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50;transition:border-color .2s,color .2s}
 .back-btn:hover{border-color:#7cf;color:#fff}
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#0d1020;border-top:2px solid #4af;padding:14px 18px;display:none;box-shadow:0 -8px 32px rgba(0,0,0,.6)}
+#cookie-banner.show{display:block}
+.cookie-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cookie-text{flex:1;min-width:220px;font-size:.42rem;line-height:1.9;color:#8aa}
+.cookie-text a{color:#4df}
+.cookie-btns{display:flex;gap:10px;flex-shrink:0}
+.cookie-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;padding:9px 16px;cursor:pointer;border:1.5px solid #4af;background:transparent;color:#fff;transition:all .2s}
+.cookie-btn.accept{background:#4af;color:#000}
+.cookie-btn.accept:hover{background:#7cf}
+.cookie-btn.reject:hover{border-color:#a78bfa;color:#a78bfa}
 </style>
 </head>
 <body>
@@ -341,6 +354,10 @@ var i18n = {
     alienBreach:'⚠ ALIEN BREACH IMMINENT!',
     arcadeRound:'🗙️ ARCADE (Round {n}, {stage})',
     backBtn:'← THOTTEU',
+    cookieText:'We use analytics cookies. They only activate with your consent.',
+    cookiePrivacyLink:'Learn more',
+    cookieReject:'Reject',
+    cookieAccept:'Accept',
     lore:'YEAR 2050. Early in the year, an alien invasion fleet was detected in the Oort Cloud. A drone artillery army is being deployed to defend Earth... only the best will repel the attack. Are you ready? Select your level and defend every inch of Earth with your cannon.'
   },
   es: {
@@ -369,6 +386,10 @@ var i18n = {
     alienBreach:'⚠ ¡BRECHA ALIENÍGENA INMINENTE!',
     arcadeRound:'🗙️ ARCADE (Ronda {n}, {stage})',
     backBtn:'← THOTTEU',
+    cookieText:'Usamos cookies de analítica. Solo se activan con tu consentimiento.',
+    cookiePrivacyLink:'Más información',
+    cookieReject:'Rechazar',
+    cookieAccept:'Aceptar',
     lore:'AÑO 2050. A principios de año se detectó una flota de invasión alienígena en la Nube de Oort. Se está desplegando un ejército de artillería con drones para defender la Tierra... solo los mejores repelerán el ataque. ¿Estás listo? Selecciona tu nivel y defiende cada centímetro de la Tierra con tu cañón.'
   },
   fr: {
@@ -397,6 +418,10 @@ var i18n = {
     alienBreach:'⚠ BRÈCHE ALIEN IMMINENTE !',
     arcadeRound:'🗙️ ARCADE (Manche {n}, {stage})',
     backBtn:'← THOTTEU',
+    cookieText:'Nous utilisons des cookies d\'analyse. Ils ne s\'activent qu\'avec votre consentement.',
+    cookiePrivacyLink:'En savoir plus',
+    cookieReject:'Refuser',
+    cookieAccept:'Accepter',
     lore:'ANNÉE 2050. Au début de l\'année, une flotte d\'invasion extraterrestre a été détectée dans le nuage d\'Oort. Une armée de drones d\'artillerie est déployée pour défendre la Terre... seuls les meilleurs repousseront l\'attaque. Êtes-vous prêt ? Choisissez votre niveau et défendez chaque centimètre de la Terre avec votre canon.'
   },
   pt: {
@@ -425,6 +450,10 @@ var i18n = {
     alienBreach:'⚠ INVASÃO ALIENÍGENA IMINENTE!',
     arcadeRound:'🗙️ ARCADE (Rodada {n}, {stage})',
     backBtn:'← THOTTEU',
+    cookieText:'Usamos cookies de análise. Só são ativadas com seu consentimento.',
+    cookiePrivacyLink:'Saiba mais',
+    cookieReject:'Rejeitar',
+    cookieAccept:'Aceitar',
     lore:'ANO 2050. No início do ano, uma frota de invasão alienígena foi detectada na Nuvem de Oort. Um exército de artilharia com drones está sendo implantado para defender a Terra... só os melhores repelirão o ataque. Você está pronto? Selecione seu nível e defenda cada centímetro da Terra com seu canhão.'
   }
 };
@@ -1352,5 +1381,51 @@ window.addEventListener('load',()=>{
   renderHOF();
 });
 </script>
+
+<!-- COOKIE CONSENT BANNER -->
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p class="cookie-text"><span id="cookie-text" data-i18n="cookieText">Usamos cookies de analítica. Solo se activan con tu consentimiento.</span> <a href="/privacy.html" id="cookie-privacy-link" data-i18n="cookiePrivacyLink">Más información</a>.</p>
+    <div class="cookie-btns">
+      <button class="cookie-btn reject" onclick="cookieConsent(false)" data-i18n="cookieReject">Rechazar</button>
+      <button class="cookie-btn accept" onclick="cookieConsent(true)" data-i18n="cookieAccept">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var GA_ID = 'G-0CCWBZ6VKX';
+
+  function loadGA() {
+    if (window.gaScriptLoaded) return;
+    window.gaScriptLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  }
+
+  function cookieConsent(accepted) {
+    localStorage.setItem('thotteu_cookie_consent', accepted ? 'accepted' : 'rejected');
+    document.getElementById('cookie-banner').classList.remove('show');
+    if (accepted) {
+      gtag('consent', 'update', { 'analytics_storage': 'granted' });
+      loadGA();
+    }
+  }
+
+  (function initCookieBanner() {
+    var consent = localStorage.getItem('thotteu_cookie_consent');
+    if (consent === 'accepted') {
+      gtag('consent', 'update', { 'analytics_storage': 'granted' });
+      loadGA();
+    } else if (consent !== 'rejected') {
+      document.getElementById('cookie-banner').classList.add('show');
+    }
+  })();
+</script>
+
 </body>
 </html>

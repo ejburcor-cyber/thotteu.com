@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-0CCWBZ6VKX"></script>
+  <!-- Google Consent Mode v2 — default denied until user accepts -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-0CCWBZ6VKX');
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied',
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    });
   </script>
 
   <meta charset="UTF-8" />
@@ -444,6 +447,48 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
+
+    /* ── COOKIE BANNER ── */
+    #cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      display: none;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.5);
+    }
+    #cookie-banner.show { display: block; }
+    .cookie-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .cookie-text { flex: 1; min-width: 240px; font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .cookie-text a { color: var(--cyan); text-decoration: underline; }
+    .cookie-btns { display: flex; gap: 0.75rem; flex-shrink: 0; }
+    .cookie-btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      padding: 0.6rem 1.3rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      transition: all 0.2s;
+    }
+    .cookie-btn.accept { background: var(--cyan); color: var(--void); border-color: var(--cyan); font-weight: 700; }
+    .cookie-btn.accept:hover { box-shadow: 0 0 20px rgba(0,229,255,0.4); }
+    .cookie-btn.reject:hover { border-color: var(--purple); color: var(--purple); }
   </style>
 </head>
 <body>
@@ -600,7 +645,11 @@
         'about.label': 'The Thotteu universe',
         'about.title': 'Will you find the context?',
         'about.desc': 'Thotteu is a fictional universe built to reinforce what we already know through narrative purpose. Each game is a mission within a bigger story: explore, discover and survive in a cosmos that wants to bring out the best in you.',
-        'footer.tag': '© 2026 Thotteu · Universe under construction'
+        'footer.tag': '© 2026 Thotteu · Universe under construction',
+        'cookieText': 'We use analytics cookies to understand how Thotteu is used. They are only activated if you give consent.',
+        'cookiePrivacyLink': 'Learn more',
+        'cookieReject': 'Reject',
+        'cookieAccept': 'Accept'
       },
       es: {
         'nav.games': 'Juegos',
@@ -635,7 +684,11 @@
         'about.label': 'El universo Thotteu',
         'about.title': '¿Sabrás encontrar el contexto?',
         'about.desc': 'Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.',
-        'footer.tag': '© 2026 Thotteu · Universo en construcción'
+        'footer.tag': '© 2026 Thotteu · Universo en construcción',
+        'cookieText': 'Usamos cookies de analítica para entender cómo se usa Thotteu. Solo se activan si das tu consentimiento.',
+        'cookiePrivacyLink': 'Más información',
+        'cookieReject': 'Rechazar',
+        'cookieAccept': 'Aceptar'
       },
       fr: {
         'nav.games': 'Jeux',
@@ -670,7 +723,11 @@
         'about.label': 'L\'univers Thotteu',
         'about.title': 'Saurez-vous trouver le contexte ?',
         'about.desc': 'Thotteu est un univers de fiction conçu pour renforcer ce que nous savons déjà à travers un objectif narratif. Chaque jeu est une mission au sein d\'une histoire plus vaste : explorer, découvrir et survivre dans un cosmos qui cherche à révéler le meilleur de vous-même.',
-        'footer.tag': '© 2026 Thotteu · Univers en construction'
+        'footer.tag': '© 2026 Thotteu · Univers en construction',
+        'cookieText': 'Nous utilisons des cookies d\'analyse pour comprendre comment Thotteu est utilisé. Ils ne sont activés qu\'avec votre consentement.',
+        'cookiePrivacyLink': 'En savoir plus',
+        'cookieReject': 'Refuser',
+        'cookieAccept': 'Accepter'
       },
       pt: {
         'nav.games': 'Jogos',
@@ -705,7 +762,11 @@
         'about.label': 'O universo Thotteu',
         'about.title': 'Você vai encontrar o contexto?',
         'about.desc': 'Thotteu é um universo de ficção construído para reforçar o que já sabemos através de um propósito narrativo. Cada jogo é uma missão dentro de uma história maior: explorar, descobrir e sobreviver em um cosmos que busca trazer o melhor de você.',
-        'footer.tag': '© 2026 Thotteu · Universo em construção'
+        'footer.tag': '© 2026 Thotteu · Universo em construção',
+        'cookieText': 'Usamos cookies de análise para entender como o Thotteu é usado. Só são ativadas se você der consentimento.',
+        'cookiePrivacyLink': 'Saiba mais',
+        'cookieReject': 'Rejeitar',
+        'cookieAccept': 'Aceitar'
       }
     };
 
@@ -811,6 +872,51 @@
     initStars();
     initClouds();
     requestAnimationFrame(draw);
+  </script>
+
+  <!-- COOKIE CONSENT BANNER -->
+  <div id="cookie-banner">
+    <div class="cookie-inner">
+      <p class="cookie-text"><span id="cookie-text" data-i18n="cookieText">Usamos cookies de analítica para entender cómo se usa Thotteu. Solo se activan si das tu consentimiento.</span> <a href="/privacy.html" id="cookie-privacy-link" data-i18n="cookiePrivacyLink">Más información</a>.</p>
+      <div class="cookie-btns">
+        <button class="cookie-btn reject" id="cookie-reject" onclick="cookieConsent(false)" data-i18n="cookieReject">Rechazar</button>
+        <button class="cookie-btn accept" id="cookie-accept" onclick="cookieConsent(true)" data-i18n="cookieAccept">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var GA_ID = 'G-0CCWBZ6VKX';
+
+    function loadGA() {
+      if (window.gaScriptLoaded) return;
+      window.gaScriptLoaded = true;
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', GA_ID);
+    }
+
+    function cookieConsent(accepted) {
+      localStorage.setItem('thotteu_cookie_consent', accepted ? 'accepted' : 'rejected');
+      document.getElementById('cookie-banner').classList.remove('show');
+      if (accepted) {
+        gtag('consent', 'update', { 'analytics_storage': 'granted' });
+        loadGA();
+      }
+    }
+
+    (function initCookieBanner() {
+      var consent = localStorage.getItem('thotteu_cookie_consent');
+      if (consent === 'accepted') {
+        gtag('consent', 'update', { 'analytics_storage': 'granted' });
+        loadGA();
+      } else if (consent !== 'rejected') {
+        document.getElementById('cookie-banner').classList.add('show');
+      }
+    })();
   </script>
 
 </body>
