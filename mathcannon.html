@@ -176,6 +176,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
   </div>
 
   <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
+  <button id="surrender-btn" onclick="surrenderGame()" data-i18n="surrender" style="display:none;position:absolute;top:6px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20">&#127988; SURRENDER</button>
 
   <div id="math-area">
     <div style="flex:1">
@@ -324,6 +325,7 @@ const tunnels = mountains.filter(m=>m.tunnel).map(m=>({x:m.tunnelX,y:GROUND_Y-m.
 // ── GAME STATE ────────────────────────────────────────────────────────────
 let state, cannon, aliens, bullets, missiles, particles, explosions;
 let score, lives, difficulty, aliensDestroyed, opCount, missileCount;
+let survivalTime=0, nextEncourageAt=300, surrenderShown=false;
 let currentOp, answerStr, attemptsLeft, streak;
 let screenFlash, cannonShake, spawnAccum, gameLoopId, lastTime;
 let gameMode = 'colegio';
@@ -351,6 +353,7 @@ var i18n = {
     mode:'Mode', aliensDestroyed:'Aliens destroyed', correctAnswers:'Correct answers', level:'Level',
     hofTitle:'HALL OF FAME', hofEmpty:'HALL OF FAME — Play to set a record!',
     hofScore:'SCORE', hofMode:'MODE', hofLv:'LV', hofCorrect:'CORRECT', hofDate:'DATE',
+    hofByScore:'BY SCORE', hofBySurvival:'BY SURVIVAL TIME', hofTime:'TIME',
     noFireTunnel:'⛔ NO FIRE IN TUNNEL!',
     noMissiles:'⚠ NO MISSILES — SOLVE OPERATIONS!',
     lifeRestored:'🌟 LIFE RESTORED! ❤️',
@@ -370,6 +373,8 @@ var i18n = {
     generalHigh:'Outstanding calculations, soldier. The cannon never stood a chance of missing.',
     generalMid:'Solid performance. Keep sharpening those reflexes.',
     generalLow:'We need faster math on the front line. Try again, recruit.',
+    surrender:'SURRENDER',
+    encourageMsgs:['Veteran reflexes!','The front line salutes you!','Still standing, soldier!','Legendary endurance!','Heimdall would be proud!'],
     lore:'YEAR 2050. Early in the year, an alien invasion fleet was detected in the Oort Cloud. A drone artillery army is being deployed to defend Earth... only the best will repel the attack. Are you ready? Select your level and defend every inch of Earth with your cannon.'
   },
   es: {
@@ -387,6 +392,7 @@ var i18n = {
     mode:'Modo', aliensDestroyed:'Aliens destruidos', correctAnswers:'Respuestas correctas', level:'Nivel',
     hofTitle:'SALÓN DE LA FAMA', hofEmpty:'SALÓN DE LA FAMA — ¡Juega para conseguir un récord!',
     hofScore:'PUNTOS', hofMode:'MODO', hofLv:'NIV', hofCorrect:'ACIERTOS', hofDate:'FECHA',
+    hofByScore:'POR PUNTUACIÓN', hofBySurvival:'POR TIEMPO DE SUPERVIVENCIA', hofTime:'TIEMPO',
     noFireTunnel:'⛔ ¡NO SE PUEDE DISPARAR EN EL TÚNEL!',
     noMissiles:'⚠ SIN MISILES — ¡RESUELVE OPERACIONES!',
     lifeRestored:'🌟 ¡VIDA RESTAURADA! ❤️',
@@ -406,6 +412,8 @@ var i18n = {
     generalHigh:'Cálculos excelentes, soldado. El cañón no falló ni un disparo.',
     generalMid:'Buen desempeño. Sigue afinando los reflejos.',
     generalLow:'Necesitamos matemáticas más rápidas en el frente. Inténtalo de nuevo, recluta.',
+    surrender:'RENDIRSE',
+    encourageMsgs:['¡Reflejos de veterano!','¡El frente te saluda!','¡Sigues en pie, soldado!','¡Resistencia legendaria!','¡Heimdall estaría orgulloso!'],
     lore:'AÑO 2050. A principios de año se detectó una flota de invasión alienígena en la Nube de Oort. Se está desplegando un ejército de artillería con drones para defender la Tierra... solo los mejores repelerán el ataque. ¿Estás listo? Selecciona tu nivel y defiende cada centímetro de la Tierra con tu cañón.'
   },
   fr: {
@@ -423,6 +431,7 @@ var i18n = {
     mode:'Mode', aliensDestroyed:'Aliens détruits', correctAnswers:'Bonnes réponses', level:'Niveau',
     hofTitle:'TABLEAU D\'HONNEUR', hofEmpty:'TABLEAU D\'HONNEUR — Jouez pour établir un record !',
     hofScore:'SCORE', hofMode:'MODE', hofLv:'NIV', hofCorrect:'CORRECT', hofDate:'DATE',
+    hofByScore:'PAR SCORE', hofBySurvival:'PAR TEMPS DE SURVIE', hofTime:'TEMPS',
     noFireTunnel:'⛔ TIR IMPOSSIBLE DANS LE TUNNEL !',
     noMissiles:'⚠ AUCUN MISSILE — RÉSOLVEZ DES OPÉRATIONS !',
     lifeRestored:'🌟 VIE RESTAURÉE ! ❤️',
@@ -442,6 +451,8 @@ var i18n = {
     generalHigh:'Calculs remarquables, soldat. Le canon n\'a raté aucun tir.',
     generalMid:'Bonne performance. Continuez à affiner vos réflexes.',
     generalLow:'Il nous faut des calculs plus rapides sur le front. Réessayez, recrue.',
+    surrender:'SE RENDRE',
+    encourageMsgs:['Réflexes de vétéran !','Le front vous salue !','Toujours debout, soldat !','Endurance légendaire !','Heimdall serait fier !'],
     lore:'ANNÉE 2050. Au début de l\'année, une flotte d\'invasion extraterrestre a été détectée dans le nuage d\'Oort. Une armée de drones d\'artillerie est déployée pour défendre la Terre... seuls les meilleurs repousseront l\'attaque. Êtes-vous prêt ? Choisissez votre niveau et défendez chaque centimètre de la Terre avec votre canon.'
   },
   pt: {
@@ -459,6 +470,7 @@ var i18n = {
     mode:'Modo', aliensDestroyed:'Alienígenas destruídos', correctAnswers:'Respostas corretas', level:'Nível',
     hofTitle:'GALERIA DA FAMA', hofEmpty:'GALERIA DA FAMA — Jogue para bater um recorde!',
     hofScore:'PONTOS', hofMode:'MODO', hofLv:'NÍV', hofCorrect:'ACERTOS', hofDate:'DATA',
+    hofByScore:'POR PONTUAÇÃO', hofBySurvival:'POR TEMPO DE SOBREVIVÊNCIA', hofTime:'TEMPO',
     noFireTunnel:'⛔ NÃO É POSSÍVEL ATIRAR NO TÚNEL!',
     noMissiles:'⚠ SEM MÍSSEIS — RESOLVA AS OPERAÇÕES!',
     lifeRestored:'🌟 VIDA RESTAURADA! ❤️',
@@ -478,6 +490,8 @@ var i18n = {
     generalHigh:'Cálculos excelentes, soldado. O canhão não errou um único tiro.',
     generalMid:'Bom desempenho. Continue afiando seus reflexos.',
     generalLow:'Precisamos de matemática mais rápida na linha de frente. Tente novamente, recruta.',
+    surrender:'RENDER-SE',
+    encourageMsgs:['Reflexos de veterano!','A linha de frente te saúda!','Ainda de pé, soldado!','Resistência lendária!','Heimdall ficaria orgulhoso!'],
     lore:'ANO 2050. No início do ano, uma frota de invasão alienígena foi detectada na Nuvem de Oort. Um exército de artilharia com drones está sendo implantado para defender a Terra... só os melhores repelirão o ataque. Você está pronto? Selecione seu nível e defenda cada centímetro da Terra com seu canhão.'
   },
   ca: {
@@ -495,6 +509,7 @@ var i18n = {
     mode:'Mode', aliensDestroyed:'Alienígenes destruïts', correctAnswers:'Respostes correctes', level:'Nivell',
     hofTitle:'SALÓ DE LA FAMA', hofEmpty:'SALÓ DE LA FAMA — Juga per aconseguir un rècord!',
     hofScore:'PUNTS', hofMode:'MODE', hofLv:'NIV', hofCorrect:'ENCERTS', hofDate:'DATA',
+    hofByScore:'PER PUNTUACIÓ', hofBySurvival:'PER TEMPS DE SUPERVIVÈNCIA', hofTime:'TEMPS',
     noFireTunnel:'⛔ NO POTS DISPARAR AL TÚNEL!',
     noMissiles:'⚠ SENSE MÍSSILS — RESOL OPERACIONS!',
     lifeRestored:'🌟 VIDA RESTAURADA! ❤️',
@@ -514,6 +529,8 @@ var i18n = {
     generalHigh:'Càlculs excel·lents, soldat. El canó no ha fallat ni un tret.',
     generalMid:'Bon rendiment. Continua afinant els reflexos.',
     generalLow:'Necessitem matemàtiques més ràpides al front. Torna-ho a intentar, recluta.',
+    surrender:'RENDIR-SE',
+    encourageMsgs:['Reflexos de veterà!','El front et saluda!','Encara dempeus, soldat!','Resistència llegendària!','Heimdall n\'estaria orgullós!'],
     lore:'ANY 2050. A principis d\'any es va detectar una flota d\'invasió alienígena al Núvol d\'Oort. S\'està desplegant un exèrcit d\'artilleria amb drons per defendre la Terra... només els millors repel·liran l\'atac. Estàs preparat? Selecciona el teu nivell i defén cada centímetre de la Terra amb el teu canó.'
   }
 };
@@ -563,12 +580,19 @@ document.addEventListener('click', function(){
 // ── HALL OF FAME ──────────────────────────────────────────────────────────
 function loadHOF(){ try{ return JSON.parse(localStorage.getItem('mathcannon_hof')||'[]'); }catch(e){ return []; } }
 function saveHOF(h){ localStorage.setItem('mathcannon_hof', JSON.stringify(h)); }
-function recordHOF(s,mode,lv,correct){
+function recordHOF(s,mode,lv,correct,survival){
   const h=loadHOF();
-  h.push({score:s,mode,level:lv,correct,date:new Date().toLocaleDateString()});
-  h.sort((a,b)=>b.score-a.score); h.splice(5);
+  h.push({score:s,mode,level:lv,correct,survival:Math.floor(survival||0),date:new Date().toLocaleDateString()});
+  h.splice(20); // keeps the 20 most recent games; the table shows the top 5 by the chosen sort
   saveHOF(h);
 }
+
+let hofSortBy = 'score'; // 'score' | 'survival'
+function setHofSort(by){
+  hofSortBy = by;
+  renderHOF();
+}
+
 function renderHOF(){
   const el=$('hall-of-fame'); if(!el) return;
   const h=loadHOF();
@@ -578,16 +602,38 @@ function renderHOF(){
   const el2=$('hof-standalone'); if(el2) el2.innerHTML=html;
 }
 
+function formatSurvival(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}:${s<10?'0':''}${s}`;
+}
+
 function buildHOFHtml(h){
   const t = i18n[currentLang] || i18n.en;
   if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 '+t.hofEmpty+'</div>';
   const medals=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49','4.','5.'];
   const colors=['color:#ff0','color:#bbb','color:#c84','color:#888','color:#888'];
-  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
+
+  const sorted = [...h].sort((a,b)=> hofSortBy==='survival'
+    ? (b.survival||0)-(a.survival||0)
+    : b.score-a.score
+  ).slice(0,5);
+
+  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:6px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
+
+  html+='<div style="display:flex;gap:6px;justify-content:center;margin-bottom:6px">';
+  html+=`<button onclick="setHofSort('score')" style="font-family:'Press Start 2P',monospace;font-size:.32rem;padding:4px 8px;cursor:pointer;border:1px solid #4af;background:${hofSortBy==='score'?'#4af':'transparent'};color:${hofSortBy==='score'?'#000':'#4af'}">${t.hofByScore}</button>`;
+  html+=`<button onclick="setHofSort('survival')" style="font-family:'Press Start 2P',monospace;font-size:.32rem;padding:4px 8px;cursor:pointer;border:1px solid #4af;background:${hofSortBy==='survival'?'#4af':'transparent'};color:${hofSortBy==='survival'?'#000':'#4af'}">${t.hofBySurvival}</button>`;
+  html+='</div>';
+
   html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
-  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofMode+'</td><td>'+t.hofLv+'</td><td>'+t.hofCorrect+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
-  h.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td style="font-size:.3rem">${modeLabelHOF(e.mode)}</td><td>${e.level}</td><td>${e.correct}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
+  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofTime+'</td><td>'+t.hofMode+'</td><td>'+t.hofLv+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
+  sorted.forEach((e,i)=>{
+    const scoreCell = hofSortBy==='score' ? `<b>${e.score}</b>` : `${e.score}`;
+    const timeCell = hofSortBy==='survival' ? `<b>${formatSurvival(e.survival||0)}</b>` : formatSurvival(e.survival||0);
+    html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td>${scoreCell}</td><td>${timeCell}</td><td style="font-size:.3rem">${modeLabelHOF(e.mode)}</td><td>${e.level}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`;
+  });
   html+='</table>';
+
   return html;
 }
 
@@ -630,6 +676,8 @@ function startGame(){
   recentOps=[]; aliens=[]; bullets=[]; missiles=[]; particles=[]; explosions=[];
   cannon={x:387, y:GROUND_Y-18}; correctOps=0; paused=false; cannonRainbow=0;
   arcadeStage=0; arcadeLap=0; arcadeKills=0; arcadeBanner=null;
+  survivalTime=0; nextEncourageAt=300; surrenderShown=false;
+  $('surrender-btn').style.display='none';
   $('highscore').textContent=highScore; document.title='Math Cannon';
 
   updateScoreDisplay(); updateMissileDisplay(); updateLevelDisplay();
@@ -999,7 +1047,20 @@ function killAlien(idx){
 function loop(ts){
   const dt=Math.min(ts-lastTime,50); lastTime=ts;
   if(paused){ gameLoopId=requestAnimationFrame(loop); return; }
-  if(state==='playing'){ update(dt); render(); }
+  if(state==='playing'){
+    update(dt); render();
+    survivalTime += dt/1000;
+    if(survivalTime>=300 && !surrenderShown){
+      surrenderShown=true;
+      $('surrender-btn').style.display='block';
+    }
+    if(survivalTime>=nextEncourageAt){
+      score += 10;
+      updateScoreDisplay();
+      showEncouragement();
+      nextEncourageAt += 120;
+    }
+  }
   else if(state==='invasion'){ updateInvasion(dt); renderInvasion(); }
   else return;
   // Update in-flight missile indicator
@@ -1008,6 +1069,22 @@ function loop(ts){
   // Dynamic title with score
   if(state==='playing') document.title=`[${score}] Math Cannon`;
   gameLoopId=requestAnimationFrame(loop);
+}
+
+function showEncouragement(){
+  const t = i18n[currentLang] || i18n.en;
+  const msgs = t.encourageMsgs || ['Keep going!'];
+  const msg = msgs[Math.floor(Math.random()*msgs.length)];
+  const el = $('hint');
+  el.style.color = '#ff0';
+  el.textContent = `\u2728 ${msg} +10`;
+  setTimeout(()=>{ el.style.color=''; el.textContent=''; }, 2200);
+  playSound('super');
+}
+
+function surrenderGame(){
+  if(state!=='playing') return;
+  endGame();
 }
 
 
@@ -1300,7 +1377,7 @@ function endGame(){
   // Save highscore
   const isNewRecord = score > highScore;
   if(isNewRecord){ highScore=score; localStorage.setItem('mathcannon_hs',highScore); }
-  recordHOF(score, gameMode, difficulty, correctOps);
+  recordHOF(score, gameMode, difficulty, correctOps, survivalTime);
   document.title=`Math Cannon | SCORE: ${score}`;
   const ml=gameMode==='arcade'
     ? t.arcadeRound.replace('{n}',arcadeLap+1).replace('{stage}',getArcadeLabels()[arcadeStage])

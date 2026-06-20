@@ -496,7 +496,7 @@
       opacity: 0.85;
     }
 
-    .about-quote span {
+    .about-quote span:last-child {
       display: block;
       margin-top: 0.5rem;
       font-style: normal;
@@ -696,7 +696,7 @@
       <h2 class="section-title" style="font-family:'Orbitron',monospace; font-size:1.8rem; margin-bottom:1.5rem;" data-i18n="about.title">¿Sabrás encontrar el contexto?</h2>
       <p data-i18n="about.desc">Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.</p>
       <p data-i18n="about.skills" style="margin-top:1rem; color:var(--muted); font-size:0.9rem;">Detrás de cada misión hay una destreza real que se entrena sin que lo notes: precisión con el ratón, agilidad con el teclado, cálculo mental y más.</p>
-      <p class="about-quote" data-i18n="about.quote">«El que lee mucho y anda mucho, ve mucho y sabe mucho.»<span data-i18n="about.quoteAuthor">— Miguel de Cervantes</span></p>
+      <p class="about-quote"><span data-i18n="about.quote">«El que lee mucho y anda mucho, ve mucho y sabe mucho.»</span> <span data-i18n="about.quoteAuthor">— Miguel de Cervantes</span></p>
     </div>
   </section>
 
@@ -933,7 +933,7 @@
       document.documentElement.lang = lang;
       document.querySelectorAll('[data-i18n]').forEach(function (el) {
         var key = el.getAttribute('data-i18n');
-        if (t[key]) el.textContent = t[key];
+        if (t[key]) el.innerHTML = t[key];
       });
       var cur = document.getElementById('lang-current');
       if (cur) cur.textContent = lang.toUpperCase();

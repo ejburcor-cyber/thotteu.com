@@ -512,18 +512,19 @@ function saveHOF(h){ localStorage.setItem('heimdall_hof', JSON.stringify(h)); }
 function recordHOF(s,cap,types){
   const h=loadHOF();
   h.push({score:s,captures:cap,types,date:new Date().toLocaleDateString()});
-  h.sort((a,b)=>b.score-a.score); h.splice(5);
+  h.splice(20); // keeps the 20 most recent games
   saveHOF(h);
 }
 function buildHOFHtml(h){
   var t = i18n[currentLang] || i18n.en;
   if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 '+t.hofEmpty+'</div>';
+  const top5 = [...h].sort((a,b)=>b.score-a.score).slice(0,5);
   const medals=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49','4.','5.'];
   const colors=['color:#ff0','color:#bbb','color:#c84','color:#888','color:#888'];
   let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
   html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
   html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofCaptures+'</td><td>'+t.hofTypes+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
-  h.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.captures}</td><td>${e.types}/8</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
+  top5.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.captures}</td><td>${e.types}/8</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
   html+='</table>';
   return html;
 }
