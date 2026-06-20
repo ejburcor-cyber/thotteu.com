@@ -486,6 +486,25 @@
       margin-bottom: 1rem;
     }
 
+    .about-quote {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--cyan);
+      opacity: 0.85;
+    }
+
+    .about-quote span {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
@@ -582,6 +601,7 @@
           <div class="lang-option active" data-lang="es" onclick="setLang('es')">ES — Español</div>
           <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
           <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+          <div class="lang-option" data-lang="ca" onclick="setLang('ca')">CA — Català-Valencià</div>
         </div>
       </div>
     </div>
@@ -596,7 +616,7 @@
     </h1>
     <div class="briefing-box">
       <div class="briefing-portrait">
-        <img src="data:image/png;base64,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" alt="General Thoth" />
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==" alt="General Thoth" />
       </div>
       <div class="briefing-content">
         <p class="briefing-label" data-i18n="hero.briefingLabel">TRANSMISIÓN ENTRANTE — GENERAL</p>
@@ -623,7 +643,7 @@
 
       <div class="card">
         <span class="card-icon">🪐</span>
-        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.orbitTitle">Orbit & Math</h3>
         <p data-i18n="games.orbitDesc">Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.</p>
         <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.orbitChallenge">¡Encuentra la ruta exacta antes de quedarte sin combustible!</p>
@@ -632,7 +652,7 @@
 
       <div class="card">
         <span class="card-icon">🧬</span>
-        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.xenoTitle">Xenobiología 101</h3>
         <p data-i18n="games.xenoDesc">Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.</p>
         <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.xenoChallenge">¡Identifica cada espécimen antes de que se te escape!</p>
@@ -641,7 +661,7 @@
 
       <div class="card">
         <span class="card-icon">⚡</span>
-        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.reactorTitle">Reactor Core</h3>
         <p data-i18n="games.reactorDesc">Mantén el reactor de la nave estable resolviendo problemas de física y energía en tiempo real.</p>
         <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.reactorChallenge">¡Aguanta el pulso firme antes de que el núcleo colapse!</p>
@@ -659,7 +679,7 @@
 
       <div class="card">
         <span class="card-icon">🔭</span>
-        <span class="card-tag tag-soon" data-i18n="games.comingSoon">Próximamente</span>
+        <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.signalTitle">Signal Lost</h3>
         <p data-i18n="games.signalDesc">Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.</p>
         <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.signalChallenge">¡Descifra el mensaje antes de que la señal se pierda!</p>
@@ -675,6 +695,8 @@
       <p class="section-label" style="text-align:center; margin-bottom:1rem;" data-i18n="about.label">El universo Thotteu</p>
       <h2 class="section-title" style="font-family:'Orbitron',monospace; font-size:1.8rem; margin-bottom:1.5rem;" data-i18n="about.title">¿Sabrás encontrar el contexto?</h2>
       <p data-i18n="about.desc">Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.</p>
+      <p data-i18n="about.skills" style="margin-top:1rem; color:var(--muted); font-size:0.9rem;">Detrás de cada misión hay una destreza real que se entrena sin que lo notes: precisión con el ratón, agilidad con el teclado, cálculo mental y más.</p>
+      <p class="about-quote" data-i18n="about.quote">«El que lee mucho y anda mucho, ve mucho y sabe mucho.»<span data-i18n="about.quoteAuthor">— Miguel de Cervantes</span></p>
     </div>
   </section>
 
@@ -703,7 +725,7 @@
         'games.mission5': '· Mission 5',
         'games.heimdallDesc': 'Operate the Heimdall radiotelescope and photograph every anomaly before they detect your position. You have 100 seconds.',
         'games.heimdallChallenge': 'Be the fastest with the mouse to photograph as many UFOs as you can!',
-        'games.comingSoon': 'Coming soon',
+        'games.comingSoon': 'Under construction',
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calculate trajectories and orbital speeds. Math decides if you reach your destination.',
         'games.orbitChallenge': 'Find the exact route before you run out of fuel!',
@@ -721,6 +743,9 @@
         'about.label': 'The Thotteu universe',
         'about.title': 'Will you find the context?',
         'about.desc': 'Thotteu is a fictional universe built to reinforce what we already know through narrative purpose. Each game is a mission within a bigger story: explore, discover and survive in a cosmos that wants to bring out the best in you.',
+        'about.skills': 'Behind every mission there is a real skill being trained without you noticing it: mouse precision, keyboard speed, mental math and more.',
+        'about.quote': '«He who reads much and travels much, sees much and knows much.»',
+        'about.quoteAuthor': '— Miguel de Cervantes',
         'footer.tag': '© 2026 Thotteu · Universe under construction',
         'cookieText': 'We use analytics cookies to understand how Thotteu is used. They are only activated if you give consent.',
         'cookiePrivacyLink': 'Learn more',
@@ -743,7 +768,7 @@
         'games.mission5': '· Misión 5',
         'games.heimdallDesc': 'Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.',
         'games.heimdallChallenge': '¡Sé el más rápido con el ratón para fotografiar el mayor número de ovnis!',
-        'games.comingSoon': 'Próximamente',
+        'games.comingSoon': 'En construcción',
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.',
         'games.orbitChallenge': '¡Encuentra la ruta exacta antes de quedarte sin combustible!',
@@ -761,6 +786,9 @@
         'about.label': 'El universo Thotteu',
         'about.title': '¿Sabrás encontrar el contexto?',
         'about.desc': 'Thotteu es un universo de ficción construido para reforzar lo que ya sabemos a través de un propósito narrativo. Cada juego es una misión dentro de una historia más grande: explorar, descubrir y sobrevivir en un cosmos que busca sacar lo mejor de ti.',
+        'about.skills': 'Detrás de cada misión hay una destreza real que se entrena sin que lo notes: precisión con el ratón, agilidad con el teclado, cálculo mental y más.',
+        'about.quote': '«El que lee mucho y anda mucho, ve mucho y sabe mucho.»',
+        'about.quoteAuthor': '— Miguel de Cervantes',
         'footer.tag': '© 2026 Thotteu · Universo en construcción',
         'cookieText': 'Usamos cookies de analítica para entender cómo se usa Thotteu. Solo se activan si das tu consentimiento.',
         'cookiePrivacyLink': 'Más información',
@@ -783,7 +811,7 @@
         'games.mission5': '· Mission 5',
         'games.heimdallDesc': 'Pilotez le radiotélescope Heimdall et photographiez chaque anomalie avant qu\'elle ne détecte votre position. Vous avez 100 secondes.',
         'games.heimdallChallenge': 'Soyez le plus rapide à la souris pour photographier un maximum d\'ovnis !',
-        'games.comingSoon': 'Bientôt disponible',
+        'games.comingSoon': 'En construction',
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calculez trajectoires et vitesses orbitales. Les mathématiques décident si vous atteignez votre destination.',
         'games.orbitChallenge': 'Trouvez la trajectoire exacte avant de manquer de carburant !',
@@ -801,6 +829,9 @@
         'about.label': 'L\'univers Thotteu',
         'about.title': 'Saurez-vous trouver le contexte ?',
         'about.desc': 'Thotteu est un univers de fiction conçu pour renforcer ce que nous savons déjà à travers un objectif narratif. Chaque jeu est une mission au sein d\'une histoire plus vaste : explorer, découvrir et survivre dans un cosmos qui cherche à révéler le meilleur de vous-même.',
+        'about.skills': 'Derrière chaque mission se cache une compétence réelle qui s\'entraîne sans que vous le remarquiez : précision à la souris, rapidité au clavier, calcul mental et bien plus.',
+        'about.quote': '« Qui lit beaucoup et voyage beaucoup, voit beaucoup et sait beaucoup. »',
+        'about.quoteAuthor': '— Miguel de Cervantes',
         'footer.tag': '© 2026 Thotteu · Univers en construction',
         'cookieText': 'Nous utilisons des cookies d\'analyse pour comprendre comment Thotteu est utilisé. Ils ne sont activés qu\'avec votre consentement.',
         'cookiePrivacyLink': 'En savoir plus',
@@ -823,7 +854,7 @@
         'games.mission5': '· Missão 5',
         'games.heimdallDesc': 'Opere o radiotelescópio Heimdall e fotografe cada anomalia antes que detectem sua posição. Você tem 100 segundos.',
         'games.heimdallChallenge': 'Seja o mais rápido com o mouse para fotografar o maior número de OVNIs!',
-        'games.comingSoon': 'Em breve',
+        'games.comingSoon': 'Em construção',
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calcule trajetórias e velocidades orbitais. A matemática decide se você chega ao seu destino.',
         'games.orbitChallenge': 'Encontre a rota exata antes de ficar sem combustível!',
@@ -841,11 +872,57 @@
         'about.label': 'O universo Thotteu',
         'about.title': 'Você vai encontrar o contexto?',
         'about.desc': 'Thotteu é um universo de ficção construído para reforçar o que já sabemos através de um propósito narrativo. Cada jogo é uma missão dentro de uma história maior: explorar, descobrir e sobreviver em um cosmos que busca trazer o melhor de você.',
+        'about.skills': 'Por trás de cada missão há uma habilidade real sendo treinada sem que você perceba: precisão com o mouse, agilidade com o teclado, cálculo mental e muito mais.',
+        'about.quote': '«Quem lê muito e anda muito, vê muito e sabe muito.»',
+        'about.quoteAuthor': '— Miguel de Cervantes',
         'footer.tag': '© 2026 Thotteu · Universo em construção',
         'cookieText': 'Usamos cookies de análise para entender como o Thotteu é usado. Só são ativadas se você der consentimento.',
         'cookiePrivacyLink': 'Saiba mais',
         'cookieReject': 'Rejeitar',
         'cookieAccept': 'Aceitar'
+      },
+      ca: {
+        'nav.games': 'Jocs',
+        'nav.universe': 'Univers',
+        'hero.eyebrow': 'Portal de defensa del sistema solar',
+        'hero.title1': 'Els alienígenes ens ataquen',
+        'hero.title2': 'UNEIX-TE A LA RESISTÈNCIA!',
+        'hero.desc': 'Any 2050. S\'ha detectat una flota alienígena dirigint-se cap a la Terra. Millora les teues habilitats i embarca\'t en les nostres missions per salvar el món.',
+        'hero.briefingLabel': 'TRANSMISSIÓ ENTRANT — GENERAL',
+        'hero.cta': 'Unir-me a la resistència',
+        'games.label': 'Mòduls de missió',
+        'games.title': 'Missions a l\'hangar',
+        'games.playNow': 'Juga ara!',
+        'games.mission1': '· Missió 1',
+        'games.mission5': '· Missió 5',
+        'games.heimdallDesc': 'Dirigeix el radiotelescopi Heimdall i fotografia cada anomalia abans que detecten la teua posició. Tens 100 segons.',
+        'games.heimdallChallenge': 'Sigues el més ràpid amb el ratolí per fotografiar el major nombre d\'ovnis!',
+        'games.comingSoon': 'En construcció',
+        'games.orbitTitle': 'Orbit & Math',
+        'games.orbitDesc': 'Calcula trajectòries i velocitats orbitals. Les matemàtiques determinen si arribes al teu destí.',
+        'games.orbitChallenge': 'Troba la ruta exacta abans de quedar-te sense combustible!',
+        'games.xenoTitle': 'Xenobiologia 101',
+        'games.xenoDesc': 'Classifica noves formes de vida alienígena aplicant principis de biologia i taxonomia.',
+        'games.xenoChallenge': 'Identifica cada espècimen abans que se t\'escape!',
+        'games.reactorTitle': 'Reactor Core',
+        'games.reactorDesc': 'Mantén el reactor de la nau estable resolent problemes de física i energia en temps real.',
+        'games.reactorChallenge': 'Aguanta el pols ferm abans que el nucli col·lapse!',
+        'games.mathDesc': 'Resol operacions matemàtiques per carregar el teu canó i repel·lir la invasió alienígena. El temps corre!',
+        'games.mathChallenge': 'Sigues el més ràpid amb el teclat numèric per destruir tots els ovnis que pugues!',
+        'games.signalTitle': 'Signal Lost',
+        'games.signalDesc': 'Intercepta i analitza senyals de ràdio alienígenes. Lingüística i patrons al servei del primer contacte.',
+        'games.signalChallenge': 'Desxifra el missatge abans que el senyal es perda!',
+        'about.label': 'L\'univers Thotteu',
+        'about.title': 'Sabràs trobar el context?',
+        'about.desc': 'Thotteu és un univers de ficció construït per reforçar allò que ja sabem a través d\'un propòsit narratiu. Cada joc és una missió dins d\'una història més gran: explorar, descobrir i sobreviure en un cosmos que busca traure el millor de tu.',
+        'about.skills': 'Darrere de cada missió hi ha una destresa real que s\'entrena sense que ho notes: precisió amb el ratolí, agilitat amb el teclat, càlcul mental i més.',
+        'about.quote': '«Qui llig molt i camina molt, veu molt i sap molt.»',
+        'about.quoteAuthor': '— Miguel de Cervantes',
+        'footer.tag': '© 2026 Thotteu · Univers en construcció',
+        'cookieText': 'Fem servir cookies d\'analítica per entendre com s\'utilitza Thotteu. Només s\'activen si dones el teu consentiment.',
+        'cookiePrivacyLink': 'Més informació',
+        'cookieReject': 'Rebutjar',
+        'cookieAccept': 'Acceptar'
       }
     };
 
@@ -879,7 +956,7 @@
     (function initLang() {
       var saved = localStorage.getItem('thotteu_lang');
       var browserLang = (navigator.language || 'en').split('-')[0];
-      var supported = ['en', 'es', 'fr', 'pt'];
+      var supported = ['en', 'es', 'fr', 'pt', 'ca'];
       var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
       applyLang(initial);
     })();

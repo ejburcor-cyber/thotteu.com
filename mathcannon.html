@@ -59,7 +59,8 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .ad-placeholder{background:rgba(255,255,255,.04);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.3);font-size:.4rem;letter-spacing:1px}
 .ad-slot{width:100%;max-width:728px;margin:0 auto;text-align:center}
 .ad-slot-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
-.lang-selector{position:relative;display:inline-block;margin-bottom:6px}
+.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
+.lang-selector{position:absolute;top:4px;right:8px;display:inline-block}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
 .lang-btn-toggle:hover{border-color:#7cf}
 .lang-dropdown{display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:#0d1020;border:1.5px solid #4af;border-radius:6px;overflow:hidden;z-index:100;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
@@ -79,24 +80,31 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .cookie-btn.accept{background:#4af;color:#000}
 .cookie-btn.accept:hover{background:#7cf}
 .cookie-btn.reject:hover{border-color:#a78bfa;color:#a78bfa}
+.general-briefing{display:flex;align-items:center;gap:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.3);border-radius:4px;padding:10px 14px;margin:10px 0;text-align:left;max-width:560px}
+.general-briefing img{width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))}
+.general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
+.general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
 </style>
 </head>
 <body>
 
 <a href="/" class="back-btn" data-i18n="backBtn">&#8592; THOTTEU</a>
 
-<h1>&#9889; <span data-i18n="title">MATH CANNON</span> &#9889;</h1>
-<p style="color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center" data-i18n="subtitle">CALCULATE FAST TO REPEL THE INVADERS</p>
+<div class="title-block">
+  <h1>&#9889; <span data-i18n="title">MATH CANNON</span> &#9889;</h1>
+  <p style="color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center" data-i18n="subtitle">CALCULATE FAST TO REPEL THE INVADERS</p>
 
-<div class="lang-selector">
-  <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
-    <span id="lang-current">EN</span> ▾
-  </button>
-  <div class="lang-dropdown" id="lang-dropdown">
-    <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
-    <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
-    <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
-    <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+  <div class="lang-selector">
+    <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
+      <span id="lang-current">EN</span> ▾
+    </button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
+      <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
+      <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
+      <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+      <div class="lang-option" data-lang="ca" onclick="setLang('ca')">CA — Català-Valencià</div>
+    </div>
   </div>
 </div>
 
@@ -358,6 +366,10 @@ var i18n = {
     cookiePrivacyLink:'Learn more',
     cookieReject:'Reject',
     cookieAccept:'Accept',
+    generalLabel:'GENERAL — MISSION DEBRIEF',
+    generalHigh:'Outstanding calculations, soldier. The cannon never stood a chance of missing.',
+    generalMid:'Solid performance. Keep sharpening those reflexes.',
+    generalLow:'We need faster math on the front line. Try again, recruit.',
     lore:'YEAR 2050. Early in the year, an alien invasion fleet was detected in the Oort Cloud. A drone artillery army is being deployed to defend Earth... only the best will repel the attack. Are you ready? Select your level and defend every inch of Earth with your cannon.'
   },
   es: {
@@ -390,6 +402,10 @@ var i18n = {
     cookiePrivacyLink:'Más información',
     cookieReject:'Rechazar',
     cookieAccept:'Aceptar',
+    generalLabel:'GENERAL — INFORME DE MISIÓN',
+    generalHigh:'Cálculos excelentes, soldado. El cañón no falló ni un disparo.',
+    generalMid:'Buen desempeño. Sigue afinando los reflejos.',
+    generalLow:'Necesitamos matemáticas más rápidas en el frente. Inténtalo de nuevo, recluta.',
     lore:'AÑO 2050. A principios de año se detectó una flota de invasión alienígena en la Nube de Oort. Se está desplegando un ejército de artillería con drones para defender la Tierra... solo los mejores repelerán el ataque. ¿Estás listo? Selecciona tu nivel y defiende cada centímetro de la Tierra con tu cañón.'
   },
   fr: {
@@ -422,6 +438,10 @@ var i18n = {
     cookiePrivacyLink:'En savoir plus',
     cookieReject:'Refuser',
     cookieAccept:'Accepter',
+    generalLabel:'GÉNÉRAL — RAPPORT DE MISSION',
+    generalHigh:'Calculs remarquables, soldat. Le canon n\'a raté aucun tir.',
+    generalMid:'Bonne performance. Continuez à affiner vos réflexes.',
+    generalLow:'Il nous faut des calculs plus rapides sur le front. Réessayez, recrue.',
     lore:'ANNÉE 2050. Au début de l\'année, une flotte d\'invasion extraterrestre a été détectée dans le nuage d\'Oort. Une armée de drones d\'artillerie est déployée pour défendre la Terre... seuls les meilleurs repousseront l\'attaque. Êtes-vous prêt ? Choisissez votre niveau et défendez chaque centimètre de la Terre avec votre canon.'
   },
   pt: {
@@ -454,7 +474,47 @@ var i18n = {
     cookiePrivacyLink:'Saiba mais',
     cookieReject:'Rejeitar',
     cookieAccept:'Aceitar',
+    generalLabel:'GENERAL — RELATÓRIO DA MISSÃO',
+    generalHigh:'Cálculos excelentes, soldado. O canhão não errou um único tiro.',
+    generalMid:'Bom desempenho. Continue afiando seus reflexos.',
+    generalLow:'Precisamos de matemática mais rápida na linha de frente. Tente novamente, recruta.',
     lore:'ANO 2050. No início do ano, uma frota de invasão alienígena foi detectada na Nuvem de Oort. Um exército de artilharia com drones está sendo implantado para defender a Terra... só os melhores repelirão o ataque. Você está pronto? Selecione seu nível e defenda cada centímetro da Terra com seu canhão.'
+  },
+  ca: {
+    title:'MATH CANNON', subtitle:'CALCULA RÀPID PER REPEL·LIR ELS INVASORS',
+    score:'PUNTS', best:'MILLOR', lvl:'NIVELL',
+    enterCoords:'INTRODUEIX LES COORDENADES PER IMPACTAR:',
+    load:'CÀRREGA', attack:'ATAC',
+    instructions:'INSTRUCCIONS',
+    instructionsBody:'Amb ALT — Canvia entre el mode CÀRREGA i ATAC<br>MODE CÀRREGA — Escriu la resposta + ENTER → guanya 🚀 míssils<br>MODE ATAC — 4 &lt;-- / --&gt; 6 moure &nbsp;|&nbsp; ESPAI dispara<br>Amaga\'t als túnels per esquivar els trets!<br>P — Pausa el joc (costa 2 míssils)',
+    selectDifficulty:'SELECCIONA LA DIFICULTAT:',
+    baby:'BEBÉ', kids:'XIQUET', teenager:'ADOLESCENT', technician:'TÈCNIC',
+    arcadeAll:'ARCADE — TOTS ELS NIVELLS',
+    startGame:'COMENÇAR PARTIDA', playAgain:'TORNAR A JUGAR',
+    gameOver:'FI DE LA PARTIDA', newRecord:'⭐ NOU RÈCORD! ⭐',
+    mode:'Mode', aliensDestroyed:'Alienígenes destruïts', correctAnswers:'Respostes correctes', level:'Nivell',
+    hofTitle:'SALÓ DE LA FAMA', hofEmpty:'SALÓ DE LA FAMA — Juga per aconseguir un rècord!',
+    hofScore:'PUNTS', hofMode:'MODE', hofLv:'NIV', hofCorrect:'ENCERTS', hofDate:'DATA',
+    noFireTunnel:'⛔ NO POTS DISPARAR AL TÚNEL!',
+    noMissiles:'⚠ SENSE MÍSSILS — RESOL OPERACIONS!',
+    lifeRestored:'🌟 VIDA RESTAURADA! ❤️',
+    superCharge:'⚡ SÚPER CÀRREGA! +{n} 🚀',
+    earnedMissiles:'✓ +{n} 🚀 MÍSSILS!',
+    coordFailed:'COORDENADA FALLIDA! Resposta: {a}',
+    wrongAttempt:'✗ INCORRECTE — 1 🚀 DEFECTUÓS — {n} intent{s} restant{s}',
+    streak:'RATXA', superMissileReady:'SÚPER MÍSSIL LLEST!',
+    alienBreach:'⚠ BRETXA ALIENÍGENA IMMINENT!',
+    arcadeRound:'🗙️ ARCADE (Ronda {n}, {stage})',
+    backBtn:'← THOTTEU',
+    cookieText:'Fem servir cookies d\'analítica. Només s\'activen amb el teu consentiment.',
+    cookiePrivacyLink:'Més informació',
+    cookieReject:'Rebutjar',
+    cookieAccept:'Acceptar',
+    generalLabel:'GENERAL — INFORME DE MISSIÓ',
+    generalHigh:'Càlculs excel·lents, soldat. El canó no ha fallat ni un tret.',
+    generalMid:'Bon rendiment. Continua afinant els reflexos.',
+    generalLow:'Necessitem matemàtiques més ràpides al front. Torna-ho a intentar, recluta.',
+    lore:'ANY 2050. A principis d\'any es va detectar una flota d\'invasió alienígena al Núvol d\'Oort. S\'està desplegant un exèrcit d\'artilleria amb drons per defendre la Terra... només els millors repel·liran l\'atac. Estàs preparat? Selecciona el teu nivell i defén cada centímetre de la Terra amb el teu canó.'
   }
 };
 
@@ -1243,12 +1303,20 @@ function endGame(){
   const ml=gameMode==='arcade'
     ? t.arcadeRound.replace('{n}',arcadeLap+1).replace('{stage}',getArcadeLabels()[arcadeStage])
     : {infantil:'\u2B50 '+t.baby,colegio:'\uD83D\uDCDA '+t.kids,instituto:'\uD83C\uDF93 '+t.teenager,universidad:'\uD83D\uDD2C '+t.technician}[gameMode];
+  const generalComment = correctOps >= 20 ? t.generalHigh : (correctOps >= 8 ? t.generalMid : t.generalLow);
   const ov=$('overlay'); ov.style.display='flex';
   ov.innerHTML=`
     <h2>${t.gameOver}</h2>
     ${isNewRecord?'<p style="color:#ff0;font-size:.6rem;letter-spacing:2px;animation:blink .5s step-end infinite">'+t.newRecord+'</p>':''}
     <div class="score-final">${t.score}: ${score}${isNewRecord?'':` &nbsp;<span style="color:#f84;font-size:.5rem">${t.best}: ${highScore}</span>`}</div>
     <p>${t.mode}: ${ml}<br>${t.aliensDestroyed}: ${aliensDestroyed} &nbsp;|&nbsp; ${t.correctAnswers}: ${correctOps} &nbsp;|&nbsp; ${t.level}: ${difficulty}</p>
+    <div class="general-briefing">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==" alt="General" />
+      <div>
+        <span class="general-briefing-label">${t.generalLabel}</span>
+        <div class="general-briefing-text">${generalComment}</div>
+      </div>
+    </div>
     <div id="mode-select" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px">
       <div id="mode-row-levels" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
         <button class="mode-btn infantil${gameMode==='infantil'?' selected':''}" onclick="selectMode('infantil')">\u2B50 ${t.baby}</button>
@@ -1370,7 +1438,7 @@ function darken(hex){  return `rgb(${Math.max(0,parseInt(hex.slice(1,3),16)-60)}
 window.addEventListener('load',()=>{
   var saved = localStorage.getItem('mathcannon_lang');
   var browserLang = (navigator.language || 'en').split('-')[0];
-  var supported = ['en','es','fr','pt'];
+  var supported = ['en','es','fr','pt','ca'];
   var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
   applyLang(initial);
 

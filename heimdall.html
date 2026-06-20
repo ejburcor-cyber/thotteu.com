@@ -57,7 +57,8 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
 #hall-of-fame{margin-top:6px}
 #hof-standalone{margin:10px auto 0}
-.lang-selector{position:relative;display:inline-block;margin-top:6px}
+.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
+.lang-selector{position:absolute;top:4px;right:8px;display:inline-block}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
 .lang-btn-toggle:hover{border-color:#7cf}
 .lang-dropdown{display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:#0d1020;border:1.5px solid #4af;border-radius:6px;overflow:hidden;z-index:100;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
@@ -77,6 +78,10 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .cookie-btn.accept{background:#4af;color:#000}
 .cookie-btn.accept:hover{background:#7cf}
 .cookie-btn.reject:hover{border-color:#a78bfa;color:#a78bfa}
+.general-briefing{display:flex;align-items:center;gap:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.3);border-radius:4px;padding:10px 14px;margin:10px 0;text-align:left}
+.general-briefing img{width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))}
+.general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
+.general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
 </style>
 </head>
 <body>
@@ -151,18 +156,21 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
   </g>
 </svg>
 
-<h1>&#128225; <span data-i18n="title">PROJECT HEIMDALL</span> &#128225;</h1>
-<p class="subtitle" data-i18n="subtitle">SPOT THE UNKNOWN BEFORE THEY SPOT YOU</p>
+<div class="title-block">
+  <h1>&#128225; <span data-i18n="title">PROJECT HEIMDALL</span> &#128225;</h1>
+  <p class="subtitle" data-i18n="subtitle">SPOT THE UNKNOWN BEFORE THEY SPOT YOU</p>
 
-<div class="lang-selector">
-  <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
-    <span id="lang-current">EN</span> ▾
-  </button>
-  <div class="lang-dropdown" id="lang-dropdown">
-    <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
-    <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
-    <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
-    <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+  <div class="lang-selector">
+    <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
+      <span id="lang-current">EN</span> ▾
+    </button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
+      <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
+      <div class="lang-option" data-lang="fr" onclick="setLang('fr')">FR — Français</div>
+      <div class="lang-option" data-lang="pt" onclick="setLang('pt')">PT — Português</div>
+      <div class="lang-option" data-lang="ca" onclick="setLang('ca')">CA — Català-Valencià</div>
+    </div>
   </div>
 </div>
 
@@ -329,6 +337,10 @@ var i18n = {
     cookiePrivacyLink:'Learn more',
     cookieReject:'Reject',
     cookieAccept:'Accept',
+    generalLabel:'GENERAL — MISSION DEBRIEF',
+    generalHigh:'Outstanding work, soldier. Heimdall is in good hands.',
+    generalMid:'Solid performance. Keep sharpening your aim.',
+    generalLow:'We need more eyes on the field. Try again, recruit.',
     lore:'YEAR 2050. Unusual signals have been detected at the edge of the Solar System. Humanity has deployed a network of radiotelescopes across the Oort Cloud to track the deep field and identify the source. Volunteers are needed to operate Heimdall and photograph every anomaly before our position is compromised. You have 100 seconds once detection begins. Adjust the radiotelescope speed to bring more of the field into view — at your own risk.'
   },
   es: {
@@ -357,6 +369,10 @@ var i18n = {
     cookiePrivacyLink:'Más información',
     cookieReject:'Rechazar',
     cookieAccept:'Aceptar',
+    generalLabel:'GENERAL — INFORME DE MISIÓN',
+    generalHigh:'Excelente trabajo, soldado. Heimdall está en buenas manos.',
+    generalMid:'Buen desempeño. Sigue afinando la puntería.',
+    generalLow:'Necesitamos más ojos en el campo. Inténtalo de nuevo, recluta.',
     lore:'AÑO 2050. Se han detectado señales inusuales en el borde del Sistema Solar. La humanidad ha desplegado una red de radiotelescopios por la Nube de Oort para rastrear el campo profundo e identificar el origen. Se necesitan voluntarios para operar Heimdall y fotografiar cada anomalía antes de que nuestra posición quede comprometida. Tienes 100 segundos una vez que comience la detección. Ajusta la velocidad del radiotelescopio para traer más del campo a la vista — bajo tu propio riesgo.'
   },
   fr: {
@@ -385,6 +401,10 @@ var i18n = {
     cookiePrivacyLink:'En savoir plus',
     cookieReject:'Refuser',
     cookieAccept:'Accepter',
+    generalLabel:'GÉNÉRAL — RAPPORT DE MISSION',
+    generalHigh:'Excellent travail, soldat. Heimdall est entre de bonnes mains.',
+    generalMid:'Bonne performance. Continuez à affiner votre précision.',
+    generalLow:'Nous avons besoin de plus de vigilance. Réessayez, recrue.',
     lore:'ANNÉE 2050. Des signaux inhabituels ont été détectés aux confins du système solaire. L\'humanité a déployé un réseau de radiotélescopes à travers le nuage d\'Oort pour scruter le champ profond et identifier la source. Des volontaires sont nécessaires pour piloter Heimdall et photographier chaque anomalie avant que notre position ne soit compromise. Vous avez 100 secondes une fois la détection commencée. Ajustez la vitesse du radiotélescope pour élargir le champ visible — à vos risques et périls.'
   },
   pt: {
@@ -413,7 +433,43 @@ var i18n = {
     cookiePrivacyLink:'Saiba mais',
     cookieReject:'Rejeitar',
     cookieAccept:'Aceitar',
+    generalLabel:'GENERAL — RELATÓRIO DA MISSÃO',
+    generalHigh:'Excelente trabalho, soldado. Heimdall está em boas mãos.',
+    generalMid:'Bom desempenho. Continue afiando sua pontaria.',
+    generalLow:'Precisamos de mais olhos no campo. Tente novamente, recruta.',
     lore:'ANO 2050. Sinais incomuns foram detectados na borda do Sistema Solar. A humanidade implantou uma rede de radiotelescópios pela Nuvem de Oort para rastrear o campo profundo e identificar a origem. Voluntários são necessários para operar o Heimdall e fotografar cada anomalia antes que nossa posição seja comprometida. Você tem 100 segundos assim que a detecção começar. Ajuste a velocidade do radiotelescópio para trazer mais do campo à vista — por sua conta e risco.'
+  },
+  ca: {
+    title:'PROJECT HEIMDALL',
+    subtitle:'DETECTA EL DESCONEGUT ABANS QUE ET DETECTEN',
+    score:'PUNTS', best:'MILLOR', captures:'CAPTURES',
+    finaleWarning:'UN OVNI S\'APROPA — ENS HAN DETECTAT!',
+    finaleSub:'DISPARA TANTES FOTOS COM PUGUES!',
+    alienDetection:'DETECCIÓ ALIENÍGENA',
+    radiotelescopeSpeed:'VELOCITAT DEL RADIOTELESCOPI',
+    speedTip:'CONSELL: una velocitat major porta més anomalies a la vista — i més risc.',
+    instructions:'INSTRUCCIONS',
+    instructionsBody:'Mou el ratolí pel camp de visió profund.<br>FES CLIC en les anomalies (ovnis) per fotografiar-les i identificar-les.<br>Els tipus nous d\'anomalia valen 2 punts — els repetits valen 1.<br>Les roques i estreles fugaces són esquers — fer-hi clic no fa res.<br>El control de VELOCITAT DEL RADIOTELESCOPI és ajustable.<br>Tens 100 segons abans que el senyal delate la teua posició.',
+    startGame:'COMENÇAR PARTIDA',
+    tryAgain:'TORNAR-HO A INTENTAR',
+    signalLost:'SENYAL PERDUT',
+    destroyedMsg:'El radiotelescopi <span style="color:#f84">HEIMDALL-2504</span> ha sigut destruït.<br>La flota d\'anomalies ha detectat la nostra posició.',
+    finalScore:'PUNTUACIÓ FINAL',
+    anomaliesCaptured:'Anomalies capturades',
+    typesIdentified:'Tipus identificats',
+    hofTitle:'SALÓ DE LA FAMA',
+    hofEmpty:'SALÓ DE LA FAMA — Juga per aconseguir un rècord!',
+    hofScore:'PUNTS', hofCaptures:'CAPTURES', hofTypes:'TIPUS ID.', hofDate:'DATA',
+    backBtn:'← THOTTEU',
+    cookieText:'Fem servir cookies d\'analítica. Només s\'activen amb el teu consentiment.',
+    cookiePrivacyLink:'Més informació',
+    cookieReject:'Rebutjar',
+    cookieAccept:'Acceptar',
+    generalLabel:'GENERAL — INFORME DE MISSIÓ',
+    generalHigh:'Excel·lent treball, soldat. Heimdall està en bones mans.',
+    generalMid:'Bon rendiment. Continua afinant la punteria.',
+    generalLow:'Necessitem més ulls al camp. Torna-ho a intentar, recluta.',
+    lore:'ANY 2050. S\'han detectat senyals inusuals a la vora del Sistema Solar. La humanitat ha desplegat una xarxa de radiotelescopis pel Núvol d\'Oort per rastrejar el camp profund i identificar l\'origen. Es necessiten voluntaris per operar Heimdall i fotografiar cada anomalia abans que la nostra posició quede compromesa. Tens 100 segons una vegada comence la detecció. Ajusta la velocitat del radiotelescopi per portar més del camp a la vista — pel teu propi risc.'
   }
 };
 
@@ -434,6 +490,8 @@ function applyLang(lang){
   document.querySelectorAll('.lang-option').forEach(function(o){
     o.classList.toggle('active', o.dataset.lang === lang);
   });
+  var loreEl = document.getElementById('lore-text');
+  if (loreEl && t.lore) loreEl.textContent = t.lore;
   renderHOF();
 }
 
@@ -499,13 +557,13 @@ function spawnObject(){
   const roll = Math.random();
   const baseY = 30 + Math.random()*(H-160);
 
-  if(roll < 0.07){
+  if(roll < 0.084){
     // Fleet — 3 UFOs in loose formation
     const startY = 40 + Math.random()*(H-220);
     spawnUFO(W+40, startY);
     spawnUFO(W+90, startY+40);
     spawnUFO(W+140, startY+80);
-  } else if(roll < 0.26){
+  } else if(roll < 0.312){
     // Single UFO — pick a type
     spawnUFO(W+40, baseY);
   } else if(roll < 0.62){
@@ -539,7 +597,7 @@ function drawStarfield(dt){
   ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
 
   stars.forEach(s=>{
-    s.x -= speed * (s.layer===1?0.32:0.88);
+    s.x -= speed * (s.layer===1?0.288:0.792);
     if(s.x < -5) s.x += W+10;
     s.tw += 0.02;
     const a = 0.4 + 0.4*Math.sin(s.tw);
@@ -790,7 +848,7 @@ function loop(t){
 
   if(!finaleActive){
     // spawn rate scales with speed
-    spawnAccum += dt * (0.5 + speed*0.2);
+    spawnAccum += dt * (0.5 + speed*0.18);
     const spawnInterval = 900;
     if(spawnAccum > spawnInterval){
       spawnAccum = 0;
@@ -799,7 +857,7 @@ function loop(t){
   }
 
   // move + draw + cleanup (frozen during finale)
-  const moveSpeed = finaleActive ? 0 : speed * 0.072 * dt;
+  const moveSpeed = finaleActive ? 0 : speed * 0.0648 * dt;
   const objDt = finaleActive ? 0 : dt;
   for(let i=objects.length-1;i>=0;i--){
     const o = objects[i];
@@ -808,11 +866,11 @@ function loop(t){
       o.bobPhase += o.bobSpeed*objDt;
       o.zigTimer = (o.zigTimer||0) - objDt;
       if(!o.caught && o.zigTimer<=0 && !finaleActive){
-        o.zigDir = (Math.random()-0.5) * 2;
-        o.zigTimer = 300 + Math.random()*500;
+        o.zigDir = (Math.random()-0.5) * 3.2;
+        o.zigTimer = 250 + Math.random()*400;
       }
       if(!o.caught && !finaleActive){
-        o.y += (o.zigDir||0) * objDt * 0.04;
+        o.y += (o.zigDir||0) * objDt * 0.055;
         o.y = Math.max(20, Math.min(H-60, o.y));
       }
       drawUFO(o);
@@ -926,6 +984,7 @@ function endGame(){
   setTimeout(()=>{
     const ov = $('overlay');
     const t = i18n[currentLang] || i18n.en;
+    const generalComment = score >= 30 ? t.generalHigh : (score >= 12 ? t.generalMid : t.generalLow);
     ov.style.display='flex';
     ov.innerHTML = `
       <h2 style="color:#f44">&#9888; ${t.signalLost}</h2>
@@ -933,6 +992,13 @@ function endGame(){
       <p class="score-final">${t.finalScore}: ${score}</p>
       <p style="color:#4af;font-size:.45rem">${t.anomaliesCaptured}: ${captures} &nbsp;|&nbsp; ${t.typesIdentified}: ${discoveredTypes.size}/8</p>
       <p style="color:#f84;font-size:.45rem">${t.best}: ${highScore}</p>
+      <div class="general-briefing">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==" alt="General" />
+        <div>
+          <span class="general-briefing-label">${t.generalLabel}</span>
+          <div class="general-briefing-text">${generalComment}</div>
+        </div>
+      </div>
       <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
       <div id="hall-of-fame"></div>
     `;
@@ -944,7 +1010,7 @@ function endGame(){
 window.addEventListener('load', ()=>{
   var saved = localStorage.getItem('heimdall_lang');
   var browserLang = (navigator.language || 'en').split('-')[0];
-  var supported = ['en','es','fr','pt'];
+  var supported = ['en','es','fr','pt','ca'];
   var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
   applyLang(initial);
 
