@@ -212,6 +212,76 @@
 
     .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
+    .briefing-box {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      max-width: 620px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(135deg, rgba(13,31,60,0.9), rgba(5,10,24,0.95));
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      box-shadow: 0 0 30px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.04);
+      overflow: hidden;
+      text-align: left;
+      position: relative;
+    }
+
+    .briefing-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.6;
+    }
+
+    .briefing-portrait {
+      flex-shrink: 0;
+      width: 110px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      background: linear-gradient(180deg, rgba(0,229,255,0.08), transparent);
+      border-right: 1px solid rgba(0,229,255,0.25);
+      padding: 0.5rem 0;
+    }
+
+    .briefing-portrait img {
+      width: 90px;
+      height: auto;
+      filter: drop-shadow(0 0 8px rgba(0,229,255,0.35));
+    }
+
+    .briefing-content {
+      flex: 1;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .briefing-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+      opacity: 0.85;
+    }
+
+    .briefing-text {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    @media (max-width: 560px) {
+      .briefing-box { flex-direction: column; max-width: 92%; }
+      .briefing-portrait { width: 100%; border-right: none; border-bottom: 1px solid rgba(0,229,255,0.25); justify-content: center; padding: 0.75rem 0; }
+      .briefing-portrait img { width: 70px; }
+    }
+
     .btn {
       display: inline-block;
       padding: 0.75rem 2rem;
@@ -524,9 +594,14 @@
       <span data-i18n="hero.title1">Los aliens nos atacan</span>
       <span class="line-glow" data-i18n="hero.title2">¡ÚNETE A LA RESISTENCIA!</span>
     </h1>
-    <p data-i18n="hero.desc">Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.</p>
-    <div class="btn-group">
-      <a href="#juegos" class="btn btn-primary" data-i18n="hero.cta">Unirme a la resistencia</a>
+    <div class="briefing-box">
+      <div class="briefing-portrait">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWCAYAAAAPFqyuAAAN+0lEQVR4nO2de6wdRR3Hv7fcglClVBBtsQJF6KCWZ0HTjgIWoxQaSxWUEqU+iFqJSgOYGCrgAxGMGg1BEDFWKYkFWlCKMVILjlVpeRWEKdhCQChWlFJL5SX1jz3nnj17ZndnfvOb2d3T80luzjm78/jd8z2z8/7NEOqKkOcDmAfggJKQGwEsB/BZaPVKaLPqzlDVBowg5E8AfJIhpaOh1WqGdBpJdYIKeQ2ATwTMYRa0+nXA9GtJXEGF/ACAWyPmuB1ajYqYX+XEEVTIlQCOiZKXmUOg1f0V5h+NsL9eIS+GkNtRrZgAsBZCzq3YhiiEKaFCzgRwS5C0fdGqPg3BAPD/c0mJrDuPQ6t9qzYiBHyCCnkwgAfZ0ovDbdDq+KqN4IRHUCEvAfBllrSqYQW0mlG1ERz4CyrkegCT/E2pBSdDq2VVG+GDn6DNqC/daXDDiW54v4rZ4SZoNbtqI1yhCdp8MTcCGG8Z9ihotSakMZy4C9p8MbsfqUK+CGDnkhhnQqurg9rEhJug/SBmm2w9KeTNAGY5xakh9gb2k5htTAIJORVA/vRbzUW1M64fxQSKxRHyGQB75tw9AVr9JohNnpQLKuRxAFaEN6Uiykpc/o/5cGh1L7s9nhTPtgg5Bf0spg2J4H803LkHQp4T25wyyqbP1kaxou5oJQFMMdy5LLYpZRTVIRcB+Go8UyrEpaFjfgSPrssCtaISumOI6c44w7WXo1uRg1lQIZ+MbEdz0GozgNf1XBfyF8HyFPLbtkHzSugEJlP6E622ordOPT1IXskj/jzbrmOvoEJey21TX6LVAwBu77oWpr/emWe2SN9UQneIxVQsaHVshDwuBXDqyGchTV2oEXaoNauBOLDrk5Cz2XPQagmApa1P0yDkgXlBuwUVchu7Mf2OVn/LXFlqDOefz5zUp4fzgmVL6K5BjOl34g3Y7z7yTkjjMtlRqQCHBTenjoQQQ8j3MKcnWg2iLamrM01Bh1Pvv8RqRFMQ8lUA0wFsBvCIx4jPKgDTWu9PAnCHv3EjPGQbMP3IPYPRgCYxhESMBwG8DCG3t/5WQsizrVPRanrqE9+EhpDvS+UxBOAtRcHTSzH6c87Tju0on0q8DMAV0OrRCPZ0EPIQAPcB6FQPyUjeBACXQ6uz0sFHtQIcHNPGGmJTj54LYEOr9MbsDezXc0WrfVrvPp+91X7kNmZVW03YtSXsuyPktdUlcFvQ3QIYsiNwR4Sqyin9wUgRB2FFdWp1j4KQB4WyZIci6f6EwLmEXhDIkB2NIQh5QoB0/5dz/XQYNlUPYzC7wsly8G+i3sl4VavFABZnLw/qUG6ELNtW4YqTRgNB+fldlZkPBOUnRt80l4GgfcZA0D5jIGifMRC0zxgI2mcMBOXn8SozHwjKz8eqzHwgKD8/rTLzgaD8VOpVjUvQ3zKlM8ATHkG1ej9LOv2CkLKqrIcBHAlgcuvvIACnEdMaB+BZJruazmEAVBUZj4JWd0Or66DVhQDoftmTjbD9wnwAPisQDucyxJXsI/diz/QKFwE3iJ8B+I9HfI7zZ0iY6tB70PGkdT+AvwJYB+BRJJ3mZ1vXliBborV6AsBnAtkaD622obPD6zkk//dDSP7v9a17q1ufa8Ww4Vr6cWFy5QIk9eXbjXe0ugpCXulpVx2Yh0Swsa2/RhCqH1pZHcKGVk3znw8glKA1dJnmAM8ZM0JW4hYo3EhRzb1W5qJVehugT3vgIl9TKIQe+qud67QSNmY+/7wSKzzgEHRL7h2tzmNIPyZHd33S6r8V2UGGQ9B/lNy/iiGPOGj1d9b0hNyfNT0LOAR9uvCuVk3pl4YYDIg+xh32kdvhUoZ8wqJV3jzmrzxSPdYjLom0FxTqHtHiEgoAWjX5GC0fH36CzQpL0iWU2gCw7YD/iZh+DPJ/cFr5jOm+2SMuiY6gWlE3ra6yCqXVtPJAFZH40wtB3iEEweCoQ//CkEbdmV4epB74C+pWst/mnV8VaGX3FKoBcReJaWXtESsiP7AM1wjHloNVf8D1luFuDWoFE1UIenR5kIho9QfLkLTZEyHfRYpHJL6gWuWfK1Zn6POjc8qD8FHVI9e2VITmPsfwFA+b7yXEIRNfUCG/j4q3raf4tFNorSiT376rN2rvNGMi3EtGGOKc3Bv1O/bN7G5CnDkADgUwo/XaNG4vD8KKo2s4P9zO0BQyfczUbUhK6lwkwtr2B6vG7TENAEL6NIxedAnsK6jrr9U04bsYibD7I/GjfoWnTbbQWtu9p0DYcAMpr4SoJdT1nytyrj8LiWu1zyEReQ6SUhwKn5UUX3COIWTveWl2RHWv6noq3/csw80FcCOSY0e+Dsd/ypIHyDG1+iEh1hYI+SZCvKit3Bc84m6yCDMNwEJ0HCJe7pFfN1r92TOFsrVUJrKrCtmJV0LTpxsk7E3Ir+1jvQ7jqseRYgn5UWY7uvAV1CX+DM+80qT90hYe7hYM+szRdax2ZPAV9DUOYd/hmVce7cnnPEfBZoTciyFv2jmrQj7FkLcRX0FdGivjPfMqw+woOB//yXatNoLWYAv2XaRX/VH2otiVCiGnADiCkH5IuErJO0mxAh08kC6h++SG8uf3AdOmQRsgMKVDnw7k937dJSil1VmOkAtRvvptQ+vVZ8lklZxJjOc0rGdDWtBQx318xCJM21kTdTSljE1IqodNAB4B90CFVleT4wo5mtGSLkH5W6FCHoG8rfvu5C3SWtd6LfJasjc6Y6JjEKaDv4gY73xOI9KC5p7rXEBZ0/9rhDTzyNuqMbn1WtZi3wWJsBNA7W4UoRX1uM6ytUpOW1TSX4JLn7JN2dLGEwlpNpmbSbGELNof5OQvKS0o5fztf+feqdA9WmVo9UFizDcW3CPPtrjXoVoVbSX0dWLVVE4hxRJyds4dsqDcoxf7MafHS4A+IABAK9uF21mW5lwnP3K5oRxtHNO9d8iRqwNIsYTcz3A16oqFIihzpTF9BYYTVKsNoPkQNhUCciuXe0V7UUWf5V/MeRfxfOt196C5UH0IC5n9UZMXiT1CMiCfohGQ7KB+zI2xY1qvlOUgrlC281+T+ew0aZIW9J+OGT9Zcv8bBfdcp7pC8MXgOSRnfLqSXQhAbuU+5phx8XEWWgWdmW8MFBd53VNrZEF7jv8tRKviKTEhF6Q+xawj68ipzjGEbGtDXPWnFXcdmj4KOrrziFqh1RK4bxv5VOvVqXoK2W1ppjfOUGh1pGOM9kJwpzH2MIIKOYzE63Wb4OtRSQgZZlI/H7epxKQuXeESJSso1+bUSege+gu9QIzCcwDeGjXHZBf4TeT4FuuQugUta+h0KHOe/3rQHrk+R2u4sgqOozAsaDUbPhuyhNwOIb+Sd5v6yC1rEX+YmG7MzbF3IjkoID5azfdM4Zt5pZX6Ba4ruT+15H4dFoNdAj/HjH6U90+/BeC7hSEMolIFPb7kfpkvglCLwezRymejFRdHFdw7B8CCgvsJGVGpguYP5NNWsYU4M83G85frdkhetFpTUFLtV2EKOTLFZjqIx4Yi3wjTkYwMuQwmjCsP4oxNgyfYHhNHTkR3u+ROuM0n79QqqWdTS+jDBfdmIvTUFB/XG6ar4qPVcgAfSl2helv7DlXQogynA9hKTDcW7e7Rj1CXPTda3YjiOjUv3hCSma9boNUw9ZFbtLptL4R5hHLS3o4/DGBzhXZ0o9UaCDkRwBOW4YdaryOes+n9PiHzHqt16JIU8VLq/VbUocWdJjlqpHxkLacx5dORfy7neuzxUVd2RnsHePLllfWZ46PV0yX91NyV/yZB7V2OC3lS5vN4VF9CXyoNoVW6dcu6WYgVs6jHtTYaGzEJ6jLRnT3TZA9U74bcdb1ttX3RctLORk6BViuLAued8GuPkOkZC8qGp9hckPk82RiqPmweeWexiNskqOvO5oWp99HPKSGQnV907yrUGJOgyxzT+HjqfRC/Acysz3weYwxVH5wGaUyC+jyCaM6YYtLboHisCjMccBqe5J5/pB6Fwe5rwIGVFeZtA3krRJa1SBpI22B3AiEAnOySeYpdiPFcMfmtvQFCXhkp/+AUDf0dA602G+90z8Gll63sjmTAYay3ZSHQqnfLnlarIeSd8DtvuzYUldCZlmlktwBSxIzRmKJtl28YJkHb+zGuLY2t1RC0mpe6QnE5CsRZw3tWhDwqxyRox5uHaZezkG2f6/sa4lbZuClGK7sZjIbTK6hWr6DjnHiZIc6PW+FMu633sMw3b7jNzaOmPWeULI05DUK+NlDeUTHXoVq1N+ue0HW90xjq9X0r5FQAd1nmm/flcmwz7P1RaLUIWhWN2d6F+s/hWlHUKEqGxNoidsRcAK1My/PPLUmvCM4F1tkfhc3ZME0YsrQiX4D0qUPpbopWeQcBvIjy5ZvudvixAVqttQi3DuYjSBpHpx9q5791S0G4OjY6zrEKpdVTELJex2B2CLr7rGigeKJjWqF51DiQkM8zwSzxg7CDW8jDQlhSEckXoNWkknBZ+kLQ5JGr1b3I69x31595Yd6A5OjjopOTingVfPXoEOx89GYRADSTDZxU4njqGfgttuJsFM2HVr8kxKM7MQ5LJa7hDoX7xHgIlkIr6t7LvvADwSXoaFTne6g9B7sBWkU977qOcAm6J2j1Fge7AVgCrWgOEzvEPug1CFyCUpwnc7EIWrn7AerlQgg5jyGdSuES9HkUebcOxxUevt67Sda72g1E1BguQXdB/BXo5zH4KsjCdYJFZVB3n2V5AcnqtFiLlseWuEencn+ANKPyf6HKBFLMh1hAAAAAAElFTkSuQmCC" alt="General Thoth" />
+      </div>
+      <div class="briefing-content">
+        <p class="briefing-label" data-i18n="hero.briefingLabel">TRANSMISIÓN ENTRANTE — GENERAL</p>
+        <p class="briefing-text" data-i18n="hero.desc">Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Mejora tus habilidades y embárcate en nuestras misiones para salvar el mundo.</p>
+      </div>
     </div>
   </section>
 
@@ -618,7 +693,8 @@
         'hero.eyebrow': 'Solar system defense portal',
         'hero.title1': 'The aliens are attacking us',
         'hero.title2': 'JOIN THE RESISTANCE!',
-        'hero.desc': 'Year 2050. An alien fleet has been detected heading toward Earth. Embark on our missions to save the world.',
+        'hero.desc': 'Year 2050. An alien fleet has been detected heading toward Earth. Upgrade your skills and embark on our missions to save the world.',
+        'hero.briefingLabel': 'INCOMING TRANSMISSION — GENERAL',
         'hero.cta': 'Join the resistance',
         'games.label': 'Mission modules',
         'games.title': 'Mission games in the hangar',
@@ -657,7 +733,8 @@
         'hero.eyebrow': 'Portal de defensa del sistema solar',
         'hero.title1': 'Los aliens nos atacan',
         'hero.title2': '¡ÚNETE A LA RESISTENCIA!',
-        'hero.desc': 'Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Embárcate en nuestras misiones para salvar el mundo.',
+        'hero.desc': 'Año 2050, se ha detectado una flota alienígena dirigiéndose a la Tierra. Mejora tus habilidades y embárcate en nuestras misiones para salvar el mundo.',
+        'hero.briefingLabel': 'TRANSMISIÓN ENTRANTE — GENERAL',
         'hero.cta': 'Unirme a la resistencia',
         'games.label': 'Módulos de misión',
         'games.title': 'Misiones en el hangar',
@@ -696,7 +773,8 @@
         'hero.eyebrow': 'Portail de défense du système solaire',
         'hero.title1': 'Les aliens nous attaquent',
         'hero.title2': 'REJOIGNEZ LA RÉSISTANCE !',
-        'hero.desc': 'Année 2050. Une flotte extraterrestre a été détectée en direction de la Terre. Embarquez dans nos missions pour sauver le monde.',
+        'hero.desc': 'Année 2050. Une flotte extraterrestre a été détectée en direction de la Terre. Améliorez vos compétences et embarquez dans nos missions pour sauver le monde.',
+        'hero.briefingLabel': 'TRANSMISSION ENTRANTE — GÉNÉRAL',
         'hero.cta': 'Rejoindre la résistance',
         'games.label': 'Modules de mission',
         'games.title': 'Missions dans le hangar',
@@ -735,7 +813,8 @@
         'hero.eyebrow': 'Portal de defesa do sistema solar',
         'hero.title1': 'Os alienígenas nos atacam',
         'hero.title2': 'JUNTE-SE À RESISTÊNCIA!',
-        'hero.desc': 'Ano de 2050. Uma frota alienígena foi detectada rumo à Terra. Embarque em nossas missões para salvar o mundo.',
+        'hero.desc': 'Ano de 2050. Uma frota alienígena foi detectada rumo à Terra. Aprimore suas habilidades e embarque em nossas missões para salvar o mundo.',
+        'hero.briefingLabel': 'TRANSMISSÃO RECEBIDA — GENERAL',
         'hero.cta': 'Juntar-me à resistência',
         'games.label': 'Módulos de missão',
         'games.title': 'Missões no hangar',
@@ -915,6 +994,12 @@
         loadGA();
       } else if (consent !== 'rejected') {
         document.getElementById('cookie-banner').classList.add('show');
+      }
+      // Cookie banner lives below the language script in the document,
+      // so re-translate it now that it actually exists in the DOM.
+      if (typeof applyLang === 'function') {
+        var activeLang = localStorage.getItem('thotteu_lang') || 'en';
+        applyLang(activeLang);
       }
     })();
   </script>

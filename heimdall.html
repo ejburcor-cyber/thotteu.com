@@ -1000,6 +1000,12 @@ window.addEventListener('load', ()=>{
     } else if (consent !== 'rejected') {
       document.getElementById('cookie-banner').classList.add('show');
     }
+    // Make sure the banner reflects the active language even if this script
+    // runs before the page 'load' event finishes applying translations.
+    if (typeof applyLang === 'function') {
+      var activeLang = localStorage.getItem('heimdall_lang') || 'en';
+      applyLang(activeLang);
+    }
   })();
 </script>
 
