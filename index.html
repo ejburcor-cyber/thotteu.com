@@ -439,6 +439,11 @@
       border: 1px solid rgba(0,229,255,0.2);
     }
 
+    .card-disabled { opacity: 0.55; cursor: default; }
+    .card-disabled h3,
+    .card-disabled p:not(.card-tag) { text-decoration: line-through; }
+    .card-disabled .card-tag { text-decoration: none; }
+
     .card h3 {
       font-family: 'Orbitron', monospace;
       font-weight: 700;
@@ -642,7 +647,7 @@
         <span class="card-number">01</span>
       </a>
 
-      <div class="card">
+      <div class="card card-disabled">
         <span class="card-icon">🪐</span>
         <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.orbitTitle">Orbit & Math</h3>
@@ -651,7 +656,7 @@
         <span class="card-number">02</span>
       </div>
 
-      <div class="card">
+      <div class="card card-disabled">
         <span class="card-icon">🧬</span>
         <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.xenoTitle">Xenobiología 101</h3>
@@ -660,7 +665,7 @@
         <span class="card-number">03</span>
       </div>
 
-      <div class="card">
+      <div class="card card-disabled">
         <span class="card-icon">⚡</span>
         <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.reactorTitle">Reactor Core</h3>
@@ -678,7 +683,7 @@
         <span class="card-number">05</span>
       </a>
 
-      <div class="card">
+      <div class="card card-disabled">
         <span class="card-icon">🔭</span>
         <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
         <h3 data-i18n="games.signalTitle">Signal Lost</h3>
