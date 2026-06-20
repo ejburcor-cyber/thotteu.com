@@ -543,6 +543,8 @@ function applyLang(lang){
   document.querySelectorAll('.lang-option').forEach(function(o){
     o.classList.toggle('active', o.dataset.lang === lang);
   });
+  var loreEl = document.getElementById('lore-text');
+  if (loreEl && t.lore) loreEl.textContent = t.lore;
   updatePhaseDisplay();
   renderHOF();
 }
@@ -737,7 +739,7 @@ function newOperation(){
 
   recentOps.push(answer); if(recentOps.length>RECENT_MAX) recentOps.shift();
   currentOp={text,answer}; attemptsLeft=3;
-  $('operation').textContent='ENTER COORDINATES TO HIT TARGET:';
+  $('operation').textContent=(i18n[currentLang]||i18n.en).enterCoords;
   answerStr='';
   updateAnswerDisplay();
   updateAttempDots();
