@@ -1522,6 +1522,7 @@ window.addEventListener('load',()=>{
   applyLang(initial);
 
   const el=$('lore-text'); if(!el) return;
+  el.textContent = ''; // applyLang already set the full lore text; clear it so the typewriter can re-type it from scratch
   const LORE=(i18n[currentLang]||i18n.en).lore;
   let i=0; (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,22); } })();
   $('highscore').textContent = highScore;

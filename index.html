@@ -444,6 +444,14 @@
     .card-disabled p:not(.card-tag) { text-decoration: line-through; }
     .card-disabled .card-tag { text-decoration: none; }
 
+    .card-age {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      letter-spacing: 0.03em;
+      opacity: 0.75;
+    }
+
     .card h3 {
       font-family: 'Orbitron', monospace;
       font-weight: 700;
@@ -644,17 +652,19 @@
         <h3>Project Heimdall <span style="font-size:0.7rem; color:var(--muted)" data-i18n="games.mission1">· Misión 1</span></h3>
         <p data-i18n="games.heimdallDesc">Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.</p>
         <p style="font-size:0.78rem; color:var(--cyan); margin-top:0.6rem; font-style:italic;" data-i18n="games.heimdallChallenge">¡Sé el más rápido con el ratón para fotografiar el mayor número de ovnis!</p>
+        <p class="card-age" data-i18n="games.heimdallAge">Para mayores de 3 años</p>
         <span class="card-number">01</span>
       </a>
 
-      <div class="card card-disabled">
-        <span class="card-icon">🪐</span>
-        <span class="card-tag tag-soon" data-i18n="games.comingSoon">En construcción</span>
-        <h3 data-i18n="games.orbitTitle">Orbit & Math</h3>
-        <p data-i18n="games.orbitDesc">Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.</p>
-        <p style="font-size:0.78rem; color:var(--purple); margin-top:0.6rem; font-style:italic;" data-i18n="games.orbitChallenge">¡Encuentra la ruta exacta antes de quedarte sin combustible!</p>
+      <a class="card" href="/mnemosine" style="text-decoration:none;">
+        <span class="card-icon">🧠</span>
+        <span class="card-tag tag-active" data-i18n="games.playNow">¡Jugar ahora!</span>
+        <h3>Project Mnemosine <span style="font-size:0.7rem; color:var(--muted)" data-i18n="games.mission2">· Misión 2</span></h3>
+        <p data-i18n="games.mnemosineDesc">Empareja cada letra mayúscula con su gemela minúscula para descifrar las comunicaciones alienígenas con el superordenador Caelus.</p>
+        <p style="font-size:0.78rem; color:var(--cyan); margin-top:0.6rem; font-style:italic;" data-i18n="games.mnemosineChallenge">¡Pon a prueba tu memoria y reconoce mayúsculas y minúsculas al instante!</p>
+        <p class="card-age" data-i18n="games.mnemosineAge">Para mayores de 3 años</p>
         <span class="card-number">02</span>
-      </div>
+      </a>
 
       <div class="card card-disabled">
         <span class="card-icon">🧬</span>
@@ -680,6 +690,7 @@
         <h3>Math Cannon <span style="font-size:0.7rem; color:var(--muted)" data-i18n="games.mission5">· Misión 5</span></h3>
         <p data-i18n="games.mathDesc">Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!</p>
         <p style="font-size:0.78rem; color:var(--cyan); margin-top:0.6rem; font-style:italic;" data-i18n="games.mathChallenge">¡Sé el más rápido con el number pad para destruir todos los ovnis que puedas!</p>
+        <p class="card-age" data-i18n="games.mathAge">Para mayores de 5 años</p>
         <span class="card-number">05</span>
       </a>
 
@@ -728,6 +739,7 @@
         'games.title': 'Mission games in the hangar',
         'games.playNow': 'Play now!',
         'games.mission1': '· Mission 1',
+        'games.mission2': '· Mission 2',
         'games.mission5': '· Mission 5',
         'games.heimdallDesc': 'Operate the Heimdall radiotelescope and photograph every anomaly before they detect your position. You have 100 seconds.',
         'games.heimdallChallenge': 'Be the fastest with the mouse to photograph as many UFOs as you can!',
@@ -735,6 +747,8 @@
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calculate trajectories and orbital speeds. Math decides if you reach your destination.',
         'games.orbitChallenge': 'Find the exact route before you run out of fuel!',
+        'games.mnemosineDesc': 'Pair each uppercase letter with its lowercase twin to decode the alien communications with the Caelus supercomputer.',
+        'games.mnemosineChallenge': 'Put your memory to the test and recognize uppercase and lowercase letters instantly!',
         'games.xenoTitle': 'Xenobiology 101',
         'games.xenoDesc': 'Classify new alien life forms using principles of biology and taxonomy.',
         'games.xenoChallenge': 'Identify each specimen before it gets away!',
@@ -743,6 +757,9 @@
         'games.reactorChallenge': 'Keep a steady hand before the core collapses!',
         'games.mathDesc': 'Solve math operations to load your cannon and repel the alien invasion. Time is running out!',
         'games.mathChallenge': 'Be the fastest with the number pad to destroy as many UFOs as you can!',
+        'games.heimdallAge': 'Ages 3+',
+        'games.mnemosineAge': 'Ages 3+',
+        'games.mathAge': 'Ages 5+',
         'games.signalTitle': 'Signal Lost',
         'games.signalDesc': 'Intercept and analyze alien radio signals. Linguistics and pattern recognition for first contact.',
         'games.signalChallenge': 'Crack the message before the signal is lost!',
@@ -771,6 +788,7 @@
         'games.title': 'Misiones en el hangar',
         'games.playNow': '¡Jugar ahora!',
         'games.mission1': '· Misión 1',
+        'games.mission2': '· Misión 2',
         'games.mission5': '· Misión 5',
         'games.heimdallDesc': 'Dirige el radiotelescopio Heimdall y fotografía cada anomalía antes de que detecten tu posición. Tienes 100 segundos.',
         'games.heimdallChallenge': '¡Sé el más rápido con el ratón para fotografiar el mayor número de ovnis!',
@@ -778,6 +796,8 @@
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calcula trayectorias y velocidades orbitales. Las matemáticas determinan si llegas a tu destino.',
         'games.orbitChallenge': '¡Encuentra la ruta exacta antes de quedarte sin combustible!',
+        'games.mnemosineDesc': 'Empareja cada letra mayúscula con su gemela minúscula para descifrar las comunicaciones alienígenas con el superordenador Caelus.',
+        'games.mnemosineChallenge': '¡Pon a prueba tu memoria y reconoce mayúsculas y minúsculas al instante!',
         'games.xenoTitle': 'Xenobiología 101',
         'games.xenoDesc': 'Clasifica nuevas formas de vida alienígena aplicando principios de biología y taxonomía.',
         'games.xenoChallenge': '¡Identifica cada espécimen antes de que se te escape!',
@@ -786,6 +806,9 @@
         'games.reactorChallenge': '¡Aguanta el pulso firme antes de que el núcleo colapse!',
         'games.mathDesc': 'Resuelve operaciones matemáticas para cargar tu cañón y repeler la invasión alienígena. ¡El tiempo corre!',
         'games.mathChallenge': '¡Sé el más rápido con el number pad para destruir todos los ovnis que puedas!',
+        'games.heimdallAge': 'Para mayores de 3 años',
+        'games.mnemosineAge': 'Para mayores de 3 años',
+        'games.mathAge': 'Para mayores de 5 años',
         'games.signalTitle': 'Signal Lost',
         'games.signalDesc': 'Intercepta y analiza señales de radio alienígenas. Lingüística y patrones al servicio del primer contacto.',
         'games.signalChallenge': '¡Descifra el mensaje antes de que la señal se pierda!',
@@ -814,6 +837,7 @@
         'games.title': 'Missions dans le hangar',
         'games.playNow': 'Jouer maintenant !',
         'games.mission1': '· Mission 1',
+        'games.mission2': '· Mission 2',
         'games.mission5': '· Mission 5',
         'games.heimdallDesc': 'Pilotez le radiotélescope Heimdall et photographiez chaque anomalie avant qu\'elle ne détecte votre position. Vous avez 100 secondes.',
         'games.heimdallChallenge': 'Soyez le plus rapide à la souris pour photographier un maximum d\'ovnis !',
@@ -821,6 +845,8 @@
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calculez trajectoires et vitesses orbitales. Les mathématiques décident si vous atteignez votre destination.',
         'games.orbitChallenge': 'Trouvez la trajectoire exacte avant de manquer de carburant !',
+        'games.mnemosineDesc': 'Associez chaque lettre majuscule à sa jumelle minuscule pour décoder les communications extraterrestres avec le superordinateur Caelus.',
+        'games.mnemosineChallenge': 'Mettez votre mémoire à l\'épreuve et reconnaissez majuscules et minuscules instantanément !',
         'games.xenoTitle': 'Xénobiologie 101',
         'games.xenoDesc': 'Classifiez de nouvelles formes de vie extraterrestres selon les principes de la biologie et de la taxonomie.',
         'games.xenoChallenge': 'Identifiez chaque spécimen avant qu\'il ne s\'échappe !',
@@ -829,6 +855,9 @@
         'games.reactorChallenge': 'Gardez la main ferme avant que le noyau ne s\'effondre !',
         'games.mathDesc': 'Résolvez des opérations mathématiques pour charger votre canon et repousser l\'invasion extraterrestre. Le temps presse !',
         'games.mathChallenge': 'Soyez le plus rapide au pavé numérique pour détruire un maximum d\'ovnis !',
+        'games.heimdallAge': 'Dès 3 ans',
+        'games.mnemosineAge': 'Dès 3 ans',
+        'games.mathAge': 'Dès 5 ans',
         'games.signalTitle': 'Signal Lost',
         'games.signalDesc': 'Interceptez et analysez les signaux radio extraterrestres. Linguistique et reconnaissance de motifs au service du premier contact.',
         'games.signalChallenge': 'Décodez le message avant que le signal ne soit perdu !',
@@ -857,6 +886,7 @@
         'games.title': 'Missões no hangar',
         'games.playNow': 'Jogar agora!',
         'games.mission1': '· Missão 1',
+        'games.mission2': '· Missão 2',
         'games.mission5': '· Missão 5',
         'games.heimdallDesc': 'Opere o radiotelescópio Heimdall e fotografe cada anomalia antes que detectem sua posição. Você tem 100 segundos.',
         'games.heimdallChallenge': 'Seja o mais rápido com o mouse para fotografar o maior número de OVNIs!',
@@ -864,6 +894,8 @@
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calcule trajetórias e velocidades orbitais. A matemática decide se você chega ao seu destino.',
         'games.orbitChallenge': 'Encontre a rota exata antes de ficar sem combustível!',
+        'games.mnemosineDesc': 'Combine cada letra maiúscula com sua gêmea minúscula para decifrar as comunicações alienígenas com o supercomputador Caelus.',
+        'games.mnemosineChallenge': 'Coloque sua memória à prova e reconheça maiúsculas e minúsculas instantaneamente!',
         'games.xenoTitle': 'Xenobiologia 101',
         'games.xenoDesc': 'Classifique novas formas de vida alienígena aplicando princípios de biologia e taxonomia.',
         'games.xenoChallenge': 'Identifique cada espécime antes que ele escape!',
@@ -872,6 +904,9 @@
         'games.reactorChallenge': 'Mantenha o pulso firme antes que o núcleo entre em colapso!',
         'games.mathDesc': 'Resolva operações matemáticas para carregar seu canhão e repelir a invasão alienígena. O tempo está passando!',
         'games.mathChallenge': 'Seja o mais rápido com o teclado numérico para destruir o maior número de OVNIs possível!',
+        'games.heimdallAge': 'A partir de 3 anos',
+        'games.mnemosineAge': 'A partir de 3 anos',
+        'games.mathAge': 'A partir de 5 anos',
         'games.signalTitle': 'Signal Lost',
         'games.signalDesc': 'Intercepte e analise sinais de rádio alienígenas. Linguística e reconhecimento de padrões a serviço do primeiro contato.',
         'games.signalChallenge': 'Decifre a mensagem antes que o sinal se perca!',
@@ -900,6 +935,7 @@
         'games.title': 'Missions a l\'hangar',
         'games.playNow': 'Juga ara!',
         'games.mission1': '· Missió 1',
+        'games.mission2': '· Missió 2',
         'games.mission5': '· Missió 5',
         'games.heimdallDesc': 'Dirigeix el radiotelescopi Heimdall i fotografia cada anomalia abans que detecten la teua posició. Tens 100 segons.',
         'games.heimdallChallenge': 'Sigues el més ràpid amb el ratolí per fotografiar el major nombre d\'ovnis!',
@@ -907,6 +943,8 @@
         'games.orbitTitle': 'Orbit & Math',
         'games.orbitDesc': 'Calcula trajectòries i velocitats orbitals. Les matemàtiques determinen si arribes al teu destí.',
         'games.orbitChallenge': 'Troba la ruta exacta abans de quedar-te sense combustible!',
+        'games.mnemosineDesc': 'Empareixa cada lletra majúscula amb la seua bessona minúscula per a desxifrar les comunicacions alienígenes amb el superordinador Caelus.',
+        'games.mnemosineChallenge': 'Posa a prova la teua memòria i reconeix majúscules i minúscules a l\'instant!',
         'games.xenoTitle': 'Xenobiologia 101',
         'games.xenoDesc': 'Classifica noves formes de vida alienígena aplicant principis de biologia i taxonomia.',
         'games.xenoChallenge': 'Identifica cada espècimen abans que se t\'escape!',
@@ -915,6 +953,9 @@
         'games.reactorChallenge': 'Aguanta el pols ferm abans que el nucli col·lapse!',
         'games.mathDesc': 'Resol operacions matemàtiques per carregar el teu canó i repel·lir la invasió alienígena. El temps corre!',
         'games.mathChallenge': 'Sigues el més ràpid amb el teclat numèric per destruir tots els ovnis que pugues!',
+        'games.heimdallAge': 'A partir de 3 anys',
+        'games.mnemosineAge': 'A partir de 3 anys',
+        'games.mathAge': 'A partir de 5 anys',
         'games.signalTitle': 'Signal Lost',
         'games.signalDesc': 'Intercepta i analitza senyals de ràdio alienígenes. Lingüística i patrons al servei del primer contacte.',
         'games.signalChallenge': 'Desxifra el missatge abans que el senyal es perda!',

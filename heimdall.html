@@ -209,7 +209,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     Adjust the RADIOTELESCOPE SPEED slider anytime to bring in more targets.<br>
     You have 100 seconds before the signal gives away your position.</p>
     <button id="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
-    <div id="hall-of-fame"></div>
+    <div id="hall-of-fame-initial" class="hall-of-fame-slot"></div>
   </div>
 </div>
 
@@ -321,7 +321,7 @@ var i18n = {
     radiotelescopeSpeed:'RADIOTELESCOPE SPEED',
     speedTip:'TIP: A higher speed brings more anomalies into range — and more risk.',
     instructions:'INSTRUCTIONS',
-    instructionsBody:'Move your mouse across the deep field view.<br>CLICK on anomalies (UFOs) to photograph and identify them.<br>New anomaly types are worth 2 points — repeats are worth 1.<br>Rocks and shooting stars are decoys — clicking them does nothing.<br>The RADIOTELESCOPE SPEED slider is adjustable.<br>You have 100 seconds before the signal gives away your position.',
+    instructionsBody:'Move your mouse across the deep field view.<br>CLICK on anomalies (UFOs) to photograph and identify them.<br>New anomaly types are worth 2 points — repeats are worth 1.<br>Rocks and shooting stars are decoys — clicking them does nothing.<br>The RADIOTELESCOPE SPEED slider is adjustable.',
     startGame:'START GAME',
     tryAgain:'TRY AGAIN',
     signalLost:'SIGNAL LOST',
@@ -353,7 +353,7 @@ var i18n = {
     radiotelescopeSpeed:'VELOCIDAD DEL RADIOTELESCOPIO',
     speedTip:'CONSEJO: una velocidad mayor trae más anomalías a la vista — y más riesgo.',
     instructions:'INSTRUCCIONES',
-    instructionsBody:'Mueve el ratón por el campo de visión profundo.<br>HAZ CLICK en las anomalías (ovnis) para fotografiarlas e identificarlas.<br>Los tipos nuevos de anomalía valen 2 puntos — los repetidos valen 1.<br>Las rocas y estrellas fugaces son señuelos — hacerles clic no hace nada.<br>El slider de VELOCIDAD DEL RADIOTELESCOPIO es ajustable.<br>Tienes 100 segundos antes de que la señal delate tu posición.',
+    instructionsBody:'Mueve el ratón por el campo de visión profundo.<br>HAZ CLICK en las anomalías (ovnis) para fotografiarlas e identificarlas.<br>Los tipos nuevos de anomalía valen 2 puntos — los repetidos valen 1.<br>Las rocas y estrellas fugaces son señuelos — hacerles clic no hace nada.<br>El slider de VELOCIDAD DEL RADIOTELESCOPIO es ajustable.',
     startGame:'EMPEZAR PARTIDA',
     tryAgain:'INTENTAR DE NUEVO',
     signalLost:'SEÑAL PERDIDA',
@@ -385,7 +385,7 @@ var i18n = {
     radiotelescopeSpeed:'VITESSE DU RADIOTÉLESCOPE',
     speedTip:'ASTUCE : une vitesse plus élevée fait apparaître plus d\'anomalies — et plus de risques.',
     instructions:'INSTRUCTIONS',
-    instructionsBody:'Déplacez la souris sur le champ profond.<br>CLIQUEZ sur les anomalies (ovnis) pour les photographier et les identifier.<br>Les nouveaux types d\'anomalies valent 2 points — les répétitions valent 1.<br>Les rochers et étoiles filantes sont des leurres — cliquer dessus ne fait rien.<br>Le curseur de VITESSE DU RADIOTÉLESCOPE est réglable.<br>Vous avez 100 secondes avant que le signal ne trahisse votre position.',
+    instructionsBody:'Déplacez la souris sur le champ profond.<br>CLIQUEZ sur les anomalies (ovnis) pour les photographier et les identifier.<br>Les nouveaux types d\'anomalies valent 2 points — les répétitions valent 1.<br>Les rochers et étoiles filantes sont des leurres — cliquer dessus ne fait rien.<br>Le curseur de VITESSE DU RADIOTÉLESCOPE est réglable.',
     startGame:'COMMENCER',
     tryAgain:'RÉESSAYER',
     signalLost:'SIGNAL PERDU',
@@ -417,7 +417,7 @@ var i18n = {
     radiotelescopeSpeed:'VELOCIDADE DO RADIOTELESCÓPIO',
     speedTip:'DICA: uma velocidade maior traz mais anomalias ao alcance — e mais risco.',
     instructions:'INSTRUÇÕES',
-    instructionsBody:'Mova o mouse pelo campo profundo.<br>CLIQUE nas anomalias (OVNIs) para fotografá-las e identificá-las.<br>Novos tipos de anomalia valem 2 pontos — repetições valem 1.<br>Rochas e estrelas cadentes são iscas — clicar nelas não faz nada.<br>O controle de VELOCIDADE DO RADIOTELESCÓPIO é ajustável.<br>Você tem 100 segundos antes que o sinal revele sua posição.',
+    instructionsBody:'Mova o mouse pelo campo profundo.<br>CLIQUE nas anomalias (OVNIs) para fotografá-las e identificá-las.<br>Novos tipos de anomalia valem 2 pontos — repetições valem 1.<br>Rochas e estrelas cadentes são iscas — clicar nelas não faz nada.<br>O controle de VELOCIDADE DO RADIOTELESCÓPIO é ajustável.',
     startGame:'INICIAR JOGO',
     tryAgain:'TENTAR NOVAMENTE',
     signalLost:'SINAL PERDIDO',
@@ -449,7 +449,7 @@ var i18n = {
     radiotelescopeSpeed:'VELOCITAT DEL RADIOTELESCOPI',
     speedTip:'CONSELL: una velocitat major porta més anomalies a la vista — i més risc.',
     instructions:'INSTRUCCIONS',
-    instructionsBody:'Mou el ratolí pel camp de visió profund.<br>FES CLIC en les anomalies (ovnis) per fotografiar-les i identificar-les.<br>Els tipus nous d\'anomalia valen 2 punts — els repetits valen 1.<br>Les roques i estreles fugaces són esquers — fer-hi clic no fa res.<br>El control de VELOCITAT DEL RADIOTELESCOPI és ajustable.<br>Tens 100 segons abans que el senyal delate la teua posició.',
+    instructionsBody:'Mou el ratolí pel camp de visió profund.<br>FES CLIC en les anomalies (ovnis) per fotografiar-les i identificar-les.<br>Els tipus nous d\'anomalia valen 2 punts — els repetits valen 1.<br>Les roques i estreles fugaces són esquers — fer-hi clic no fa res.<br>El control de VELOCITAT DEL RADIOTELESCOPI és ajustable.',
     startGame:'COMENÇAR PARTIDA',
     tryAgain:'TORNAR-HO A INTENTAR',
     signalLost:'SENYAL PERDUT',
@@ -531,7 +531,8 @@ function buildHOFHtml(h){
 function renderHOF(){
   const h=loadHOF();
   const html=buildHOFHtml(h);
-  const el=$('hall-of-fame'); if(el) el.innerHTML=html;
+  const elInitial=$('hall-of-fame-initial'); if(elInitial) elInitial.innerHTML=html;
+  const elResult=$('hall-of-fame-result'); if(elResult) elResult.innerHTML=html;
   const el2=$('hof-standalone'); if(el2) el2.innerHTML=html;
 }
 
@@ -1001,7 +1002,7 @@ function endGame(){
         </div>
       </div>
       <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
-      <div id="hall-of-fame"></div>
+      <div id="hall-of-fame-result" class="hall-of-fame-slot"></div>
     `;
     renderHOF();
   }, 900);
@@ -1016,6 +1017,7 @@ window.addEventListener('load', ()=>{
   applyLang(initial);
 
   const el = $('lore-text');
+  el.textContent = ''; // applyLang already set the full lore text; clear it so the typewriter can re-type it from scratch
   let i=0;
   const LORE = (i18n[currentLang] || i18n.en).lore;
   (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,16); } })();

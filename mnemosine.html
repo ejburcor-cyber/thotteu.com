@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Consent Mode v2 — default denied until user accepts -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied'
+  });
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Mnemosine — Memory Game for Letter Recognition | Thotteu</title>
+<meta name="description" content="Project Mnemosine: free memory matching game to learn uppercase and lowercase letters. Decode alien signals by pairing letters with the Caelus supercomputer. No download required.">
+<meta name="keywords" content="memory game for kids, uppercase lowercase letters game, juegos de memoria para niños, mayúsculas y minúsculas, juegos educativos gratis, juegos online para niños, juegos sin descargar, juegos espaciales online, juegos de atención y memoria">
+<meta property="og:title" content="Project Mnemosine — Memory & Letter Recognition">
+<meta property="og:description" content="Pair uppercase and lowercase letters to decode alien signals. Free memory game online.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
+#game-wrap{position:relative}
+canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.15);cursor:pointer}
+#hud{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 4px;margin-bottom:4px}
+#score-display{color:#ff0;font-size:.55rem;letter-spacing:1px}
+#highscore-display{color:#f84;font-size:.4rem}
+#stats-area{background:#0d1020;border:2px solid #4af;border-top:none;padding:10px 16px;width:100%}
+#stats-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.4rem;color:#4df;letter-spacing:1px}
+#attempts-bar-bg{width:100%;height:14px;background:#1a1030;border:1px solid #844;position:relative;overflow:hidden;margin-top:8px}
+#attempts-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#4f4,#ff0,#f44);transition:width .3s linear}
+#overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;z-index:10;padding:12px 20px 20px;overflow-y:auto}
+#overlay h2{color:#4af;font-size:1rem;text-align:center;line-height:1.8}
+#overlay p{color:#fff;font-size:.5rem;text-align:center;line-height:2}
+.score-final{color:#ff0;font-size:.7rem}
+#lore-box{color:#4df;font-size:.42rem;line-height:1.9;text-align:center;max-width:620px;min-height:6.5rem;letter-spacing:.5px;border:1px solid rgba(68,170,255,.3);padding:10px 16px;background:rgba(0,10,30,.6)}
+#lore-cursor{display:inline-block;width:7px;height:.7em;background:#4df;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+#start-btn:hover{background:#7cf}
+.subtitle{color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center}
+#hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
+.hall-of-fame-slot{margin-top:6px}
+#hof-standalone{margin:10px auto 0}
+#header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
+.lang-selector{position:relative;display:inline-block}
+.lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
+.lang-btn-toggle:hover{border-color:#7cf}
+.lang-dropdown{display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100% + 6px);background:#0d1020;border:1.5px solid #4af;border-radius:6px;overflow:hidden;z-index:100;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.lang-dropdown.open{display:block}
+.lang-option{padding:8px 14px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#8aa;transition:background .15s}
+.lang-option:hover{background:rgba(68,170,255,.12);color:#fff}
+.lang-option.active{color:#4df}
+.back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:7px 12px;font-family:'Press Start 2P',monospace;font-size:.45rem;color:#4df;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50;transition:border-color .2s,color .2s}
+.back-btn:hover{border-color:#7cf;color:#fff}
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#0d1020;border-top:2px solid #4af;padding:14px 18px;display:none;box-shadow:0 -8px 32px rgba(0,0,0,.6)}
+#cookie-banner.show{display:block}
+.cookie-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cookie-text{flex:1;min-width:220px;font-size:.42rem;line-height:1.9;color:#8aa}
+.cookie-text a{color:#4df}
+.cookie-btns{display:flex;gap:10px;flex-shrink:0}
+.cookie-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;padding:9px 16px;cursor:pointer;border:1.5px solid #4af;background:transparent;color:#fff;transition:all .2s}
+.cookie-btn.accept{background:#4af;color:#000}
+.cookie-btn.accept:hover{background:#7cf}
+.cookie-btn.reject:hover{border-color:#a78bfa;color:#a78bfa}
+.general-briefing{display:flex;align-items:center;gap:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.3);border-radius:4px;padding:10px 14px;margin:10px 0;text-align:left}
+.general-briefing img{width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))}
+.general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
+.general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
+#surrender-btn{display:none;position:absolute;top:6px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20}
+.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
+</style>
+</head>
+<body>
+
+<a href="/" class="back-btn" data-i18n="backBtn">&#8592; THOTTEU</a>
+
+<svg id="header-banner" viewBox="0 0 700 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="gAntenna" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#44ffff" stop-opacity=".7"/><stop offset="100%" stop-color="#44ffff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gScreen" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a3a4a"/><stop offset="100%" stop-color="#0a1a24"/></linearGradient>
+  </defs>
+  <rect width="700" height="80" fill="#0a0a1a" rx="4"/>
+  <circle cx="20" cy="10" r="1" fill="white" opacity=".6"/><circle cx="60" cy="25" r="1.2" fill="white" opacity=".5"/>
+  <circle cx="180" cy="14" r="1" fill="white" opacity=".4"/><circle cx="240" cy="6" r="1.2" fill="white" opacity=".6"/>
+  <circle cx="560" cy="10" r="1" fill="white" opacity=".5"/><circle cx="620" cy="20" r="1.2" fill="white" opacity=".6"/>
+  <circle cx="660" cy="8" r="1" fill="white" opacity=".7"/>
+  <rect x="0" y="72" width="700" height="2" fill="#5a4a1a" opacity=".6"/>
+
+  <g font-family="monospace" font-weight="bold" opacity=".55">
+    <text x="30" y="50" font-size="18" fill="#4af" transform="rotate(-12 30 50)">A</text>
+    <text x="64" y="32" font-size="13" fill="#a78bfa" transform="rotate(10 64 32)">b</text>
+    <text x="20" y="68" font-size="11" fill="#00e5ff" transform="rotate(6 20 68)">k</text>
+    <text x="95" y="58" font-size="15" fill="#ff8844" transform="rotate(-8 95 58)">M</text>
+  </g>
+
+  <g transform="translate(150,42)">
+    <rect x="-26" y="-22" width="52" height="44" rx="3" fill="#161c2c" stroke="#4af" stroke-width="1.5"/>
+    <rect x="-20" y="-16" width="40" height="22" rx="1" fill="url(#gScreen)"/>
+    <text x="0" y="0" font-family="monospace" font-size="9" fill="#4f8" text-anchor="middle">A a</text>
+    <text x="0" y="10" font-family="monospace" font-size="6" fill="#4af" text-anchor="middle" opacity=".8">CAELUS</text>
+    <circle cx="-16" cy="14" r="2" fill="#4f4"/><circle cx="-9" cy="14" r="2" fill="#fa0"/><circle cx="-2" cy="14" r="2" fill="#f44"/>
+    <rect x="-30" y="22" width="60" height="5" rx="1" fill="#222a3a"/>
+  </g>
+
+  <g font-family="monospace" font-weight="bold" opacity=".55">
+    <text x="430" y="55" font-size="16" fill="#ff44ff" transform="rotate(9 430 55)">Z</text>
+    <text x="455" y="28" font-size="12" fill="#4af" transform="rotate(-14 455 28)">q</text>
+    <text x="610" y="60" font-size="14" fill="#00e5ff" transform="rotate(-6 610 60)">N</text>
+    <text x="640" y="35" font-size="11" fill="#a78bfa" transform="rotate(12 640 35)">x</text>
+  </g>
+
+  <g transform="translate(540,40)">
+    <ellipse cx="0" cy="34" rx="30" ry="4" fill="#000" opacity=".3"/>
+    <rect x="-3" y="0" width="6" height="34" rx="1" fill="#3a3a44"/>
+    <g transform="translate(0,-2) rotate(-20)">
+      <ellipse cx="0" cy="0" rx="22" ry="8" fill="#888c98"/>
+      <ellipse cx="0" cy="-1" rx="17" ry="6" fill="#6a6e7a"/>
+      <line x1="0" y1="0" x2="0" y2="-16" stroke="#c4c8d4" stroke-width="1.2"/>
+      <circle cx="0" cy="-16" r="2" fill="#ffee88"/>
+    </g>
+    <circle cx="0" cy="0" r="18" fill="url(#gAntenna)"/>
+    <path d="M0,-18 Q12,-26 22,-18" stroke="#4af" stroke-width="1" opacity=".5" fill="none"/>
+    <path d="M0,-12 Q18,-34 32,-12" stroke="#4af" stroke-width="1" opacity=".3" fill="none"/>
+  </g>
+</svg>
+
+<div class="title-block">
+  <h1>&#128225; <span data-i18n="title">PROJECT MNEMOSINE</span> &#128225;</h1>
+  <p class="subtitle" data-i18n="subtitle">DECODE THE SIGNAL — MATCH EVERY LETTER</p>
+
+  <div class="lang-selector">
+    <button class="lang-btn-toggle" id="lang-btn" onclick="event.stopPropagation(); var dd=document.getElementById('lang-dropdown'); if(dd) dd.classList.toggle('open')">
+      <span id="lang-current">EN</span> ▾
+    </button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <div class="lang-option active" data-lang="en" onclick="setLang('en')">EN — English</div>
+      <div class="lang-option" data-lang="es" onclick="setLang('es')">ES — Español</div>
+    </div>
+  </div>
+</div>
+
+<div id="game-wrap">
+  <div id="hud">
+    <div id="score-display"><span data-i18n="score">SCORE</span>: <span id="score">0</span> &nbsp;<span id="highscore-display">BEST: <span id="highscore">0</span></span></div>
+    <div style="color:#4af;font-size:.42rem;letter-spacing:1px"><span data-i18n="pairs">PAIRS</span>: <span id="pairs-count">0</span>/15</div>
+  </div>
+
+  <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
+  <button id="surrender-btn" onclick="surrenderGame()" data-i18n="surrender">&#127988; SURRENDER</button>
+
+  <div id="stats-area">
+    <div id="stats-row">
+      <span>&#9203; <span data-i18n="time">TIME</span>: <span id="time-display">0:00</span></span>
+      <span>&#127919; <span data-i18n="attempts">ATTEMPTS</span>: <span id="attempts-display">0</span>/50</span>
+    </div>
+    <div id="attempts-bar-bg"><div id="attempts-bar-fill"></div></div>
+  </div>
+
+  <div id="overlay">
+    <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
+    <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:14px;margin-bottom:4px" data-i18n="instructions">INSTRUCTIONS</p>
+    <p style="margin-top:0" data-i18n="instructionsBody">Click two tiles to reveal the letters underneath.<br>
+    Match each UPPERCASE letter with its lowercase twin (e.g. A &harr; a).<br>
+    Matched pairs stay revealed &mdash; wrong pairs flip back.<br>
+    You have 50 attempts to clear all 15 pairs.<br>
+    Fewer attempts and less time mean a better score.</p>
+    <button id="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
+    <div id="hall-of-fame-initial" class="hall-of-fame-slot"></div>
+  </div>
+</div>
+
+<div id="hof-standalone"></div>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const TAU = Math.PI * 2;
+const MAX_ATTEMPTS = 50;
+const COLS = 6, ROWS = 5;
+const TILE_MARGIN = 10;
+const TILE_W = (W - TILE_MARGIN*(COLS+1)) / COLS;
+const TILE_H = (H - TILE_MARGIN*(ROWS+1)) / ROWS;
+
+const $ = id => document.getElementById(id);
+
+const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'];
+
+let audioCtx = null;
+function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
+function playSound(type){
+  try {
+    const ac=getAudio(), o=ac.createOscillator(), g=ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    const t=ac.currentTime;
+    if(type==='flip'){
+      o.type='square'; o.frequency.setValueAtTime(900,t); o.frequency.exponentialRampToValueAtTime(500,t+.05);
+      g.gain.setValueAtTime(.15,t); g.gain.exponentialRampToValueAtTime(.001,t+.06);
+      o.start(t); o.stop(t+.06);
+    } else if(type==='match'){
+      o.type='sine'; o.frequency.setValueAtTime(700,t); o.frequency.setValueAtTime(1100,t+.06); o.frequency.setValueAtTime(1500,t+.12);
+      g.gain.setValueAtTime(.22,t); g.gain.exponentialRampToValueAtTime(.001,t+.22);
+      o.start(t); o.stop(t+.22);
+    } else if(type==='miss'){
+      o.type='sine'; o.frequency.setValueAtTime(260,t); o.frequency.exponentialRampToValueAtTime(120,t+.12);
+      g.gain.setValueAtTime(.1,t); g.gain.exponentialRampToValueAtTime(.001,t+.12);
+      o.start(t); o.stop(t+.12);
+    } else if(type==='super'){
+      o.type='sine'; o.frequency.setValueAtTime(500,t); o.frequency.setValueAtTime(800,t+.08); o.frequency.setValueAtTime(1200,t+.16);
+      g.gain.setValueAtTime(.18,t); g.gain.exponentialRampToValueAtTime(.001,t+.3);
+      o.start(t); o.stop(t+.3);
+    } else if(type==='win'){
+      o.type='square'; o.frequency.setValueAtTime(440,t); o.frequency.setValueAtTime(660,t+.1); o.frequency.setValueAtTime(880,t+.2);
+      g.gain.setValueAtTime(.25,t); g.gain.exponentialRampToValueAtTime(.001,t+.5);
+      o.start(t); o.stop(t+.5);
+    } else if(type==='lose'){
+      o.type='square'; o.frequency.setValueAtTime(160,t); o.frequency.exponentialRampToValueAtTime(20,t+.6);
+      g.gain.setValueAtTime(.3,t); g.gain.exponentialRampToValueAtTime(.001,t+.6);
+      o.start(t); o.stop(t+.6);
+    }
+  } catch(e){}
+}
+
+let stars = [];
+function initStars(){
+  stars = [];
+  for(let i=0;i<90;i++){
+    stars.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*1.2+.3, tw: Math.random()*TAU });
+  }
+}
+function drawStarfield(){
+  ctx.fillStyle = '#070714';
+  ctx.fillRect(0,0,W,H);
+  const grad = ctx.createRadialGradient(W*0.7,H*0.3,0,W*0.7,H*0.3,400);
+  grad.addColorStop(0,'rgba(80,40,120,.10)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+  stars.forEach(s=>{
+    s.tw += 0.015;
+    const a = 0.35 + 0.35*Math.sin(s.tw);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, TAU); ctx.fill();
+  });
+}
+
+let state = 'menu';
+let tiles = [];
+let firstPick = null, secondPick = null;
+let lockInput = false;
+let attempts = 0;
+let pairsFound = 0;
+let score = 0;
+let elapsed = 0;
+let lastTime = 0;
+let gameLoopId = null;
+let mouseX = 0, mouseY = 0;
+let hoverTile = null;
+let particles = [];
+let finaleActive = false;
+let surrenderShown = false;
+let highScore = parseInt(localStorage.getItem('mnemosine_hs')||'0');
+
+$('highscore').textContent = highScore;
+
+var i18n = {
+  en: {
+    title:'PROJECT MNEMOSINE',
+    subtitle:'DECODE THE SIGNAL — MATCH EVERY LETTER',
+    score:'SCORE', pairs:'PAIRS', time:'TIME', attempts:'ATTEMPTS',
+    instructions:'INSTRUCTIONS',
+    instructionsBody:'Click two tiles to reveal the letters underneath.<br>Match each UPPERCASE letter with its lowercase twin (e.g. A &harr; a).<br>Matched pairs stay revealed &mdash; wrong pairs flip back.<br>You have 50 attempts to clear all 15 pairs.<br>Fewer attempts and less time mean a better score.',
+    startGame:'START GAME',
+    tryAgain:'TRY AGAIN',
+    surrender:'SURRENDER',
+    mappingComplete:'MAPPING COMPLETE',
+    outOfAttempts:'OUT OF ATTEMPTS',
+    retreat:'TACTICAL RETREAT',
+    finalScore:'FINAL SCORE',
+    pairsFound:'Pairs found', attemptsUsed:'Attempts used', timeTaken:'Time taken',
+    best:'BEST',
+    hofTitle:'HALL OF FAME', hofEmpty:'HALL OF FAME — Play to set a record!',
+    hofScore:'SCORE', hofPairs:'PAIRS', hofAttempts:'ATTEMPTS', hofTime:'TIME', hofDate:'DATE',
+    generalLabel:'GENERAL — MISSION DEBRIEF',
+    generalHigh:'Flawless mapping, soldier. Caelus has never decoded a signal this fast.',
+    generalMid:'Solid work. The signal is taking shape.',
+    generalLow:'The mapping is incomplete. Sharpen your memory and try again, recruit.',
+    lore:'YEAR 2050. Following the success of Project Heimdall, our radiotelescopes have managed to identify signals from the UFOs. Humanity is now recruiting experts to identify the symbols and translate them into something meaningful — Project Mnemosine was born. The supercomputer Caelus has translated the symbols and presents them in shuffled pairs, across 30 blocks. Once we can match them with our eyes closed, we will be able to decode the alien communications. Are you ready?',
+    cookieText:'We use analytics cookies. They only activate with your consent.',
+    cookiePrivacyLink:'Learn more',
+    cookieReject:'Reject',
+    cookieAccept:'Accept',
+    backBtn:'\u2190 THOTTEU'
+  },
+  es: {
+    title:'PROJECT MNEMOSINE',
+    subtitle:'DESCIFRA LA SEÑAL — EMPAREJA CADA LETRA',
+    score:'PUNTOS', pairs:'PAREJAS', time:'TIEMPO', attempts:'INTENTOS',
+    instructions:'INSTRUCCIONES',
+    instructionsBody:'Haz clic en dos casillas para revelar las letras.<br>Empareja cada letra MAYÚSCULA con su gemela minúscula (ej. A &harr; a).<br>Las parejas correctas quedan reveladas &mdash; las incorrectas se vuelven a tapar.<br>Tienes 50 intentos para completar las 15 parejas.<br>Menos intentos y menos tiempo significan mejor puntuación.',
+    startGame:'EMPEZAR PARTIDA',
+    tryAgain:'INTENTAR DE NUEVO',
+    surrender:'RENDIRSE',
+    mappingComplete:'MAPEO COMPLETADO',
+    outOfAttempts:'SIN INTENTOS RESTANTES',
+    retreat:'RETIRADA TÁCTICA',
+    finalScore:'PUNTUACIÓN FINAL',
+    pairsFound:'Parejas encontradas', attemptsUsed:'Intentos usados', timeTaken:'Tiempo empleado',
+    best:'MEJOR',
+    hofTitle:'SALÓN DE LA FAMA', hofEmpty:'SALÓN DE LA FAMA — ¡Juega para conseguir un récord!',
+    hofScore:'PUNTOS', hofPairs:'PAREJAS', hofAttempts:'INTENTOS', hofTime:'TIEMPO', hofDate:'FECHA',
+    generalLabel:'GENERAL — INFORME DE MISIÓN',
+    generalHigh:'Mapeo impecable, soldado. Caelus nunca había descifrado una señal tan rápido.',
+    generalMid:'Buen trabajo. La señal está tomando forma.',
+    generalLow:'El mapeo está incompleto. Agudiza tu memoria e inténtalo de nuevo, recluta.',
+    lore:'AÑO 2050. Tras el éxito del Proyecto Heimdall, los radiotelescopios han conseguido identificar señales de los ovnis. La humanidad está reclutando expertos que permitan identificar los signos y traducirlos de modo que tengan sentido — ha nacido el Proyecto Mnemosine. El superordenador Caelus ha traducido los signos y los presenta por pares desordenados, en 30 bloques. Cuando seamos capaces de emparejarlos con los ojos cerrados, podremos descifrar las comunicaciones de los alienígenas. ¿Estás preparado?',
+    cookieText:'Usamos cookies de analítica. Solo se activan con tu consentimiento.',
+    cookiePrivacyLink:'Más información',
+    cookieReject:'Rechazar',
+    cookieAccept:'Aceptar',
+    backBtn:'\u2190 THOTTEU'
+  }
+};
+
+var currentLang = 'en';
+
+function applyLang(lang){
+  var t = i18n[lang];
+  if(!t) return;
+  currentLang = lang;
+  localStorage.setItem('mnemosine_lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(t[key]) el.innerHTML = t[key];
+  });
+  var cur = document.getElementById('lang-current');
+  if(cur) cur.textContent = lang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(function(o){
+    o.classList.toggle('active', o.dataset.lang === lang);
+  });
+  var loreEl = document.getElementById('lore-text');
+  if (loreEl && t.lore) loreEl.textContent = t.lore;
+  renderHOF();
+}
+
+function setLang(lang){
+  applyLang(lang);
+  var dd = document.getElementById('lang-dropdown');
+  if(dd) dd.classList.remove('open');
+}
+
+document.addEventListener('click', function(){
+  var dd = document.getElementById('lang-dropdown');
+  if(dd) dd.classList.remove('open');
+});
+
+function loadHOF(){ try{ return JSON.parse(localStorage.getItem('mnemosine_hof')||'[]'); }catch(e){ return []; } }
+function saveHOF(h){ localStorage.setItem('mnemosine_hof', JSON.stringify(h)); }
+function recordHOF(s,pairs,att,time){
+  const h=loadHOF();
+  h.push({score:s,pairs,attempts:att,time:Math.floor(time||0),date:new Date().toLocaleDateString()});
+  h.splice(20);
+  saveHOF(h);
+}
+function formatTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}:${s<10?'0':''}${s}`;
+}
+function buildHOFHtml(h){
+  var t = i18n[currentLang] || i18n.en;
+  if(!h.length) return '<div style="color:rgba(68,170,255,.4);font-size:.35rem;letter-spacing:1px;text-align:center;padding:4px">\uD83C\uDFC6 '+t.hofEmpty+'</div>';
+  const top5 = [...h].sort((a,b)=>b.score-a.score).slice(0,5);
+  const medals=['\uD83E\uDD47','\uD83E\uDD48','\uD83E\uDD49','4.','5.'];
+  const colors=['color:#ff0','color:#bbb','color:#c84','color:#888','color:#888'];
+  let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
+  html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
+  html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofPairs+'</td><td>'+t.hofAttempts+'</td><td>'+t.hofTime+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
+  top5.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.pairs}/15</td><td>${e.attempts}</td><td>${formatTime(e.time||0)}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
+  html+='</table>';
+  return html;
+}
+function renderHOF(){
+  const h=loadHOF();
+  const html=buildHOFHtml(h);
+  const elInitial=$('hall-of-fame-initial'); if(elInitial) elInitial.innerHTML=html;
+  const elResult=$('hall-of-fame-result'); if(elResult) elResult.innerHTML=html;
+  const el2=$('hof-standalone'); if(el2) el2.innerHTML=html;
+}
+
+function buildBoard(){
+  const chosen = LETTERS.slice(0, 15);
+  let deck = [];
+  chosen.forEach((L,i)=>{
+    deck.push({letter:L, isUpper:true, pairId:i});
+    deck.push({letter:L.toLowerCase(), isUpper:false, pairId:i});
+  });
+  for(let i=deck.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]] = [deck[j],deck[i]];
+  }
+  tiles = [];
+  let idx=0;
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const x = TILE_MARGIN + c*(TILE_W+TILE_MARGIN);
+      const y = TILE_MARGIN + r*(TILE_H+TILE_MARGIN);
+      const card = deck[idx++];
+      tiles.push({
+        col:c, row:r, x, y, w:TILE_W, h:TILE_H,
+        letter:card.letter, isUpper:card.isUpper, pairId:card.pairId,
+        flipped:false, matched:false, flipProgress:0, shakeTime:0
+      });
+    }
+  }
+}
+
+function drawTile(t){
+  const cx = t.x + t.w/2, cy = t.y + t.h/2;
+  const fp = t.flipProgress;
+  const scaleX = Math.abs(Math.cos(fp*Math.PI/2));
+
+  ctx.save();
+  let shakeX = 0;
+  if(t.shakeTime>0){ shakeX = Math.sin(t.shakeTime*0.9)*4; t.shakeTime -= 1; }
+  ctx.translate(cx+shakeX, cy);
+  ctx.scale(Math.max(scaleX,0.05), 1);
+  ctx.translate(-cx, -cy);
+
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(t.x, t.y, t.w, t.h, 6); else ctx.rect(t.x, t.y, t.w, t.h);
+  if(t.matched){
+    const g = ctx.createLinearGradient(t.x,t.y,t.x,t.y+t.h);
+    g.addColorStop(0,'#0d3a2a'); g.addColorStop(1,'#0a2418');
+    ctx.fillStyle = g;
+  } else if(fp > 0.5){
+    const g = ctx.createLinearGradient(t.x,t.y,t.x,t.y+t.h);
+    g.addColorStop(0,'#16263f'); g.addColorStop(1,'#0e1830');
+    ctx.fillStyle = g;
+  } else {
+    const g = ctx.createLinearGradient(t.x,t.y,t.x,t.y+t.h);
+    g.addColorStop(0,'#1c2740'); g.addColorStop(1,'#10182c');
+    ctx.fillStyle = g;
+  }
+  ctx.fill();
+  ctx.strokeStyle = t.matched ? 'rgba(80,255,160,.6)' : (hoverTile===t && fp<0.5 ? 'rgba(0,229,255,.7)' : 'rgba(68,170,255,.3)');
+  ctx.lineWidth = t.matched ? 2 : 1.2;
+  ctx.stroke();
+
+  if(fp < 0.5 && !t.matched){
+    ctx.fillStyle = 'rgba(68,170,255,.35)';
+    ctx.font = `bold ${Math.floor(t.h*0.4)}px monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('?', cx, cy+1);
+  } else {
+    ctx.fillStyle = t.matched ? '#7fffb0' : '#fff';
+    ctx.font = `bold ${Math.floor(t.h*0.5)}px monospace`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(t.letter, cx, cy+1);
+  }
+  ctx.restore();
+}
+
+function drawParticles(){
+  for(let i=particles.length-1;i>=0;i--){
+    const p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.life--;
+    if(p.life<=0){ particles.splice(i,1); continue; }
+    ctx.globalAlpha = p.life/p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+function spawnMatchParticles(x,y,color){
+  for(let i=0;i<16;i++){
+    particles.push({x,y,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5-2,color,size:2+Math.random()*2,life:30,maxLife:30});
+  }
+}
+
+canvas.addEventListener('mousemove', e=>{
+  const rect = canvas.getBoundingClientRect();
+  mouseX = (e.clientX-rect.left) * (W/rect.width);
+  mouseY = (e.clientY-rect.top) * (H/rect.height);
+  hoverTile = tiles.find(t => mouseX>=t.x && mouseX<=t.x+t.w && mouseY>=t.y && mouseY<=t.y+t.h) || null;
+});
+
+canvas.addEventListener('click', e=>{
+  if(state!=='playing' || lockInput || finaleActive) return;
+  const rect = canvas.getBoundingClientRect();
+  const cx = (e.clientX-rect.left) * (W/rect.width);
+  const cy = (e.clientY-rect.top) * (H/rect.height);
+  const tile = tiles.find(t => cx>=t.x && cx<=t.x+t.w && cy>=t.y && cy<=t.y+t.h);
+  if(!tile || tile.matched || tile.flipped) return;
+  if(firstPick && secondPick) return;
+
+  tile.flipped = true;
+  playSound('flip');
+
+  if(!firstPick){
+    firstPick = tile;
+    return;
+  }
+  secondPick = tile;
+  attempts++;
+  updateStatsUI();
+
+  lockInput = true;
+  setTimeout(()=>{
+    const isMatch = firstPick.letter.toLowerCase() === secondPick.letter.toLowerCase() && firstPick.isUpper !== secondPick.isUpper;
+    if(isMatch){
+      firstPick.matched = true; secondPick.matched = true;
+      pairsFound++;
+      score += 10;
+      updateScoreUI();
+      spawnMatchParticles(firstPick.x+firstPick.w/2, firstPick.y+firstPick.h/2, '#7fffb0');
+      spawnMatchParticles(secondPick.x+secondPick.w/2, secondPick.y+secondPick.h/2, '#7fffb0');
+      playSound('match');
+      if(pairsFound===15) playSound('super');
+    } else {
+      firstPick.shakeTime = 12; secondPick.shakeTime = 12;
+      firstPick.flipped = false; secondPick.flipped = false;
+      playSound('miss');
+    }
+    firstPick = null; secondPick = null;
+    lockInput = false;
+
+    if(pairsFound===15){ winGame(); }
+    else if(attempts>=MAX_ATTEMPTS){ loseGame(); }
+  }, 700);
+});
+
+function updateScoreUI(){ $('score').textContent = score; }
+function updateStatsUI(){
+  $('pairs-count').textContent = pairsFound;
+  $('attempts-display').textContent = attempts;
+  $('attempts-bar-fill').style.width = Math.min(100,(attempts/MAX_ATTEMPTS)*100)+'%';
+}
+function updateTimeUI(){
+  $('time-display').textContent = formatTime(Math.floor(elapsed));
+}
+
+function loop(t){
+  const dt = Math.min(40, t-lastTime); lastTime=t;
+
+  drawStarfield();
+
+  tiles.forEach(tile=>{
+    const target = (tile.flipped || tile.matched) ? 1 : 0;
+    tile.flipProgress += (target - tile.flipProgress) * 0.25;
+    drawTile(tile);
+  });
+
+  drawParticles();
+
+  if(state==='playing'){
+    elapsed += dt/1000;
+    updateTimeUI();
+    if(elapsed>=300 && !surrenderShown){
+      surrenderShown = true;
+      $('surrender-btn').style.display='block';
+    }
+  }
+
+  if(state==='playing') gameLoopId = requestAnimationFrame(loop);
+}
+
+function startGame(){
+  $('overlay').style.display='none';
+  $('surrender-btn').style.display='none';
+  state='playing';
+  score=0; attempts=0; pairsFound=0; elapsed=0;
+  firstPick=null; secondPick=null; lockInput=false; finaleActive=false; surrenderShown=false;
+  particles=[];
+  buildBoard();
+  updateScoreUI(); updateStatsUI(); updateTimeUI();
+  initStars();
+  if(gameLoopId) cancelAnimationFrame(gameLoopId);
+  lastTime = performance.now();
+  gameLoopId = requestAnimationFrame(loop);
+}
+
+function surrenderGame(){
+  if(state!=='playing') return;
+  loseGame();
+}
+
+function computeFinalScore(won){
+  const pairBonus = pairsFound * 20;
+  const attemptEfficiency = Math.max(0, (MAX_ATTEMPTS - attempts)) * 3;
+  const timeEfficiency = Math.max(0, Math.floor((300 - Math.min(elapsed,300))/5));
+  const winBonus = won ? 100 : 0;
+  return pairBonus + attemptEfficiency + timeEfficiency + winBonus;
+}
+
+function winGame(){
+  state='won';
+  cancelAnimationFrame(gameLoopId);
+  playSound('win');
+  score = computeFinalScore(true);
+  updateScoreUI();
+  finishGame(true);
+}
+
+function loseGame(){
+  state='lost';
+  cancelAnimationFrame(gameLoopId);
+  playSound('lose');
+  score = computeFinalScore(false);
+  updateScoreUI();
+  finishGame(false);
+}
+
+function finishGame(won){
+  if(score>highScore){ highScore=score; localStorage.setItem('mnemosine_hs', highScore); }
+  recordHOF(score, pairsFound, attempts, elapsed);
+
+  setTimeout(()=>{
+    const ov = $('overlay');
+    const t = i18n[currentLang] || i18n.en;
+    const generalComment = pairsFound>=15 ? t.generalHigh : (pairsFound>=8 ? t.generalMid : t.generalLow);
+    const headline = won ? t.mappingComplete : (attempts>=MAX_ATTEMPTS ? t.outOfAttempts : t.retreat);
+    ov.style.display='flex';
+    ov.innerHTML = `
+      <h2 style="color:${won?'#4f8':'#f84'}">&#128225; ${headline}</h2>
+      <p class="score-final">${t.finalScore}: ${score}</p>
+      <p style="color:#4af;font-size:.45rem">${t.pairsFound}: ${pairsFound}/15 &nbsp;|&nbsp; ${t.attemptsUsed}: ${attempts}/50 &nbsp;|&nbsp; ${t.timeTaken}: ${formatTime(Math.floor(elapsed))}</p>
+      <p style="color:#f84;font-size:.45rem">${t.best}: ${highScore}</p>
+      <div class="general-briefing">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==" alt="General" />
+        <div>
+          <span class="general-briefing-label">${t.generalLabel}</span>
+          <div class="general-briefing-text">${generalComment}</div>
+        </div>
+      </div>
+      <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
+      <div id="hall-of-fame-result" class="hall-of-fame-slot"></div>
+    `;
+    renderHOF();
+  }, 900);
+}
+</script>
+
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p class="cookie-text"><span id="cookie-text" data-i18n="cookieText">We use analytics cookies. They only activate with your consent.</span> <a href="/privacy.html" id="cookie-privacy-link" data-i18n="cookiePrivacyLink">Learn more</a>.</p>
+    <div class="cookie-btns">
+      <button class="cookie-btn reject" onclick="cookieConsent(false)" data-i18n="cookieReject">Reject</button>
+      <button class="cookie-btn accept" onclick="cookieConsent(true)" data-i18n="cookieAccept">Accept</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var GA_ID = 'G-0CCWBZ6VKX';
+
+  function loadGA() {
+    if (window.gaScriptLoaded) return;
+    window.gaScriptLoaded = true;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+  }
+
+  function cookieConsent(accepted) {
+    localStorage.setItem('thotteu_cookie_consent', accepted ? 'accepted' : 'rejected');
+    document.getElementById('cookie-banner').classList.remove('show');
+    if (accepted) {
+      gtag('consent', 'update', { 'analytics_storage': 'granted' });
+      loadGA();
+    }
+  }
+
+  (function initCookieBanner() {
+    var consent = localStorage.getItem('thotteu_cookie_consent');
+    if (consent === 'accepted') {
+      gtag('consent', 'update', { 'analytics_storage': 'granted' });
+      loadGA();
+    } else if (consent !== 'rejected') {
+      document.getElementById('cookie-banner').classList.add('show');
+    }
+  })();
+</script>
+
+<script>
+window.addEventListener('load', ()=>{
+  var saved = localStorage.getItem('mnemosine_lang');
+  var browserLang = (navigator.language || 'en').split('-')[0];
+  var supported = ['en','es'];
+  var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
+  applyLang(initial);
+
+  const el = $('lore-text');
+  el.textContent = ''; // applyLang already set the full lore text; clear it so the typewriter can re-type it from scratch
+  let i=0;
+  const LORE = (i18n[currentLang] || i18n.en).lore;
+  (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,16); } })();
+  initStars();
+  drawStarfield();
+});
+</script>
+</body>
+</html>
