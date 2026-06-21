@@ -253,6 +253,8 @@ let state = 'menu';
 let tiles = [];
 let firstPick = null, secondPick = null;
 let lockInput = false;
+let pendingResolve = null;
+let revealTimer = null;
 let attempts = 0;
 let pairsFound = 0;
 let score = 0;
@@ -423,7 +425,8 @@ function buildBoard(){
 function drawTile(t){
   const cx = t.x + t.w/2, cy = t.y + t.h/2;
   const fp = t.flipProgress;
-  const scaleX = Math.abs(Math.cos(fp*Math.PI/2));
+  // scaleX: 1 when fully closed OR fully open, ~0 at the midpoint of the flip (the "edge-on" moment)
+  const scaleX = Math.abs(Math.cos(fp * Math.PI));
 
   ctx.save();
   let shakeX = 0;
@@ -492,11 +495,23 @@ canvas.addEventListener('mousemove', e=>{
 });
 
 canvas.addEventListener('click', e=>{
-  if(state!=='playing' || lockInput || finaleActive) return;
+  if(state!=='playing' || finaleActive) return;
   const rect = canvas.getBoundingClientRect();
   const cx = (e.clientX-rect.left) * (W/rect.width);
   const cy = (e.clientY-rect.top) * (H/rect.height);
   const tile = tiles.find(t => cx>=t.x && cx<=t.x+t.w && cy>=t.y && cy<=t.y+t.h);
+
+  // If two unmatched tiles are currently shown waiting on the reveal timer,
+  // any further click immediately resolves/dismisses them early.
+  if(lockInput && pendingResolve){
+    pendingResolve();
+    pendingResolve = null;
+    lockInput = false;
+    if(revealTimer){ clearTimeout(revealTimer); revealTimer = null; }
+    return; // this click only dismisses the pair, it doesn't also pick a new tile
+  }
+
+  if(lockInput) return;
   if(!tile || tile.matched || tile.flipped) return;
   if(firstPick && secondPick) return;
 
@@ -511,29 +526,38 @@ canvas.addEventListener('click', e=>{
   attempts++;
   updateStatsUI();
 
-  lockInput = true;
-  setTimeout(()=>{
-    const isMatch = firstPick.letter.toLowerCase() === secondPick.letter.toLowerCase() && firstPick.isUpper !== secondPick.isUpper;
-    if(isMatch){
-      firstPick.matched = true; secondPick.matched = true;
-      pairsFound++;
-      score += 10;
-      updateScoreUI();
-      spawnMatchParticles(firstPick.x+firstPick.w/2, firstPick.y+firstPick.h/2, '#7fffb0');
-      spawnMatchParticles(secondPick.x+secondPick.w/2, secondPick.y+secondPick.h/2, '#7fffb0');
-      playSound('match');
-      if(pairsFound===15) playSound('super');
-    } else {
-      firstPick.shakeTime = 12; secondPick.shakeTime = 12;
-      firstPick.flipped = false; secondPick.flipped = false;
-      playSound('miss');
-    }
-    firstPick = null; secondPick = null;
-    lockInput = false;
+  const isMatch = firstPick.letter.toLowerCase() === secondPick.letter.toLowerCase() && firstPick.isUpper !== secondPick.isUpper;
 
+  if(isMatch){
+    // Matches resolve immediately and stay revealed permanently — no waiting needed.
+    firstPick.matched = true; secondPick.matched = true;
+    pairsFound++;
+    score += 10;
+    updateScoreUI();
+    spawnMatchParticles(firstPick.x+firstPick.w/2, firstPick.y+firstPick.h/2, '#7fffb0');
+    spawnMatchParticles(secondPick.x+secondPick.w/2, secondPick.y+secondPick.h/2, '#7fffb0');
+    playSound('match');
+    if(pairsFound===15) playSound('super');
+    firstPick = null; secondPick = null;
     if(pairsFound===15){ winGame(); }
-    else if(attempts>=MAX_ATTEMPTS){ loseGame(); }
-  }, 700);
+    return;
+  }
+
+  // Non-matching pair: keep both letters visible for up to 5s, or until the player clicks again.
+  lockInput = true;
+  const fp = firstPick, sp = secondPick;
+  pendingResolve = function(){
+    fp.shakeTime = 12; sp.shakeTime = 12;
+    fp.flipped = false; sp.flipped = false;
+    playSound('miss');
+    firstPick = null; secondPick = null;
+    if(attempts>=MAX_ATTEMPTS){ loseGame(); }
+  };
+  revealTimer = setTimeout(()=>{
+    if(pendingResolve){ pendingResolve(); pendingResolve = null; }
+    lockInput = false;
+    revealTimer = null;
+  }, 5000);
 });
 
 function updateScoreUI(){ $('score').textContent = score; }
@@ -577,6 +601,8 @@ function startGame(){
   state='playing';
   score=0; attempts=0; pairsFound=0; elapsed=0;
   firstPick=null; secondPick=null; lockInput=false; finaleActive=false; surrenderShown=false;
+  if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
+  pendingResolve = null;
   particles=[];
   buildBoard();
   updateScoreUI(); updateStatsUI(); updateTimeUI();
