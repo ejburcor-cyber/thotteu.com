@@ -44,6 +44,13 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 #start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
 #start-btn:hover{background:#7cf}
+#level-select{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.level-btn{border:2px solid #4af;color:#4af;background:transparent;font-family:'Press Start 2P',monospace;font-size:.42rem;padding:9px 14px;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.level-btn:hover,.level-btn.selected{background:#4af;color:#000}
+.level-btn.medium{border-color:#ff0;color:#ff0}
+.level-btn.medium:hover,.level-btn.medium.selected{background:#ff0;color:#000}
+.level-btn.hard{border-color:#f44;color:#f44}
+.level-btn.hard:hover,.level-btn.hard.selected{background:#f44;color:#000}
 .subtitle{color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center}
 #hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
 .hall-of-fame-slot{margin-top:6px}
@@ -73,7 +80,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .general-briefing img{width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))}
 .general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
 .general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
-#surrender-btn{display:none;position:absolute;top:6px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20}
+#surrender-btn{display:none;position:absolute;top:48px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20}
 .title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
 </style>
 </head>
@@ -171,6 +178,12 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     Matched pairs stay revealed &mdash; wrong pairs flip back.<br>
     You have 50 attempts to clear all 15 pairs.<br>
     Fewer attempts and less time mean a better score.</p>
+    <p style="color:#4df;margin-top:2px" data-i18n="selectDifficulty">SELECT DIFFICULTY:</p>
+    <div id="level-select">
+      <button class="level-btn easy selected" onclick="selectLevel('easy')">&#11088; <span data-i18n="levelEasy">EASY</span></button>
+      <button class="level-btn medium" onclick="selectLevel('medium')">&#128202; <span data-i18n="levelMedium">MEDIUM</span></button>
+      <button class="level-btn hard" onclick="selectLevel('hard')">&#128293; <span data-i18n="levelHard">HARD</span></button>
+    </div>
     <button id="start-btn" onclick="startGame()" data-i18n="startGame">START GAME</button>
     <div id="hall-of-fame-initial" class="hall-of-fame-slot"></div>
   </div>
@@ -192,6 +205,10 @@ const TILE_H = (H - TILE_MARGIN*(ROWS+1)) / ROWS;
 const $ = id => document.getElementById(id);
 
 const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'];
+const NUMBER_WORDS = {
+  en: ['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE'],
+  es: ['UNO','DOS','TRES','CUATRO','CINCO','SEIS','SIETE','OCHO','NUEVE']
+};
 
 let audioCtx = null;
 function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
@@ -250,6 +267,7 @@ function drawStarfield(){
 }
 
 let state = 'menu';
+let gameLevel = 'easy'; // easy | medium | hard
 let tiles = [];
 let firstPick = null, secondPick = null;
 let lockInput = false;
@@ -266,6 +284,7 @@ let hoverTile = null;
 let particles = [];
 let finaleActive = false;
 let surrenderShown = false;
+let lastPenaltyMinute = 0;
 let highScore = parseInt(localStorage.getItem('mnemosine_hs')||'0');
 
 $('highscore').textContent = highScore;
@@ -276,7 +295,9 @@ var i18n = {
     subtitle:'DECODE THE SIGNAL — MATCH EVERY LETTER',
     score:'SCORE', pairs:'PAIRS', time:'TIME', attempts:'ATTEMPTS',
     instructions:'INSTRUCTIONS',
-    instructionsBody:'Click two tiles to reveal the letters underneath.<br>Match each UPPERCASE letter with its lowercase twin (e.g. A &harr; a).<br>Matched pairs stay revealed &mdash; wrong pairs flip back.<br>You have 50 attempts to clear all 15 pairs.<br>Fewer attempts and less time mean a better score.',
+    instructionsBody:'Click two tiles to reveal what is underneath.<br>EASY: match each UPPERCASE letter with its lowercase twin (e.g. A &harr; a).<br>MEDIUM/HARD: also match number symbols with their written name (e.g. 5 &harr; FIVE).<br>Matched pairs stay revealed &mdash; wrong pairs flip back after 5s or your next click.<br>You have 50 attempts to clear all 15 pairs.',
+    selectDifficulty:'SELECT DIFFICULTY:',
+    levelEasy:'EASY', levelMedium:'MEDIUM', levelHard:'HARD',
     startGame:'START GAME',
     tryAgain:'TRY AGAIN',
     surrender:'SURRENDER',
@@ -291,7 +312,8 @@ var i18n = {
     generalLabel:'GENERAL — MISSION DEBRIEF',
     generalHigh:'Flawless mapping, soldier. Caelus has never decoded a signal this fast.',
     generalMid:'Solid work. The signal is taking shape.',
-    generalLow:'The mapping is incomplete. Sharpen your memory and try again, recruit.',
+    generalLow:'Mapping complete, but Caelus expected better, recruit. Sharpen your memory and speed for next time.',
+    generalIncomplete:'The mapping is incomplete. Find all the pairs and try again, recruit.',
     lore:'YEAR 2050. Following the success of Project Heimdall, our radiotelescopes have managed to identify signals from the UFOs. Humanity is now recruiting experts to identify the symbols and translate them into something meaningful — Project Mnemosine was born. The supercomputer Caelus has translated the symbols and presents them in shuffled pairs, across 30 blocks. Once we can match them with our eyes closed, we will be able to decode the alien communications. Are you ready?',
     cookieText:'We use analytics cookies. They only activate with your consent.',
     cookiePrivacyLink:'Learn more',
@@ -304,7 +326,9 @@ var i18n = {
     subtitle:'DESCIFRA LA SEÑAL — EMPAREJA CADA LETRA',
     score:'PUNTOS', pairs:'PAREJAS', time:'TIEMPO', attempts:'INTENTOS',
     instructions:'INSTRUCCIONES',
-    instructionsBody:'Haz clic en dos casillas para revelar las letras.<br>Empareja cada letra MAYÚSCULA con su gemela minúscula (ej. A &harr; a).<br>Las parejas correctas quedan reveladas &mdash; las incorrectas se vuelven a tapar.<br>Tienes 50 intentos para completar las 15 parejas.<br>Menos intentos y menos tiempo significan mejor puntuación.',
+    instructionsBody:'Haz clic en dos casillas para revelar lo que hay debajo.<br>FÁCIL: empareja cada letra MAYÚSCULA con su gemela minúscula (ej. A &harr; a).<br>MEDIO/DIFÍCIL: también empareja el símbolo del número con su nombre escrito (ej. 5 &harr; CINCO).<br>Las parejas correctas quedan reveladas &mdash; las incorrectas se tapan tras 5s o tu siguiente clic.<br>Tienes 50 intentos para completar las 15 parejas.',
+    selectDifficulty:'SELECCIONA DIFICULTAD:',
+    levelEasy:'FÁCIL', levelMedium:'MEDIO', levelHard:'DIFÍCIL',
     startGame:'EMPEZAR PARTIDA',
     tryAgain:'INTENTAR DE NUEVO',
     surrender:'RENDIRSE',
@@ -319,7 +343,8 @@ var i18n = {
     generalLabel:'GENERAL — INFORME DE MISIÓN',
     generalHigh:'Mapeo impecable, soldado. Caelus nunca había descifrado una señal tan rápido.',
     generalMid:'Buen trabajo. La señal está tomando forma.',
-    generalLow:'El mapeo está incompleto. Agudiza tu memoria e inténtalo de nuevo, recluta.',
+    generalLow:'Mapeo completado, pero Caelus esperaba más, recluta. Agudiza tu memoria y velocidad para la próxima.',
+    generalIncomplete:'El mapeo está incompleto. Encuentra todas las parejas e inténtalo de nuevo, recluta.',
     lore:'AÑO 2050. Tras el éxito del Proyecto Heimdall, los radiotelescopios han conseguido identificar señales de los ovnis. La humanidad está reclutando expertos que permitan identificar los signos y traducirlos de modo que tengan sentido — ha nacido el Proyecto Mnemosine. El superordenador Caelus ha traducido los signos y los presenta por pares desordenados, en 30 bloques. Cuando seamos capaces de emparejarlos con los ojos cerrados, podremos descifrar las comunicaciones de los alienígenas. ¿Estás preparado?',
     cookieText:'Usamos cookies de analítica. Solo se activan con tu consentimiento.',
     cookiePrivacyLink:'Más información',
@@ -396,11 +421,37 @@ function renderHOF(){
 }
 
 function buildBoard(){
-  const chosen = LETTERS.slice(0, 15);
+  let pairPool = [];
+
+  if(gameLevel === 'easy'){
+    // 15 letter pairs: UPPERCASE matched with its own lowercase twin
+    LETTERS.forEach((L,i)=>{
+      pairPool.push({
+        a:{display:L, kind:'letter'}, b:{display:L.toLowerCase(), kind:'letter'}, pairId:'L'+i
+      });
+    });
+  } else {
+    // Medium/Hard: mix of 15 letter pairs + 9 number pairs (symbol <-> word), pick 15 at random for variety
+    const words = NUMBER_WORDS[currentLang] || NUMBER_WORDS.en;
+    let fullPool = [];
+    LETTERS.forEach((L,i)=>{
+      fullPool.push({ a:{display:L, kind:'letter'}, b:{display:L.toLowerCase(), kind:'letter'}, pairId:'L'+i });
+    });
+    words.forEach((w,i)=>{
+      fullPool.push({ a:{display:String(i+1), kind:'number'}, b:{display:w, kind:'number'}, pairId:'N'+i });
+    });
+    // shuffle the pool, then take the first 15
+    for(let i=fullPool.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [fullPool[i],fullPool[j]] = [fullPool[j],fullPool[i]];
+    }
+    pairPool = fullPool.slice(0,15);
+  }
+
   let deck = [];
-  chosen.forEach((L,i)=>{
-    deck.push({letter:L, isUpper:true, pairId:i});
-    deck.push({letter:L.toLowerCase(), isUpper:false, pairId:i});
+  pairPool.forEach(p=>{
+    deck.push({display:p.a.display, kind:p.a.kind, pairId:p.pairId});
+    deck.push({display:p.b.display, kind:p.b.kind, pairId:p.pairId});
   });
   for(let i=deck.length-1;i>0;i--){
     const j = Math.floor(Math.random()*(i+1));
@@ -415,8 +466,13 @@ function buildBoard(){
       const card = deck[idx++];
       tiles.push({
         col:c, row:r, x, y, w:TILE_W, h:TILE_H,
-        letter:card.letter, isUpper:card.isUpper, pairId:card.pairId,
-        flipped:false, matched:false, flipProgress:0, shakeTime:0
+        display:card.display, kind:card.kind, pairId:card.pairId,
+        flipped:false, matched:false, flipProgress:0, shakeTime:0,
+        // hard-level distortion, fixed per tile so it doesn't jitter every frame
+        distortRot: gameLevel==='hard' ? (Math.random()-0.5)*0.35 : 0,
+        distortOffX: gameLevel==='hard' ? (Math.random()-0.5)*6 : 0,
+        distortOffY: gameLevel==='hard' ? (Math.random()-0.5)*6 : 0,
+        distortNoise: gameLevel==='hard' ? Math.random()*6+3 : 0
       });
     }
   }
@@ -461,10 +517,33 @@ function drawTile(t){
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText('?', cx, cy+1);
   } else {
+    // word-sized content (number names) needs a smaller font than single letters/digits
+    const isWord = t.display.length > 1;
+    const baseSize = isWord ? t.h*0.26 : t.h*0.5;
     ctx.fillStyle = t.matched ? '#7fffb0' : '#fff';
-    ctx.font = `bold ${Math.floor(t.h*0.5)}px monospace`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(t.letter, cx, cy+1);
+
+    if(gameLevel==='hard' && !t.matched){
+      // subtle glitch distortion: slight rotation + offset + a few noise dashes, kept mild on purpose
+      ctx.save();
+      ctx.translate(cx + t.distortOffX, cy + t.distortOffY);
+      ctx.rotate(t.distortRot);
+      ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
+      ctx.fillText(t.display, 0, 1);
+      ctx.strokeStyle = 'rgba(0,229,255,.25)';
+      ctx.lineWidth = 1;
+      for(let n=0;n<2;n++){
+        const ny = (Math.random()-0.5)*t.h*0.3;
+        ctx.beginPath();
+        ctx.moveTo(-t.distortNoise*2, ny);
+        ctx.lineTo(t.distortNoise*2, ny);
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else {
+      ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
+      ctx.fillText(t.display, cx, cy+1);
+    }
   }
   ctx.restore();
 }
@@ -526,7 +605,7 @@ canvas.addEventListener('click', e=>{
   attempts++;
   updateStatsUI();
 
-  const isMatch = firstPick.letter.toLowerCase() === secondPick.letter.toLowerCase() && firstPick.isUpper !== secondPick.isUpper;
+  const isMatch = firstPick.pairId === secondPick.pairId;
 
   if(isMatch){
     // Matches resolve immediately and stay revealed permanently — no waiting needed.
@@ -561,6 +640,13 @@ canvas.addEventListener('click', e=>{
 });
 
 function updateScoreUI(){ $('score').textContent = score; }
+function flashPenaltyNote(){
+  const el = $('score');
+  el.style.color = '#f44';
+  el.style.transition = 'color 1.5s';
+  playSound('miss');
+  setTimeout(()=>{ el.style.color = ''; }, 80);
+}
 function updateStatsUI(){
   $('pairs-count').textContent = pairsFound;
   $('attempts-display').textContent = attempts;
@@ -590,9 +676,26 @@ function loop(t){
       surrenderShown = true;
       $('surrender-btn').style.display='block';
     }
+    // Starting exactly at the 5-minute mark, lose 10 points, then again every full minute after.
+    if(elapsed>=300){
+      const minutesPastFive = Math.floor((elapsed-300)/60) + 1;
+      if(minutesPastFive > lastPenaltyMinute){
+        lastPenaltyMinute = minutesPastFive;
+        score = Math.max(0, score-10);
+        updateScoreUI();
+        flashPenaltyNote();
+      }
+    }
   }
 
   if(state==='playing') gameLoopId = requestAnimationFrame(loop);
+}
+
+function selectLevel(level){
+  gameLevel = level;
+  document.querySelectorAll('.level-btn').forEach(b=>{
+    b.classList.toggle('selected', b.classList.contains(level));
+  });
 }
 
 function startGame(){
@@ -601,6 +704,7 @@ function startGame(){
   state='playing';
   score=0; attempts=0; pairsFound=0; elapsed=0;
   firstPick=null; secondPick=null; lockInput=false; finaleActive=false; surrenderShown=false;
+  lastPenaltyMinute = 0;
   if(revealTimer){ clearTimeout(revealTimer); revealTimer=null; }
   pendingResolve = null;
   particles=[];
@@ -643,6 +747,25 @@ function loseGame(){
   finishGame(false);
 }
 
+function computeGeneralComment(t){
+  if(pairsFound < 15){
+    return t.generalIncomplete;
+  }
+  // Time tier: <2min great, 2-4min ok, >4min slow
+  const timeTier = elapsed < 120 ? 2 : (elapsed <= 240 ? 1 : 0);
+  // Attempts tier: <=20 great, 20-40 ok, >40 slow
+  const attTier = attempts <= 20 ? 2 : (attempts <= 40 ? 1 : 0);
+  const worstTier = Math.min(timeTier, attTier);
+
+  if(worstTier === 2){
+    return t.generalHigh; // perfect on every front
+  }
+  if(worstTier === 1){
+    return t.generalMid;
+  }
+  return t.generalLow; // completed, but time and/or attempts were rough
+}
+
 function finishGame(won){
   if(score>highScore){ highScore=score; localStorage.setItem('mnemosine_hs', highScore); }
   recordHOF(score, pairsFound, attempts, elapsed);
@@ -650,7 +773,7 @@ function finishGame(won){
   setTimeout(()=>{
     const ov = $('overlay');
     const t = i18n[currentLang] || i18n.en;
-    const generalComment = pairsFound>=15 ? t.generalHigh : (pairsFound>=8 ? t.generalMid : t.generalLow);
+    const generalComment = computeGeneralComment(t);
     const headline = won ? t.mappingComplete : (attempts>=MAX_ATTEMPTS ? t.outOfAttempts : t.retreat);
     ov.style.display='flex';
     ov.innerHTML = `
