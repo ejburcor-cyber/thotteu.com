@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Dancing+Script:wght@700&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Courier+Prime:ital,wght@0,700;1,700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
@@ -457,6 +457,13 @@ function buildBoard(){
     const j = Math.floor(Math.random()*(i+1));
     [deck[i],deck[j]] = [deck[j],deck[i]];
   }
+  const HARD_FONTS = [
+    "italic 'Playfair Display', serif",
+    "'Dancing Script', cursive",
+    "'Caveat', cursive",
+    "italic 'Courier Prime', monospace"
+  ];
+
   tiles = [];
   let idx=0;
   for(let r=0;r<ROWS;r++){
@@ -468,11 +475,8 @@ function buildBoard(){
         col:c, row:r, x, y, w:TILE_W, h:TILE_H,
         display:card.display, kind:card.kind, pairId:card.pairId,
         flipped:false, matched:false, flipProgress:0, shakeTime:0,
-        // hard-level distortion, fixed per tile so it doesn't jitter every frame
-        distortRot: gameLevel==='hard' ? (Math.random()-0.5)*0.35 : 0,
-        distortOffX: gameLevel==='hard' ? (Math.random()-0.5)*6 : 0,
-        distortOffY: gameLevel==='hard' ? (Math.random()-0.5)*6 : 0,
-        distortNoise: gameLevel==='hard' ? Math.random()*6+3 : 0
+        // hard-level: each tile gets a distinct, fixed decorative font so the letter shape itself is the challenge
+        hardFont: gameLevel==='hard' ? HARD_FONTS[Math.floor(Math.random()*HARD_FONTS.length)] : null
       });
     }
   }
@@ -524,22 +528,9 @@ function drawTile(t){
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
     if(gameLevel==='hard' && !t.matched){
-      // subtle glitch distortion: slight rotation + offset + a few noise dashes, kept mild on purpose
-      ctx.save();
-      ctx.translate(cx + t.distortOffX, cy + t.distortOffY);
-      ctx.rotate(t.distortRot);
-      ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
-      ctx.fillText(t.display, 0, 1);
-      ctx.strokeStyle = 'rgba(0,229,255,.25)';
-      ctx.lineWidth = 1;
-      for(let n=0;n<2;n++){
-        const ny = (Math.random()-0.5)*t.h*0.3;
-        ctx.beginPath();
-        ctx.moveTo(-t.distortNoise*2, ny);
-        ctx.lineTo(t.distortNoise*2, ny);
-        ctx.stroke();
-      }
-      ctx.restore();
+      // hard level: render in a distinctive decorative/cursive font so the shape itself is the challenge
+      ctx.font = `bold ${Math.floor(baseSize*1.15)}px ${t.hardFont}`;
+      ctx.fillText(t.display, cx, cy+1);
     } else {
       ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
       ctx.fillText(t.display, cx, cy+1);
@@ -842,6 +833,12 @@ function finishGame(won){
 
 <script>
 window.addEventListener('load', ()=>{
+  // Preload the hard-level decorative fonts so the canvas doesn't fall back to a default font on first render.
+  if (document.fonts) {
+    ["italic 16px 'Playfair Display'", "16px 'Dancing Script'", "16px 'Caveat'", "italic 16px 'Courier Prime'"]
+      .forEach(f => { try { document.fonts.load(f); } catch(e){} });
+  }
+
   var saved = localStorage.getItem('mnemosine_lang');
   var browserLang = (navigator.language || 'en').split('-')[0];
   var supported = ['en','es'];
