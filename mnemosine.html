@@ -834,6 +834,9 @@ function finishGame(won){
 
 <script>
 window.addEventListener('load', ()=>{
+  // Keep the visible tab title in-universe; the SEO-friendly <title> stays for crawlers.
+  document.title = 'Project Mnemosine — Thotteu';
+
   // Preload the hard-level decorative fonts so the canvas doesn't fall back to a default font on first render.
   if (document.fonts) {
     ["italic 16px 'Playfair Display'", "16px 'Dancing Script'", "16px 'Caveat'", "italic 16px 'Courier Prime'"]

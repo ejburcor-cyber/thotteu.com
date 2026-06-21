@@ -1007,6 +1007,11 @@
       var initial = saved || (supported.indexOf(browserLang) !== -1 ? browserLang : 'en');
       applyLang(initial);
     })();
+
+    // The <title> tag stays SEO-descriptive for search engines crawling the static HTML.
+    // Once the page actually loads in a browser, swap the visible tab title to something
+    // purely in-universe so it doesn't give away the educational angle while playing.
+    document.title = 'Thotteu — Universo de Aventura Espacial';
   </script>
 
   <!-- NEBULA ANIMATION -->
