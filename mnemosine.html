@@ -198,18 +198,35 @@ const ctx    = canvas.getContext('2d');
 const W = canvas.width, H = canvas.height;
 const TAU = Math.PI * 2;
 const MAX_ATTEMPTS = 50;
-const COLS = 6, ROWS = 5;
 const TILE_MARGIN = 10;
-const TILE_W = (W - TILE_MARGIN*(COLS+1)) / COLS;
-const TILE_H = (H - TILE_MARGIN*(ROWS+1)) / ROWS;
+
+// Board dimensions — set dynamically per level in startGame()
+let COLS = 6, ROWS = 5, TILE_W, TILE_H;
+function setBoardDimensions(){
+  if(gameLevel==='easy'){ COLS=4; ROWS=4; }
+  else if(gameLevel==='medium'){ COLS=6; ROWS=4; }
+  else { COLS=6; ROWS=6; }
+  TILE_W = (W - TILE_MARGIN*(COLS+1)) / COLS;
+  TILE_H = (H - TILE_MARGIN*(ROWS+1)) / ROWS;
+}
 
 const $ = id => document.getElementById(id);
 
-const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'];
+const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R'];
 const NUMBER_WORDS = {
   en: ['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE'],
   es: ['UNO','DOS','TRES','CUATRO','CINCO','SEIS','SIETE','OCHO','NUEVE']
 };
+
+// Per-char calibrated px sizes for hard level (measured at tileH=80, target=55% of tile).
+// Only used in hard level — easy/medium are untouched.
+const HC = {
+  playfair: {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:47,g:62,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
+  dancing:  {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:60,g:60,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
+  caveat:   {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:60,g:60,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
+  courier:  {A:57,B:59,C:55,D:59,E:59,F:59,G:55,H:59,I:59,J:57,K:59,L:59,M:59,N:59,O:57,P:59,Q:55,R:59,a:75,b:55,c:75,d:55,e:75,f:55,g:55,h:57,i:52,j:41,k:55,l:55,m:77,n:77,o:75,p:55,q:55,r:66},
+};
+function hcKey(f){ return f.includes('Playfair')?'playfair':f.includes('Dancing')?'dancing':f.includes('Caveat')?'caveat':'courier'; }
 
 let audioCtx = null;
 function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
@@ -276,6 +293,7 @@ let pendingResolve = null;
 let revealTimer = null;
 let attempts = 0;
 let pairsFound = 0;
+let totalPairs = 8;
 let score = 0;
 let elapsed = 0;
 let lastTime = 0;
@@ -392,7 +410,7 @@ function loadHOF(){ try{ return JSON.parse(localStorage.getItem('mnemosine_hof')
 function saveHOF(h){ localStorage.setItem('mnemosine_hof', JSON.stringify(h)); }
 function recordHOF(s,pairs,att,time){
   const h=loadHOF();
-  h.push({score:s,pairs,attempts:att,time:Math.floor(time||0),date:new Date().toLocaleDateString()});
+  h.push({score:s,pairs,total:totalPairs,attempts:att,time:Math.floor(time||0),date:new Date().toLocaleDateString()});
   h.splice(20);
   saveHOF(h);
 }
@@ -409,7 +427,7 @@ function buildHOFHtml(h){
   let html='<div style="color:#4af;font-size:.38rem;letter-spacing:2px;margin-bottom:5px;text-align:center">\uD83C\uDFC6 '+t.hofTitle+'</div>';
   html+='<table style="width:100%;border-collapse:collapse;font-size:.34rem;letter-spacing:.5px">';
   html+='<tr style="color:#f84;border-bottom:1px solid rgba(68,170,255,.25)"><td style="padding:2px 4px">#</td><td>'+t.hofScore+'</td><td>'+t.hofPairs+'</td><td>'+t.hofAttempts+'</td><td>'+t.hofTime+'</td><td style="text-align:right">'+t.hofDate+'</td></tr>';
-  top5.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.pairs}/15</td><td>${e.attempts}</td><td>${formatTime(e.time||0)}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
+  top5.forEach((e,i)=>{ html+=`<tr style="${colors[i]};border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:3px 4px">${medals[i]}</td><td><b>${e.score}</b></td><td>${e.pairs}/${e.total||15}</td><td>${e.attempts}</td><td>${formatTime(e.time||0)}</td><td style="text-align:right;font-size:.3rem">${e.date}</td></tr>`; });
   html+='</table>';
   return html;
 }
@@ -422,17 +440,18 @@ function renderHOF(){
 }
 
 function buildBoard(){
+  setBoardDimensions();
+  const PAIRS = COLS * ROWS / 2; // 8 easy, 12 medium, 18 hard
+
   let pairPool = [];
 
   if(gameLevel === 'easy'){
-    // 15 letter pairs: UPPERCASE matched with its own lowercase twin
-    LETTERS.forEach((L,i)=>{
-      pairPool.push({
-        a:{display:L, kind:'letter'}, b:{display:L.toLowerCase(), kind:'letter'}, pairId:'L'+i
-      });
+    // Easy: letter pairs only, A-H (8 pairs)
+    LETTERS.slice(0, PAIRS).forEach((L,i)=>{
+      pairPool.push({ a:{display:L, kind:'letter'}, b:{display:L.toLowerCase(), kind:'letter'}, pairId:'L'+i });
     });
   } else {
-    // Medium/Hard: mix of 15 letter pairs + 9 number pairs (symbol <-> word), pick 15 at random for variety
+    // Medium (12 pairs) / Hard (18 pairs): mix letters + numbers, pick PAIRS at random
     const words = NUMBER_WORDS[currentLang] || NUMBER_WORDS.en;
     let fullPool = [];
     LETTERS.forEach((L,i)=>{
@@ -441,12 +460,11 @@ function buildBoard(){
     words.forEach((w,i)=>{
       fullPool.push({ a:{display:String(i+1), kind:'number'}, b:{display:w, kind:'number'}, pairId:'N'+i });
     });
-    // shuffle the pool, then take the first 15
     for(let i=fullPool.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
       [fullPool[i],fullPool[j]] = [fullPool[j],fullPool[i]];
     }
-    pairPool = fullPool.slice(0,15);
+    pairPool = fullPool.slice(0, PAIRS);
   }
 
   let deck = [];
@@ -458,11 +476,12 @@ function buildBoard(){
     const j = Math.floor(Math.random()*(i+1));
     [deck[i],deck[j]] = [deck[j],deck[i]];
   }
+
   const HARD_FONTS = [
-    { font: "italic 'Playfair Display', serif",  scale: 1.18 },
-    { font: "'Dancing Script', cursive",          scale: 1.18 },
-    { font: "'Caveat', cursive",                  scale: 1.18 },
-    { font: "italic 'Courier Prime', monospace",  scale: 0.98 },
+    { font: "italic 'Playfair Display', serif" },
+    { font: "'Dancing Script', cursive" },
+    { font: "'Caveat', cursive" },
+    { font: "italic 'Courier Prime', monospace" },
   ];
 
   tiles = [];
@@ -476,7 +495,6 @@ function buildBoard(){
         col:c, row:r, x, y, w:TILE_W, h:TILE_H,
         display:card.display, kind:card.kind, pairId:card.pairId,
         flipped:false, matched:false, flipProgress:0, shakeTime:0,
-        // hard-level: each tile gets a distinct, fixed decorative font so the letter shape itself is the challenge
         hardFont: gameLevel==='hard' ? HARD_FONTS[Math.floor(Math.random()*HARD_FONTS.length)] : null
       });
     }
@@ -528,9 +546,11 @@ function drawTile(t){
     ctx.fillStyle = t.matched ? '#7fffb0' : '#fff';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-    if(gameLevel==='hard' && t.hardFont){
-      // hard level: use the tile's assigned decorative font whether flipped open or matched
-      ctx.font = `bold ${Math.floor(baseSize * t.hardFont.scale)}px ${t.hardFont.font}`;
+    if(gameLevel==='hard' && t.hardFont && !isWord){
+      const k = hcKey(t.hardFont.font);
+      const rawPx = (HC[k][t.display] || Math.floor(t.h*0.5));
+      const scaledPx = Math.max(Math.floor(rawPx * (t.h/80)), Math.floor(t.h*0.55));
+      ctx.font = `bold ${scaledPx}px ${t.hardFont.font}`;
     } else {
       ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
     }
@@ -607,9 +627,9 @@ canvas.addEventListener('click', e=>{
     spawnMatchParticles(firstPick.x+firstPick.w/2, firstPick.y+firstPick.h/2, '#7fffb0');
     spawnMatchParticles(secondPick.x+secondPick.w/2, secondPick.y+secondPick.h/2, '#7fffb0');
     playSound('match');
-    if(pairsFound===15) playSound('super');
+    if(pairsFound===totalPairs) playSound('super');
     firstPick = null; secondPick = null;
-    if(pairsFound===15){ winGame(); }
+    if(pairsFound===totalPairs){ winGame(); }
     return;
   }
 
@@ -700,6 +720,11 @@ function startGame(){
   pendingResolve = null;
   particles=[];
   buildBoard();
+  totalPairs = COLS * ROWS / 2;
+  $('pairs-count').textContent = '0';
+  // Update the /N in the pairs HUD to reflect this level's total
+  const pairsHud = $('pairs-count').parentElement;
+  if(pairsHud) pairsHud.lastChild.textContent = '/' + totalPairs;
   updateScoreUI(); updateStatsUI(); updateTimeUI();
   initStars();
   if(gameLoopId) cancelAnimationFrame(gameLoopId);
@@ -739,7 +764,7 @@ function loseGame(){
 }
 
 function computeGeneralComment(t){
-  if(pairsFound < 15){
+  if(pairsFound < totalPairs){
     return t.generalIncomplete;
   }
   // Time tier: <2min great, 2-4min ok, >4min slow
@@ -770,7 +795,7 @@ function finishGame(won){
     ov.innerHTML = `
       <h2 style="color:${won?'#4f8':'#f84'}">&#128225; ${headline}</h2>
       <p class="score-final">${t.finalScore}: ${score}</p>
-      <p style="color:#4af;font-size:.45rem">${t.pairsFound}: ${pairsFound}/15 &nbsp;|&nbsp; ${t.attemptsUsed}: ${attempts}/50 &nbsp;|&nbsp; ${t.timeTaken}: ${formatTime(Math.floor(elapsed))}</p>
+      <p style="color:#4af;font-size:.45rem">${t.pairsFound}: ${pairsFound}/${totalPairs} &nbsp;|&nbsp; ${t.attemptsUsed}: ${attempts}/50 &nbsp;|&nbsp; ${t.timeTaken}: ${formatTime(Math.floor(elapsed))}</p>
       <p style="color:#f84;font-size:.45rem">${t.best}: ${highScore}</p>
       <div class="general-briefing">
         <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==" alt="General" />
