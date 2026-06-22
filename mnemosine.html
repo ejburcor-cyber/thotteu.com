@@ -459,10 +459,10 @@ function buildBoard(){
     [deck[i],deck[j]] = [deck[j],deck[i]];
   }
   const HARD_FONTS = [
-    "italic 'Playfair Display', serif",
-    "'Dancing Script', cursive",
-    "'Caveat', cursive",
-    "italic 'Courier Prime', monospace"
+    { font: "italic 'Playfair Display', serif",  scale: 1.13 },
+    { font: "'Dancing Script', cursive",          scale: 1.13 },
+    { font: "'Caveat', cursive",                  scale: 1.13 },
+    { font: "italic 'Courier Prime', monospace",  scale: 0.98 },
   ];
 
   tiles = [];
@@ -530,7 +530,7 @@ function drawTile(t){
 
     if(gameLevel==='hard' && !t.matched){
       // hard level: render in a distinctive decorative/cursive font so the shape itself is the challenge
-      ctx.font = `bold ${Math.floor(baseSize*1.15)}px ${t.hardFont}`;
+      ctx.font = `bold ${Math.floor(baseSize * t.hardFont.scale)}px ${t.hardFont.font}`;
       ctx.fillText(t.display, cx, cy+1);
     } else {
       ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
