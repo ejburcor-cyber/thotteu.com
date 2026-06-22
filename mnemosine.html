@@ -22,7 +22,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Dancing+Script:wght@700&family=Caveat:wght@700&family=Playfair+Display:ital,wght@1,700&family=Courier+Prime:ital,wght@0,700;1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Courier+Prime:wght@700&display=swap">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
@@ -217,16 +217,6 @@ const NUMBER_WORDS = {
   en: ['ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE'],
   es: ['UNO','DOS','TRES','CUATRO','CINCO','SEIS','SIETE','OCHO','NUEVE']
 };
-
-// Per-char calibrated px sizes for hard level (measured at tileH=80, target=55% of tile).
-// Only used in hard level — easy/medium are untouched.
-const HC = {
-  playfair: {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:47,g:62,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
-  dancing:  {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:60,g:60,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
-  caveat:   {A:66,B:66,C:64,D:66,E:66,F:66,G:64,H:66,I:66,J:64,K:66,L:66,M:66,N:66,O:64,P:66,Q:64,R:66,a:89,b:60,c:89,d:60,e:89,f:60,g:60,h:62,i:62,j:47,k:62,l:62,m:92,n:92,o:89,p:60,q:60,r:66},
-  courier:  {A:57,B:59,C:55,D:59,E:59,F:59,G:55,H:59,I:59,J:57,K:59,L:59,M:59,N:59,O:57,P:59,Q:55,R:59,a:75,b:55,c:75,d:55,e:75,f:55,g:55,h:57,i:52,j:41,k:55,l:55,m:77,n:77,o:75,p:55,q:55,r:66},
-};
-function hcKey(f){ return f.includes('Playfair')?'playfair':f.includes('Dancing')?'dancing':f.includes('Caveat')?'caveat':'courier'; }
 
 let audioCtx = null;
 function getAudio(){ return audioCtx || (audioCtx = new (window.AudioContext || window.webkitAudioContext)()); }
@@ -477,12 +467,10 @@ function buildBoard(){
     [deck[i],deck[j]] = [deck[j],deck[i]];
   }
 
-  const HARD_FONTS = [
-    { font: "italic 'Playfair Display', serif" },
-    { font: "'Dancing Script', cursive" },
-    { font: "'Caveat', cursive" },
-    { font: "italic 'Courier Prime', monospace" },
-  ];
+  // Hard level: same monospace sizing as medium (no calibration needed),
+  // but each tile gets a random font and a random 90° rotation for the visual challenge.
+  const HARD_FONTS_LIST = ['monospace', "'Courier Prime', monospace"];
+  const HARD_ROTATIONS = [0, Math.PI/2, Math.PI, Math.PI*1.5]; // 0°, 90°, 180°, 270°
 
   tiles = [];
   let idx=0;
@@ -495,7 +483,8 @@ function buildBoard(){
         col:c, row:r, x, y, w:TILE_W, h:TILE_H,
         display:card.display, kind:card.kind, pairId:card.pairId,
         flipped:false, matched:false, flipProgress:0, shakeTime:0,
-        hardFont: gameLevel==='hard' ? HARD_FONTS[Math.floor(Math.random()*HARD_FONTS.length)] : null
+        hardFont: gameLevel==='hard' ? HARD_FONTS_LIST[Math.floor(Math.random()*HARD_FONTS_LIST.length)] : null,
+        hardRot:  gameLevel==='hard' ? HARD_ROTATIONS[Math.floor(Math.random()*HARD_ROTATIONS.length)] : 0
       });
     }
   }
@@ -546,15 +535,19 @@ function drawTile(t){
     ctx.fillStyle = t.matched ? '#7fffb0' : '#fff';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-    if(gameLevel==='hard' && t.hardFont && !isWord){
-      const k = hcKey(t.hardFont.font);
-      const rawPx = (HC[k][t.display] || Math.floor(t.h*0.5));
-      const scaledPx = Math.max(Math.floor(rawPx * (t.h/80)), Math.floor(t.h*0.55));
-      ctx.font = `bold ${scaledPx}px ${t.hardFont.font}`;
+    if(gameLevel==='hard' && t.hardFont && !isWord && !t.matched){
+      // Hard level single letters: rotated, in one of two monospace fonts — same size as medium
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(t.hardRot);
+      ctx.font = `bold ${Math.floor(baseSize)}px ${t.hardFont}`;
+      ctx.fillText(t.display, 0, 1);
+      ctx.restore();
     } else {
+      // Easy/medium/words/matched: plain monospace, no rotation
       ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
+      ctx.fillText(t.display, cx, cy+1);
     }
-    ctx.fillText(t.display, cx, cy+1);
   }
   ctx.restore();
 }
@@ -863,8 +856,7 @@ window.addEventListener('load', ()=>{
 
   // Preload the hard-level decorative fonts so the canvas doesn't fall back to a default font on first render.
   if (document.fonts) {
-    ["italic 16px 'Playfair Display'", "16px 'Dancing Script'", "16px 'Caveat'", "italic 16px 'Courier Prime'"]
-      .forEach(f => { try { document.fonts.load(f); } catch(e){} });
+    try { document.fonts.load("bold 16px 'Courier Prime'"); } catch(e){}
   }
 
   var saved = localStorage.getItem('mnemosine_lang');
