@@ -56,9 +56,6 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #mode-row-levels{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 #ad-footer{width:100%;max-width:728px;margin:18px auto 0;text-align:center}
 #ad-footer-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
-.ad-placeholder{background:rgba(255,255,255,.04);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.3);font-size:.4rem;letter-spacing:1px}
-.ad-slot{width:100%;max-width:728px;margin:0 auto;text-align:center}
-.ad-slot-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
 .title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
 .lang-selector{position:absolute;top:4px;right:8px;display:inline-block}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
@@ -84,6 +81,22 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .general-briefing img{width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))}
 .general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
 .general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
+.ad-slot{width:100%;max-width:728px;margin:10px auto 0;text-align:center}
+.ad-slot-label{color:rgba(68,170,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px;font-family:'Press Start 2P',monospace}
+.ad-placeholder{background:rgba(0,5,20,.7);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.25);font-size:.38rem;letter-spacing:1px;font-family:'Press Start 2P',monospace}
+.share-block{width:700px;max-width:100%;margin:10px auto 0;background:rgba(0,5,20,.7);border:1px solid rgba(68,170,255,.25);border-radius:6px;padding:12px 16px}
+.share-block-title{color:#4af;font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;margin-bottom:8px}
+.share-url-row{display:flex;align-items:center;gap:8px;margin-bottom:0;flex-wrap:wrap}
+.share-url-text{font-family:monospace;font-size:.7rem;color:#4df;background:rgba(68,170,255,.06);border:1px solid rgba(68,170,255,.2);border-radius:4px;padding:6px 10px;flex:1;min-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.share-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid rgba(68,170,255,.4);color:#4af;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:7px 12px;border-radius:4px;cursor:pointer;transition:all .2s;white-space:nowrap;letter-spacing:.5px}
+.share-btn:hover{background:rgba(68,170,255,.12);border-color:#4af}
+.share-btn.copied{border-color:#4f8;color:#4f8}
+.pwa-block{width:700px;max-width:100%;margin:10px auto 0;background:rgba(0,5,20,.7);border:1px solid rgba(68,170,255,.25);border-radius:6px;padding:12px 16px}
+.pwa-block-title{color:#4af;font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;margin-bottom:6px}
+.pwa-block-desc{color:#8aa;font-size:.38rem;line-height:2;margin-bottom:8px;font-family:'Press Start 2P',monospace}
+.pwa-install-btn{display:inline-flex;align-items:center;gap:6px;background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.42rem;padding:10px 18px;cursor:pointer;letter-spacing:.5px;margin-bottom:6px}
+.pwa-install-btn:hover{background:#7cf}
+.pwa-hints{color:#6a8;font-size:.32rem;line-height:2.2;font-family:'Press Start 2P',monospace;padding-left:1rem}
 </style>
 </head>
 <body>
@@ -214,38 +227,74 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
         <button class="mode-btn arcade" onclick="selectMode('arcade')">&#128377;&#65039; <span data-i18n="arcadeAll">ARCADE — ALL LEVELS</span></button>
       </div>
       <div id="hall-of-fame" style="width:100%;max-width:620px;margin-top:6px;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.5);padding:8px 14px"></div>
+<div class="ad-slot">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!--
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <!-- (adsbygoogle = window.adsbygoogle || []).push({}); -->
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense slot A
+  </div>
+</div>
+
     </div>
     <button id="start-btn" onclick="startGame()" style="display:none" data-i18n="startGame">START GAME</button>
   </div>
 </div>
 
-<!-- AD SLOT 1 — before Hall of Fame -->
-<div class="ad-slot">
-  <div class="ad-slot-label">ADVERTISEMENT</div>
-  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
-  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
-       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
-       data-ad-format="auto" data-full-width-responsive="true"></ins>
-  [script](adsbygoogle = window.adsbygoogle || []).push({});[/script]
-  -->
-  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+<div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
     728 x 90 &mdash; AdSense Leaderboard (slot 1)
   </div>
 </div>
 
 <!-- STANDALONE HALL OF FAME (below page, outside overlay) -->
-<div id="hof-standalone" style="width:700px;max-width:100%;margin:10px auto 0;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px"></div>
 
-<!-- AD SLOT 2 — after Hall of Fame -->
-<div class="ad-slot" style="margin-top:10px">
+<div class="ad-slot">
   <div class="ad-slot-label">ADVERTISEMENT</div>
-  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
+  <!--
   <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
        data-ad-format="auto" data-full-width-responsive="true"></ins>
-  [script](adsbygoogle = window.adsbygoogle || []).push({});[/script]
+  <!-- (adsbygoogle = window.adsbygoogle || []).push({}); -->
   -->
   <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense slot B
+  </div>
+</div>
+<div id="hof-standalone" style="width:700px;max-width:100%;margin:10px auto 0;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px"></div>
+<div class="share-block" id="mathcannon-share-block">
+  <div class="share-block-title" id="mathcannon-share-title">&#128228; Share Math Cannon</div>
+  <div class="share-url-row">
+    <span class="share-url-text" id="mathcannon-share-url">https://thotteu.com/mathcannon</span>
+    <button class="share-btn" id="mathcannon-btn-copy-url">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span id="mathcannon-copy-txt">COPY LINK</span>
+    </button>
+    <button class="share-btn" id="mathcannon-btn-mail">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span id="mathcannon-mail-txt">MAIL</span>
+    </button>
+  </div>
+</div>
+
+<div class="ad-slot">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!--
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <!-- (adsbygoogle = window.adsbygoogle || []).push({}); -->
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense slot C
+  </div>
+</div>
+
+
+<div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
     728 x 90 &mdash; AdSense Leaderboard (slot 2)
   </div>
 </div>
@@ -1584,5 +1633,30 @@ window.addEventListener('load',()=>{
   })();
 </script>
 
+
+<script>
+(function(){
+  var SHARE_URL="https://thotteu.com/mathcannon";
+  var btnCopy=document.getElementById("mathcannon-btn-copy-url");
+  var btnMail=document.getElementById("mathcannon-btn-mail");
+  if(btnCopy) btnCopy.onclick=function(){
+    var el=document.getElementById("mathcannon-copy-txt"); var orig=el?el.textContent:"";
+    function showOk(){btnCopy.classList.add("copied");if(el)el.textContent="\u2713 COPIED";setTimeout(function(){btnCopy.classList.remove("copied");if(el)el.textContent=orig;},1800);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(SHARE_URL).then(showOk).catch(function(){var t=document.createElement("textarea");t.value=SHARE_URL;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.focus();t.select();try{document.execCommand("copy");showOk();}catch(e){}document.body.removeChild(t);});}
+    else{var t=document.createElement("textarea");t.value=SHARE_URL;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.focus();t.select();try{document.execCommand("copy");showOk();}catch(e){}document.body.removeChild(t);}
+  };
+  if(btnMail) btnMail.onclick=function(){
+    var lang=typeof currentLang!=="undefined"?currentLang:"en";
+    var s=lang==="es"?"Te comparto Math Cannon":"Check out Math Cannon";
+    var b=lang==="es"?"Echa un vistazo a Math Cannon: "+SHARE_URL:"Check out Math Cannon: "+SHARE_URL;
+    window.open("mailto:?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(b));
+  };
+  var _origAL=typeof applyLang==="function"?applyLang:null;
+  if(_origAL){applyLang=function(lang){_origAL(lang);
+    var c=document.getElementById("mathcannon-copy-txt");if(c)c.textContent=lang==="es"?"COPIAR":"COPY LINK";
+    var ti=document.getElementById("mathcannon-share-title");if(ti)ti.innerHTML="&#128228; "+(lang==="es"?"Math Cannon":"Math Cannon");
+  };}
+})();
+</script>
 </body>
 </html>
