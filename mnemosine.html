@@ -459,9 +459,9 @@ function buildBoard(){
     [deck[i],deck[j]] = [deck[j],deck[i]];
   }
   const HARD_FONTS = [
-    { font: "italic 'Playfair Display', serif",  scale: 1.13 },
-    { font: "'Dancing Script', cursive",          scale: 1.13 },
-    { font: "'Caveat', cursive",                  scale: 1.13 },
+    { font: "italic 'Playfair Display', serif",  scale: 1.18 },
+    { font: "'Dancing Script', cursive",          scale: 1.18 },
+    { font: "'Caveat', cursive",                  scale: 1.18 },
     { font: "italic 'Courier Prime', monospace",  scale: 0.98 },
   ];
 
@@ -524,18 +524,17 @@ function drawTile(t){
   } else {
     // word-sized content (number names) needs a smaller font than single letters/digits
     const isWord = t.display.length > 1;
-    const baseSize = isWord ? t.h*0.26 : t.h*0.5;
+    const baseSize = isWord ? t.h*0.325 : t.h*0.5;
     ctx.fillStyle = t.matched ? '#7fffb0' : '#fff';
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-    if(gameLevel==='hard' && !t.matched){
-      // hard level: render in a distinctive decorative/cursive font so the shape itself is the challenge
+    if(gameLevel==='hard' && t.hardFont){
+      // hard level: use the tile's assigned decorative font whether flipped open or matched
       ctx.font = `bold ${Math.floor(baseSize * t.hardFont.scale)}px ${t.hardFont.font}`;
-      ctx.fillText(t.display, cx, cy+1);
     } else {
       ctx.font = `bold ${Math.floor(baseSize)}px monospace`;
-      ctx.fillText(t.display, cx, cy+1);
     }
+    ctx.fillText(t.display, cx, cy+1);
   }
   ctx.restore();
 }
