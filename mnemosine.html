@@ -56,6 +56,9 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
 .hall-of-fame-slot{margin-top:6px}
 #hof-standalone{margin:10px auto 0}
+.ad-placeholder{background:rgba(255,255,255,.04);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.3);font-size:.4rem;letter-spacing:1px}
+.ad-slot{width:100%;max-width:728px;margin:0 auto;text-align:center}
+.ad-slot-label{color:rgba(255,255,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px}
 #header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
 .lang-selector{position:absolute;top:4px;right:8px;display:inline-block}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
@@ -190,7 +193,36 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
   </div>
 </div>
 
+<!-- AD SLOT 1 — before Hall of Fame -->
+<div class="ad-slot">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <!-- script>(adsbygoogle = window.adsbygoogle || []).push({});</script -->
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense Leaderboard (slot 1)
+  </div>
+</div>
+
+<!-- STANDALONE HALL OF FAME -->
 <div id="hof-standalone"></div>
+
+<!-- AD SLOT 2 — after Hall of Fame -->
+<div class="ad-slot" style="margin-top:10px">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <!-- Activate: uncomment ins block, add your ca-pub and slot IDs, remove placeholder div
+  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <!-- script>(adsbygoogle = window.adsbygoogle || []).push({});</script -->
+  -->
+  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
+    728 x 90 &mdash; AdSense Leaderboard (slot 2)
+  </div>
+</div>
 
 <script>
 const canvas = document.getElementById('c');
@@ -323,7 +355,7 @@ var i18n = {
     generalMid:'Solid work. The signal is taking shape.',
     generalLow:'Mapping complete, but Caelus expected better, recruit. Sharpen your memory and speed for next time.',
     generalIncomplete:'The mapping is incomplete. Find all the pairs and try again, recruit.',
-    lore:'YEAR 2050. Following the success of Project Heimdall, our radiotelescopes have managed to identify signals from the UFOs. Humanity is now recruiting experts to identify the symbols and translate them into something meaningful — Project Mnemosine was born. The supercomputer Caelus has translated the symbols and presents them in shuffled pairs, across 30 blocks. Once we can match them with our eyes closed, we will be able to decode the alien communications. Are you ready?',
+    lore:'YEAR 2050. Following the success of Project Heimdall, our radiotelescopes have managed to identify signals from the UFOs. Humanity is now recruiting experts to identify the symbols and translate them into something meaningful — Project Mnemosine was born. The supercomputer Caelus has translated the symbols and presents them in shuffled pairs, across shuffled blocks. Once we can match them with our eyes closed, we will be able to decode the alien communications. Are you ready?',
     cookieText:'We use analytics cookies. They only activate with your consent.',
     cookiePrivacyLink:'Learn more',
     cookieReject:'Reject',
@@ -354,7 +386,7 @@ var i18n = {
     generalMid:'Buen trabajo. La señal está tomando forma.',
     generalLow:'Mapeo completado, pero Caelus esperaba más, recluta. Agudiza tu memoria y velocidad para la próxima.',
     generalIncomplete:'El mapeo está incompleto. Encuentra todas las parejas e inténtalo de nuevo, recluta.',
-    lore:'AÑO 2050. Tras el éxito del Proyecto Heimdall, los radiotelescopios han conseguido identificar señales de los ovnis. La humanidad está reclutando expertos que permitan identificar los signos y traducirlos de modo que tengan sentido — ha nacido el Proyecto Mnemosine. El superordenador Caelus ha traducido los signos y los presenta por pares desordenados, en 30 bloques. Cuando seamos capaces de emparejarlos con los ojos cerrados, podremos descifrar las comunicaciones de los alienígenas. ¿Estás preparado?',
+    lore:'AÑO 2050. Tras el éxito del Proyecto Heimdall, los radiotelescopios han conseguido identificar señales de los ovnis. La humanidad está reclutando expertos que permitan identificar los signos y traducirlos de modo que tengan sentido — ha nacido el Proyecto Mnemosine. El superordenador Caelus ha traducido los signos y los presenta por pares desordenados, en bloques. Cuando seamos capaces de emparejarlos con los ojos cerrados, podremos descifrar las comunicaciones de los alienígenas. ¿Estás preparado?',
     cookieText:'Usamos cookies de analítica. Solo se activan con tu consentimiento.',
     cookiePrivacyLink:'Más información',
     cookieReject:'Rechazar',
