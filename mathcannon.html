@@ -98,6 +98,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .pwa-install-btn:hover{background:#7cf}
 .pwa-hints{color:#6a8;font-size:.32rem;line-height:2.2;font-family:'Press Start 2P',monospace;padding-left:1rem}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -226,27 +227,10 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
       <div style="display:flex;justify-content:center">
         <button class="mode-btn arcade" onclick="selectMode('arcade')">&#128377;&#65039; <span data-i18n="arcadeAll">ARCADE — ALL LEVELS</span></button>
       </div>
-      <div id="hall-of-fame" style="width:100%;max-width:620px;margin-top:6px;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.5);padding:8px 14px"></div>
-<div class="ad-slot">
-  <div class="ad-slot-label">ADVERTISEMENT</div>
-  <!--
-  <ins class="adsbygoogle" style="display:block;width:728px;height:90px;margin:0 auto"
-       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX"
-       data-ad-format="auto" data-full-width-responsive="true"></ins>
-  <!-- (adsbygoogle = window.adsbygoogle || []).push({}); -->
-  -->
-  <div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
-    728 x 90 &mdash; AdSense slot A
-  </div>
-</div>
+      <div id="hall-of-fame-removed"></div>
 
     </div>
     <button id="start-btn" onclick="startGame()" style="display:none" data-i18n="startGame">START GAME</button>
-  </div>
-</div>
-
-<div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
-    728 x 90 &mdash; AdSense Leaderboard (slot 1)
   </div>
 </div>
 
@@ -266,17 +250,35 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 </div>
 <div id="hof-standalone" style="width:700px;max-width:100%;margin:10px auto 0;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px"></div>
 <div class="share-block" id="mathcannon-share-block">
-  <div class="share-block-title" id="mathcannon-share-title">&#128228; Share Math Cannon</div>
-  <div class="share-url-row">
-    <span class="share-url-text" id="mathcannon-share-url">https://thotteu.com/mathcannon</span>
-    <button class="share-btn" id="mathcannon-btn-copy-url">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      <span id="mathcannon-copy-txt">COPY LINK</span>
-    </button>
-    <button class="share-btn" id="mathcannon-btn-mail">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      <span id="mathcannon-mail-txt">MAIL</span>
-    </button>
+  <div class="share-block-title" id="mathcannon-share-title">&#128228; Comparte Thotteu · Math Cannon</div>
+  <p id="mathcannon-share-desc" style="font-family:'Press Start 2P',monospace;font-size:.32rem;color:rgba(68,170,255,.7);letter-spacing:.5px;margin-bottom:10px;line-height:1.7">Comparte la herramienta con quien pueda gustarle. Envíale el enlace.</p>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="flex-shrink:0;padding:5px;background:#fff;border:2px solid rgba(68,170,255,.6);box-shadow:0 0 0 4px rgba(68,170,255,.15),inset 0 0 0 2px rgba(68,170,255,.25);border-radius:4px">
+      <img id="mathcannon-qr-preview" src="" alt="QR Thotteu" width="90" height="90"
+        style="display:none;width:90px;height:90px;object-fit:contain;vertical-align:top">
+      <div id="mathcannon-qr-loading" style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:.5rem;color:rgba(68,170,255,.5)">...</div>
+    </div>
+    <div style="flex:1;min-width:160px">
+      <div style="font-family:monospace;font-size:.7rem;color:#4df;margin-bottom:8px">thotteu.com/mathcannon</div>
+      <div class="share-url-row">
+        <button class="share-btn" id="mathcannon-btn-wa" style="border-color:rgba(37,211,102,.5);color:#4d8">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.07-1.35C8.44 21.52 10.17 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm4.93 13.07c-.2.57-1.17 1.1-1.62 1.17-.44.07-.99.1-1.6-.1-.37-.12-.85-.28-1.46-.55-2.57-1.1-4.24-3.7-4.37-3.87-.13-.17-1.07-1.43-1.07-2.73 0-1.3.68-1.94.92-2.2.24-.27.52-.33.7-.33.17 0 .35.003.5.01.16.007.38-.06.59.45.21.52.73 1.78.79 1.91.06.13.1.28.02.45-.08.17-.12.27-.24.42-.12.15-.25.33-.36.44-.12.12-.24.25-.1.48.14.23.6.99 1.29 1.6.89.79 1.64 1.03 1.87 1.15.23.12.37.1.5-.06.14-.17.58-.68.74-.91.16-.23.31-.19.52-.11.21.08 1.35.64 1.58.75.23.12.39.17.45.27.06.1.06.57-.14 1.13z"/></svg>
+          <span id="mathcannon-wa-txt">WHATSAPP</span>
+        </button>
+        <button class="share-btn" id="mathcannon-btn-mail">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span id="mathcannon-mail-txt">MAIL</span>
+        </button>
+        <button class="share-btn" id="mathcannon-btn-copy-url">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span id="mathcannon-copy-txt">COPIAR</span>
+        </button>
+        <button class="share-btn" id="mathcannon-btn-qr" style="border-color:rgba(68,170,255,.3);color:rgba(68,170,255,.7)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="mathcannon-qr-dl-txt">QR .PNG</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -294,10 +296,6 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 </div>
 
 
-<div class="ad-placeholder" style="width:728px;height:90px;max-width:100%;margin:0 auto">
-    728 x 90 &mdash; AdSense Leaderboard (slot 2)
-  </div>
-</div>
 
 <script>
 // ── CONSTANTS ─────────────────────────────────────────────────────────────
@@ -643,11 +641,8 @@ function setHofSort(by){
 }
 
 function renderHOF(){
-  const el=$('hall-of-fame'); if(!el) return;
   const h=loadHOF();
   const html=buildHOFHtml(h);
-  el.innerHTML=html;
-  // Also update standalone HOF below the page
   const el2=$('hof-standalone'); if(el2) el2.innerHTML=html;
 }
 
@@ -1458,12 +1453,6 @@ function endGame(){
     </div>
     <button onclick="startGame()" style="background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">${t.playAgain}</button>`;
   renderHOF();
-  // Also inject HOF into game over overlay
-  const hofEl=document.createElement('div');
-  hofEl.id='hall-of-fame';
-  hofEl.style.cssText='width:100%;max-width:620px;margin-top:8px;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.5);padding:8px 14px';
-  ov.appendChild(hofEl);
-  renderHOF();
 }
 
 // ── PHASE DISPLAY ─────────────────────────────────────────────────────────
@@ -1636,26 +1625,115 @@ window.addEventListener('load',()=>{
 
 <script>
 (function(){
-  var SHARE_URL="https://thotteu.com/mathcannon";
-  var btnCopy=document.getElementById("mathcannon-btn-copy-url");
-  var btnMail=document.getElementById("mathcannon-btn-mail");
-  if(btnCopy) btnCopy.onclick=function(){
-    var el=document.getElementById("mathcannon-copy-txt"); var orig=el?el.textContent:"";
-    function showOk(){btnCopy.classList.add("copied");if(el)el.textContent="\u2713 COPIED";setTimeout(function(){btnCopy.classList.remove("copied");if(el)el.textContent=orig;},1800);}
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(SHARE_URL).then(showOk).catch(function(){var t=document.createElement("textarea");t.value=SHARE_URL;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.focus();t.select();try{document.execCommand("copy");showOk();}catch(e){}document.body.removeChild(t);});}
-    else{var t=document.createElement("textarea");t.value=SHARE_URL;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.focus();t.select();try{document.execCommand("copy");showOk();}catch(e){}document.body.removeChild(t);}
-  };
-  if(btnMail) btnMail.onclick=function(){
-    var lang=typeof currentLang!=="undefined"?currentLang:"en";
-    var s=lang==="es"?"Te comparto Math Cannon":"Check out Math Cannon";
-    var b=lang==="es"?"Echa un vistazo a Math Cannon: "+SHARE_URL:"Check out Math Cannon: "+SHARE_URL;
-    window.open("mailto:?subject="+encodeURIComponent(s)+"&body="+encodeURIComponent(b));
-  };
-  var _origAL=typeof applyLang==="function"?applyLang:null;
-  if(_origAL){applyLang=function(lang){_origAL(lang);
-    var c=document.getElementById("mathcannon-copy-txt");if(c)c.textContent=lang==="es"?"COPIAR":"COPY LINK";
-    var ti=document.getElementById("mathcannon-share-title");if(ti)ti.innerHTML="&#128228; "+(lang==="es"?"Math Cannon":"Math Cannon");
-  };}
+  var SHARE_URL = 'https://thotteu.com/mathcannon';
+  var _qrBlob = null;
+
+  function loadQR(){
+    var loading = document.getElementById('mathcannon-qr-loading');
+    var preview = document.getElementById('mathcannon-qr-preview');
+    var qrDiv = document.createElement('div');
+    qrDiv.style.display = 'none';
+    document.body.appendChild(qrDiv);
+    try {
+      new QRCode(qrDiv, {
+        text: 'https://thotteu.com',
+        width: 220, height: 220,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      setTimeout(function(){
+        var canvas = qrDiv.querySelector('canvas');
+        if(canvas){
+          canvas.toBlob(function(blob){
+            _qrBlob = blob;
+            if(preview){ preview.src = canvas.toDataURL('image/png'); preview.style.display='block'; }
+            if(loading) loading.style.display = 'none';
+          }, 'image/png');
+        }
+        document.body.removeChild(qrDiv);
+      }, 120);
+    } catch(e) {
+      if(loading){ loading.style.display='flex'; loading.textContent='📷'; }
+      document.body.removeChild(qrDiv);
+    }
+  }
+
+  function wireShare(){
+    function getTexts(l){
+      if(l==='es') return { wa:'💥 ¡Echa un vistazo a Math Cannon en Thotteu!\n'+SHARE_URL, mailSub:'Math Cannon — Juego de matemáticas', mailBody:'¡Hola! Te comparto este juego de matemáticas espacial:\n'+SHARE_URL };
+      if(l==='fr') return { wa:'💥 Découvre Math Cannon sur Thotteu!\n'+SHARE_URL, mailSub:'Math Cannon — Jeu de maths', mailBody:'Salut! Voici un jeu de maths spatial:\n'+SHARE_URL };
+      if(l==='pt') return { wa:'💥 Confira o Math Cannon no Thotteu!\n'+SHARE_URL, mailSub:'Math Cannon — Jogo de matemática', mailBody:'Olá! Compartilho este jogo de matemática espacial:\n'+SHARE_URL };
+      if(l==='ca') return { wa:'💥 Descobreix Math Cannon a Thotteu!\n'+SHARE_URL, mailSub:'Math Cannon — Joc de matemàtiques', mailBody:'Hola! Et comparteixo aquest joc de matemàtiques espacial:\n'+SHARE_URL };
+      return { wa:'💥 Check out Math Cannon on Thotteu!\n'+SHARE_URL, mailSub:'Math Cannon — Space Math Game', mailBody:'Hi! Check out this space math game:\n'+SHARE_URL };
+    }
+
+    var btnWa = document.getElementById('mathcannon-btn-wa');
+    if(btnWa) btnWa.onclick = function(){
+      var t = getTexts(typeof currentLang!=='undefined'?currentLang:'en');
+      window.open('https://wa.me/?text='+encodeURIComponent(t.wa), '_blank');
+    };
+
+    var btnMail = document.getElementById('mathcannon-btn-mail');
+    if(btnMail) btnMail.onclick = function(){
+      var t = getTexts(typeof currentLang!=='undefined'?currentLang:'en');
+      window.open('mailto:?subject='+encodeURIComponent(t.mailSub)+'&body='+encodeURIComponent(t.mailBody));
+    };
+
+    var btnCopy = document.getElementById('mathcannon-btn-copy-url');
+    if(btnCopy) btnCopy.onclick = function(){
+      var el = document.getElementById('mathcannon-copy-txt');
+      var orig = el ? el.textContent : '';
+      function showOk(){ if(el) el.textContent='✓'; setTimeout(function(){ if(el) el.textContent=orig; }, 1800); }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(SHARE_URL).then(showOk).catch(function(){ fallbackCopy(); });
+      } else { fallbackCopy(); }
+      function fallbackCopy(){ var ta=document.createElement('textarea'); ta.value=SHARE_URL; ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy');showOk();}catch(e){} document.body.removeChild(ta); }
+    };
+
+    var btnQr = document.getElementById('mathcannon-btn-qr');
+    if(btnQr) btnQr.onclick = function(){
+      if(_qrBlob){
+        var url = URL.createObjectURL(_qrBlob);
+        var a = document.createElement('a'); a.href=url; a.download='qr-thotteu.png'; a.click();
+        URL.revokeObjectURL(url);
+      }
+    };
+  }
+
+  var _origAL = typeof applyLang === 'function' ? applyLang : null;
+  if(_origAL){
+    applyLang = function(lang){
+      _origAL(lang);
+      var ti = document.getElementById('mathcannon-share-title');
+      var td = document.getElementById('mathcannon-share-desc');
+      var wa = document.getElementById('mathcannon-wa-txt');
+      var cp = document.getElementById('mathcannon-copy-txt');
+      if(lang==='es'){
+        if(ti) ti.innerHTML='&#128228; Comparte Thotteu · Math Cannon';
+        if(td) td.textContent='Comparte la herramienta con quien pueda gustarle. Envíale el enlace.';
+        if(wa) wa.textContent='WHATSAPP'; if(cp) cp.textContent='COPIAR';
+      } else if(lang==='fr'){
+        if(ti) ti.innerHTML='&#128228; Partage Thotteu · Math Cannon';
+        if(td) td.textContent="Partagez l'outil avec ceux qui pourraient l'apprécier.";
+        if(wa) wa.textContent='WHATSAPP'; if(cp) cp.textContent='COPIER';
+      } else if(lang==='pt'){
+        if(ti) ti.innerHTML='&#128228; Compartilhe Thotteu · Math Cannon';
+        if(td) td.textContent='Compartilhe a ferramenta com quem possa gostar.';
+        if(wa) wa.textContent='WHATSAPP'; if(cp) cp.textContent='COPIAR';
+      } else if(lang==='ca'){
+        if(ti) ti.innerHTML='&#128228; Comparteix Thotteu · Math Cannon';
+        if(td) td.textContent="Comparteix l'eina amb qui puga agradar-li.";
+        if(wa) wa.textContent='WHATSAPP'; if(cp) cp.textContent='COPIAR';
+      } else {
+        if(ti) ti.innerHTML='&#128228; Share Thotteu · Math Cannon';
+        if(td) td.textContent='Share the game with anyone who might enjoy it.';
+        if(wa) wa.textContent='WHATSAPP'; if(cp) cp.textContent='COPY';
+      }
+    };
+  }
+
+  loadQR();
+  wireShare();
 })();
 </script>
 </body>
