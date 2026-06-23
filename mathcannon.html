@@ -36,7 +36,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #score-display{color:#ff0;font-size:.55rem;letter-spacing:1px}
 #math-area{background:#0d1020;border:2px solid #4af;border-top:none;padding:10px 16px;display:flex;align-items:center;gap:12px;width:100%}
 #answer-display{color:#ff0;font-size:.65rem;letter-spacing:2px}
-#overlay{position:absolute;inset:0;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;z-index:10;padding:12px 20px 20px;overflow-y:auto}
+#overlay{width:100%;max-width:700px;margin:0 auto;background:rgba(0,5,20,.97);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;z-index:10;padding:12px 20px 20px}
 #overlay h2{color:#4af;font-size:1rem;text-align:center;line-height:1.8}
 #overlay p{color:#fff;font-size:.5rem;text-align:center;line-height:2}
 .score-final{color:#ff0;font-size:.7rem}
@@ -189,10 +189,10 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     <div style="color:#fa0;font-size:.55rem;letter-spacing:1px">&#128640; <span id="missile-count">0</span> <span id="inflight-display" style="font-size:.4rem;color:#f84"></span></div>
   </div>
 
-  <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
+  <canvas id="c" width="700" height="460" tabindex="0" style="outline:none;display:none"></canvas>
   <button id="surrender-btn" onclick="surrenderGame()" data-i18n="surrender" style="display:none;position:absolute;top:6px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20">&#127988; SURRENDER</button>
 
-  <div id="math-area">
+  <div id="math-area" style="display:none">
     <div style="flex:1">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
         <div id="operation" style="color:#4df;font-size:.55rem;letter-spacing:1px" data-i18n="enterCoords">ENTER COORDINATES TO HIT TARGET:</div>
@@ -578,7 +578,7 @@ var i18n = {
     generalLow:'Necessitem matemàtiques més ràpides al front. Torna-ho a intentar, recluta.',
     surrender:'RENDIR-SE',
     encourageMsgs:['Reflexos de veterà!','El front et saluda!','Encara dempeus, soldat!','Resistència llegendària!','Heimdall n\'estaria orgullós!'],
-    lore:'ANY 2050. A principis d\'any es va detectar una flota d\'invasió alienígena al Núvol d\'Oort. S\'està desplegant un exèrcit d\'artilleria amb drons per defendre la Terra... només els millors repel·liran l\'atac. Estàs preparat? Selecciona el teu nivell i defén cada centímetre de la Terra amb el teu canó.'
+    lore:'ANY 2050. A principis d\'any es va detectar una flota d\'invasió extraterrestre al Núvol d\'Oort. S\'està desplegant un exèrcit d\'artilleria amb drons per defendre la Terra... només els millors repel·liran l\'atac. Estàs preparat? Selecciona el teu nivell i defén cada centímetre de la Terra amb el teu canó.'
   }
 };
 
@@ -607,8 +607,6 @@ function applyLang(lang){
   document.querySelectorAll('.lang-option').forEach(function(o){
     o.classList.toggle('active', o.dataset.lang === lang);
   });
-  var loreEl = document.getElementById('lore-text');
-  if (loreEl && t.lore) loreEl.textContent = t.lore;
   updatePhaseDisplay();
   renderHOF();
 }
@@ -713,6 +711,8 @@ function selectMode(mode){
 // ── START GAME ────────────────────────────────────────────────────────────
 function startGame(){
   $('overlay').style.display='none';
+  $('c').style.display='block';
+  $('math-area').style.display='flex';
   document.body.setAttribute('tabindex','-1'); document.body.focus();
 
   state='playing'; score=0; lives=3; difficulty=1; aliensDestroyed=0; opCount=0; missileCount=0;
@@ -1428,6 +1428,8 @@ function endGame(){
     : {infantil:'\u2B50 '+t.baby,colegio:'\uD83D\uDCDA '+t.kids,instituto:'\uD83C\uDF93 '+t.teenager,universidad:'\uD83D\uDD2C '+t.technician}[gameMode];
   const generalComment = correctOps >= 20 ? t.generalHigh : (correctOps >= 8 ? t.generalMid : t.generalLow);
   const ov=$('overlay'); ov.style.display='flex';
+  $('c').style.display='none';
+  $('math-area').style.display='none';
   ov.innerHTML=`
     <h2>${t.gameOver}</h2>
     ${isNewRecord?'<p style="color:#ff0;font-size:.6rem;letter-spacing:2px;animation:blink .5s step-end infinite">'+t.newRecord+'</p>':''}
@@ -1563,9 +1565,26 @@ window.addEventListener('load',()=>{
   applyLang(initial);
 
   const el=$('lore-text'); if(!el) return;
-  el.textContent = ''; // applyLang already set the full lore text; clear it so the typewriter can re-type it from scratch
-  const LORE=(i18n[currentLang]||i18n.en).lore;
-  let i=0; (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,22); } })();
+  let _typeToken = 0;
+
+  function startTypewriter(lang) {
+    const token = ++_typeToken;
+    el.textContent = '';
+    let i = 0;
+    const LORE = (i18n[lang] || i18n.en).lore;
+    (function type(){
+      if (token !== _typeToken) return;
+      if (i < LORE.length) { el.textContent += LORE[i++]; setTimeout(type, 22); }
+    })();
+  }
+
+  const _origApplyLang = applyLang;
+  applyLang = function(lang) {
+    _origApplyLang(lang);
+    startTypewriter(lang);
+  };
+
+  startTypewriter(initial);
   $('highscore').textContent = highScore;
   renderHOF();
 });

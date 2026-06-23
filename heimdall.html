@@ -507,8 +507,6 @@ function applyLang(lang){
   document.querySelectorAll('.lang-option').forEach(function(o){
     o.classList.toggle('active', o.dataset.lang === lang);
   });
-  var loreEl = document.getElementById('lore-text');
-  if (loreEl && t.lore) loreEl.textContent = t.lore;
   renderHOF();
 }
 
@@ -1034,10 +1032,27 @@ window.addEventListener('load', ()=>{
   applyLang(initial);
 
   const el = $('lore-text');
-  el.textContent = ''; // applyLang already set the full lore text; clear it so the typewriter can re-type it from scratch
-  let i=0;
-  const LORE = (i18n[currentLang] || i18n.en).lore;
-  (function type(){ if(i<LORE.length){ el.textContent+=LORE[i++]; setTimeout(type,16); } })();
+  let _typeToken = 0; // increment to cancel any in-progress typewriter
+
+  function startTypewriter(lang) {
+    const token = ++_typeToken;
+    el.textContent = '';
+    let i = 0;
+    const LORE = (i18n[lang] || i18n.en).lore;
+    (function type(){
+      if (token !== _typeToken) return; // cancelled
+      if (i < LORE.length) { el.textContent += LORE[i++]; setTimeout(type, 16); }
+    })();
+  }
+
+  // Wrap applyLang so lang changes also restart the typewriter cleanly
+  const _origApplyLang = applyLang;
+  applyLang = function(lang) {
+    _origApplyLang(lang);
+    startTypewriter(lang);
+  };
+
+  startTypewriter(initial);
   initStars();
   drawStarfield(16);
   drawTelescopeSilhouette();
