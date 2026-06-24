@@ -215,7 +215,7 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 
 <div id="game-wrap">
   <div id="hud">
-    <div>✦ <span data-i18n="score">SCORE</span>: <span id="score-display">500</span></div>
+    <div>✦ <span data-i18n="score">SCORE</span>: <span id="score-display">500</span> &nbsp;<span style="color:#f84;font-size:.35rem"><span data-i18n="best">BEST</span>: <span id="highscore-display">0</span></span></div>
     <div>⏱ <span data-i18n="time">TIME</span>: <span id="time-display">250</span>s</div>
     <div id="terrain-display" style="color:#8a8;font-size:.35rem;letter-spacing:1px"></div>
   </div>
@@ -287,7 +287,7 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 
 <div id="cookie-banner">
   <div class="cookie-inner">
-    <p class="cookie-text"><span data-i18n="cookieText">We use analytics cookies. They only activate with your consent.</span></p>
+    <p class="cookie-text"><span data-i18n="cookieText">We use analytics cookies. They only activate with your consent.</span> <a href="/privacy.html" id="cookie-privacy-link" data-i18n="cookiePrivacyLink" style="color:#4af">Learn more</a>.</p>
     <div class="cookie-btns">
       <button class="cookie-btn reject" onclick="cookieConsent(false)" data-i18n="cookieReject">Reject</button>
       <button class="cookie-btn accept" onclick="cookieConsent(true)" data-i18n="cookieAccept">Accept</button>
@@ -317,6 +317,8 @@ const i18n = {
     instructions:'INSTRUCTIONS',
     ufoWarning:'⚠ ALIEN FLEET DETECTED!',
     lore:'YEAR 2050. The Math Cannon must be repositioned to defend a new sector. You have received deployment coordinates. Navigate the terrain — roads are fastest, plains are passable, forests slow you down, mountains are nearly impassable. Rivers cannot be crossed without a bridge. Reach the X before the alien fleet detects your position.',
+    best:'BEST',
+    cookiePrivacyLink:'Learn more',
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline, from your home screen — no browser needed.',pwaInstall:'INSTALL',
   },
   es:{
@@ -338,6 +340,8 @@ const i18n = {
     instructions:'INSTRUCCIONES',
     ufoWarning:'⚠ ¡FLOTA ALIENÍGENA DETECTADA!',
     lore:'AÑO 2050. El cañón debe ser reposicionado para defender un nuevo sector. Has recibido las coordenadas de despliegue. Navega el terreno — las carreteras son las más rápidas, las llanuras son transitables, los bosques te ralentizan, las montañas son casi infranqueables. Los ríos no pueden cruzarse sin un puente. Llega a la X antes de que la flota alienígena detecte tu posición.',
+    best:'MEJOR',
+    cookiePrivacyLink:'Más información',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio — sin navegador.',pwaInstall:'INSTALAR',
   },
   fr:{
@@ -359,6 +363,8 @@ const i18n = {
     instructions:'INSTRUCTIONS',
     ufoWarning:'⚠ FLOTTE EXTRATERRESTRE DÉTECTÉE!',
     lore:'ANNÉE 2050. Le canon doit être repositionné pour défendre un nouveau secteur. Naviguez le terrain — les routes sont les plus rapides, les plaines sont praticables, les forêts vous ralentissent, les montagnes sont presque infranchissables. Les rivières ne peuvent être traversées sans pont. Atteignez le X avant que la flotte extraterrestre ne détecte votre position.',
+    best:'MEILLEUR',
+    cookiePrivacyLink:'En savoir plus',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne, depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
   },
   pt:{
@@ -380,6 +386,8 @@ const i18n = {
     instructions:'INSTRUÇÕES',
     ufoWarning:'⚠ FROTA EXTRATERRESTRE DETECTADA!',
     lore:'ANO 2050. O canhão deve ser reposicionado para defender um novo setor. Navegue pelo terreno — as estradas são as mais rápidas, as planícies são transitáveis, as florestas abrandam-no, as montanhas são quase intransponíveis. Os rios não podem ser atravessados sem ponte. Alcance o X antes que a frota extraterrestre detecte a sua posição.',
+    best:'MELHOR',
+    cookiePrivacyLink:'Mais informações',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline, a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
   },
   ca:{
@@ -401,6 +409,8 @@ const i18n = {
     instructions:'INSTRUCCIONS',
     ufoWarning:'⚠ FLOTA EXTRATERRESTRE DETECTADA!',
     lore:'ANY 2050. El canó ha de ser reposicionat per defensar un nou sector. Navega el terreny — les carreteres són les més ràpides, les planes són transitables, els boscos et frenen, les muntanyes són gairebé infranquejables. Els rius no es poden creuar sense pont. Arriba a la X abans que la flota extraterrestre detecte la teua posició.',
+    best:'MILLOR',
+    cookiePrivacyLink:'Més informació',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió, des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
   }
 };
@@ -698,6 +708,7 @@ function drawCompass(ctx,dir){
 
 // ── GAME STATE ────────────────────────────────────────────────────────────
 let state='idle',score=500,timeLeft=250,lastTick=0,lastTime=0;
+let highScore=parseInt(localStorage.getItem('mercator_hs')||'0');
 let explosionParticles=[];
 
 function moveCannon(fwd){
@@ -756,22 +767,28 @@ function getComment(isWin,wasFired){
 function showResult(wasFired){
   const t=i18n[currentLang]||i18n.en;
   const isWin=state==='win';
-  if(isWin)recordHOF(score);
+  if(isWin){ recordHOF(score); if(score>highScore){highScore=score;localStorage.setItem('mercator_hs',highScore);$('highscore-display').textContent=highScore;} }
   const comment=getComment(isWin,wasFired);
-  const ov=$('overlay');
-  ov.style.display='flex';
-  ov.innerHTML=`
-    <h2 style="color:${isWin?'#4f8':'#f44'}">✦ ${isWin?t.win:t.lose}</h2>
-    <p class="score-final">${t.scoreLabel}: ${score}</p>
-    <div class="general-briefing" style="margin-top:4px">
-      <div>
-        <span class="general-briefing-label">${t.generalLabel}</span>
-        <div class="general-briefing-text">${comment}</div>
+  setTimeout(()=>{
+    const ov=$('overlay');
+    ov.style.display='flex';
+    ov.innerHTML=`
+      <h2 style="color:${isWin?'#4f8':'#f44'}">✦ ${isWin?t.win:t.lose}</h2>
+      <p class="score-final">${t.scoreLabel}: ${score}</p>
+      <p style="color:#f84;font-size:.45rem">${t.best}: ${highScore}</p>
+      <div class="general-briefing">
+        <img src="${GENERAL_IMG}" alt="General" style="width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,229,255,.3))"/>
+        <div>
+          <span class="general-briefing-label">${t.generalLabel}</span>
+          <div class="general-briefing-text">${comment}</div>
+        </div>
       </div>
-    </div>
-    <button id="start-btn" onclick="startGame()" style="background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">${t.tryAgain}</button>
-  `;
-  renderHOF();
+      <button id="start-btn" onclick="startGame()" style="background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">${t.tryAgain}</button>
+    `;
+    $('c').style.display='none';
+    renderHOF();
+    window.scrollTo({top:$('game-wrap').offsetTop-10,behavior:'smooth'});
+  }, 900);
 }
 
 // ── START ─────────────────────────────────────────────────────────────────
@@ -783,6 +800,7 @@ function startGame(){
   explosionParticles=[];
   helicopter={active:true,x:cannon.px,y:-60,vy:1.5,deployed:false,done:false};
   $('overlay').style.display='none';
+  $('c').style.display='block';
   $('c').focus();
   state='playing';
   requestAnimationFrame(loop);
@@ -944,6 +962,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const _origAL=applyLang;
   applyLang=function(lang){_origAL(lang);startTypewriter(lang);};
   startTypewriter(initial);
+  $('highscore-display').textContent=highScore;
   renderHOF();
 });
 </script>
