@@ -646,10 +646,20 @@ function drawParachute(ctx,px,py){
 }
 
 // ── UFO ───────────────────────────────────────────────────────────────────
-let ufo={active:false,x:0,y:40,vx:2,firing:false,bullet:null};
+let ufo={active:false,x:0,y:40,vx:2,vy:0,targetX:0,targetY:0,arrived:false,flash:0};
 let ufoWarningShown=false,ufoWarningAlpha=0,ufoWarningTimer=0;
 
-function spawnUFO(){ufo={active:true,x:-80,y:40,vx:2,firing:false,bullet:null};ufoWarningShown=true;}
+function spawnUFO(){
+  ufoWarningShown=true;
+  ufo={
+    active:true,
+    x:-80, y:30,           // enter from left, high up
+    vx:0, vy:0,
+    targetX:cannon.px,     // fly directly to cannon
+    targetY:cannon.py,
+    arrived:false, flash:0
+  };
+}
 
 function drawUFO(ctx,x,y){
   ctx.save();ctx.translate(x,y);
@@ -767,8 +777,8 @@ function showResult(wasFired){
 // ── START ─────────────────────────────────────────────────────────────────
 function startGame(){
   generateMap();placeTarget();initCannon();
-  score=500;timeLeft=250;lastTick=0;lastTime=0;
-  ufo={active:false,x:0,y:40,vx:2,firing:false,bullet:null};
+  score=500;timeLeft=250;lastTick=0;lastTime=-1;
+  ufo={active:false,x:0,y:40,vx:2,firing:false,bullet:null,flash:0};
   ufoWarningShown=false;ufoWarningAlpha=0;ufoWarningTimer=0;
   explosionParticles=[];
   helicopter={active:true,x:cannon.px,y:-60,vy:1.5,deployed:false,done:false};
@@ -781,7 +791,8 @@ function startGame(){
 // ── LOOP ──────────────────────────────────────────────────────────────────
 function loop(ts){
   if(state!=='playing'&&state!=='exploding')return;
-  const dt=ts-lastTime;lastTime=ts;
+  if(lastTime<0){lastTime=ts;requestAnimationFrame(loop);return;}
+  const dt=Math.min(ts-lastTime,100);lastTime=ts; // cap dt to avoid jumps
   if(state==='playing'){
     lastTick+=dt;
     if(lastTick>=1000){
@@ -810,20 +821,32 @@ function loop(ts){
   }
 
   if(ufo.active){
-    ufo.x+=ufo.vx;drawUFO(ctx,ufo.x,ufo.y);
-    if(!ufo.firing&&ufo.x>cannon.px-80&&ufo.x<cannon.px+80){ufo.firing=true;ufo.bullet={x:ufo.x,y:ufo.y+10,vy:4};}
-    if(ufo.bullet){
-      ufo.bullet.y+=ufo.bullet.vy;
-      ctx.fillStyle='#ff4444';ctx.fillRect(ufo.bullet.x-3,ufo.bullet.y-8,6,16);
-      ctx.fillStyle='#ffaa00';ctx.fillRect(ufo.bullet.x-2,ufo.bullet.y,4,6);
-      if(Math.hypot(ufo.bullet.x-cannon.px,ufo.bullet.y-cannon.py)<18){
-        for(let i=0;i<24;i++) explosionParticles.push({x:cannon.px,y:cannon.py,vx:(Math.random()-.5)*6,vy:(Math.random()-.5)*6,life:1,color:`hsl(${20+Math.random()*40},100%,60%)`});
-        ufo.bullet=null;ufo.active=false;state='exploding';
-        setTimeout(()=>{state='lose';showResult(true);},1200);
+    if(!ufo.arrived){
+      // fly toward cannon position
+      const dx=ufo.targetX-ufo.x, dy=ufo.targetY-30-ufo.y;
+      const dist=Math.hypot(dx,dy);
+      const spd=3;
+      if(dist<spd+1){
+        ufo.x=ufo.targetX; ufo.y=ufo.targetY-30;
+        ufo.arrived=true; ufo.flash=1.0;
+        state='exploding';
+        setTimeout(()=>{ state='lose'; showResult(true); }, 900);
+      } else {
+        ufo.x+=dx/dist*spd; ufo.y+=dy/dist*spd;
       }
-      if(ufo.bullet&&ufo.bullet.y>460){ufo.bullet=null;ufo.active=false;}
+      drawUFO(ctx,ufo.x,ufo.y);
+    } else {
+      // flash effect
+      drawUFO(ctx,ufo.x,ufo.y);
+      ufo.flash=Math.max(0,ufo.flash-0.06);
+      if(ufo.flash>0){
+        ctx.save();
+        ctx.globalAlpha=ufo.flash;
+        ctx.fillStyle='#ffffff';
+        ctx.fillRect(0,0,700,460);
+        ctx.restore();
+      }
     }
-    if(ufo.x>780){ufo.active=false;if(timeLeft<=0){state='lose';showResult(false);}}
   }
 
   if(ufoWarningShown){
