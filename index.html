@@ -15,7 +15,7 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thotteu — Juegos Educativos Online Gratis | Universo de Aprendizaje</title>
+  <title>Thotteu — Free Educational Games Online | A Universe of Adventures</title>
   <meta name="description" content="Thotteu es un portal de juegos educativos gratis ambientados en el espacio. Juegos online para niños sin descargar: matemáticas, lógica, mecanografía y más, disfrazados de aventura espacial." />
   <meta name="keywords" content="juegos educativos gratis, juegos online para niños, juegos para aprender jugando, juegos didácticos online, juegos sin descargar, juegos navegador gratis, juegos de habilidad para niños, juegos de matemáticas online, juegos para aprender a escribir en el teclado, mecanografía para niños, juegos para usar el ratón, juegos de lógica para niños, juegos de atención y memoria, juegos de naves espaciales, juegos de aliens para niños, juegos espaciales online, juegos de ciencia ficción para niños, juegos de ovnis, juegos para que mi hijo aprenda matemáticas jugando, juegos educativos sin anuncios, juegos online seguros para niños, actividades online para niños 8 a 12 años, juegos de arcade educativos" />
   <meta property="og:title" content="Thotteu — Juegos Educativos Online Gratis" />
@@ -1008,6 +1008,14 @@
       document.querySelectorAll('.lang-option').forEach(function (o) {
         o.classList.toggle('active', o.dataset.lang === lang);
       });
+      var titles = {
+        en: 'Thotteu — Free Educational Games Online | A Universe of Adventures',
+        es: 'Thotteu — Juegos Educativos Online Gratis | Un Universo de Aventuras',
+        fr: 'Thotteu — Jeux Éducatifs Gratuits en Ligne | Un Univers d\'Aventures',
+        pt: 'Thotteu — Jogos Educativos Online Grátis | Um Universo de Aventuras',
+        ca: 'Thotteu — Jocs Educatius Online Gratis | Un Univers d\'Aventures'
+      };
+      document.title = titles[lang] || titles.en;
     }
 
     function setLang(lang) {
