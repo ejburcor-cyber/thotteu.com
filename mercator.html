@@ -645,8 +645,11 @@ let cannon={gx:0,gy:0,dir:2,px:0,py:0};
 
 function initCannon(){
   const corners=[[2,2],[COLS-3,2],[2,ROWS-3],[COLS-3,ROWS-3]];
-  const c=corners[Math.floor(Math.random()*4)];
+  const cornerIdx=Math.floor(Math.random()*4);
+  const c=corners[cornerIdx];
   cannon.gx=c[0];cannon.gy=c[1];cannon.dir=2;
+  // Store cannon corner for legend placement (0=TL,1=TR,2=BL,3=BR)
+  window._cannonCorner=cornerIdx;
   cannon.px=cannon.gx*CW+CW/2;cannon.py=cannon.gy*CH+CH/2;
 }
 
@@ -734,7 +737,18 @@ function drawLegend(ctx){
 
   ctx.save();
   ctx.globalAlpha=legendAlpha;
-  const lx=6, ly=6, lw=86, lh=items.length*13+8;
+  // Place legend in a free corner (BR always reserved for compass)
+  const lw=86, lh=items.length*13+8;
+  const corner=window._cannonCorner||0;
+  // Available corners (excluding BR=3 and cannon corner):
+  // 0=TL(6,6), 1=TR(608,6), 2=BL(6,372)
+  const freeCandidates=[
+    {idx:0,x:6,          y:6},
+    {idx:1,x:700-lw-6,   y:6},
+    {idx:2,x:6,          y:460-lh-6},
+  ];
+  const chosen=freeCandidates.find(f=>f.idx!==corner)||freeCandidates[0];
+  const lx=chosen.x, ly=chosen.y;
   ctx.fillStyle='rgba(0,5,20,0.82)';
   ctx.strokeStyle='rgba(68,170,255,0.4)';
   ctx.lineWidth=1;
