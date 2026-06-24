@@ -799,13 +799,36 @@ function loop(ts){
   requestAnimationFrame(loop);
 }
 
-// ── COOKIE ────────────────────────────────────────────────────────────────
-function cookieConsent(accepted){
-  localStorage.setItem('thotteu_cookies',accepted?'accepted':'rejected');
-  $('cookie-banner').classList.remove('show');
-  if(accepted){gtag('consent','update',{'analytics_storage':'granted'});}
+// ── COOKIE + GA4 ──────────────────────────────────────────────────────────
+var GA_ID = 'G-0CCWBZ6VKX';
+
+function loadGA(){
+  if(window.gaScriptLoaded) return;
+  window.gaScriptLoaded = true;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(s);
+  gtag('js', new Date());
+  gtag('config', GA_ID);
 }
-if(!localStorage.getItem('thotteu_cookies'))$('cookie-banner').classList.add('show');
+
+function cookieConsent(accepted){
+  localStorage.setItem('thotteu_cookies', accepted ? 'accepted' : 'rejected');
+  $('cookie-banner').classList.remove('show');
+  if(accepted){
+    gtag('consent', 'update', {'analytics_storage':'granted'});
+    loadGA();
+  }
+}
+
+// Auto-load GA if already accepted
+if(!localStorage.getItem('thotteu_cookies')){
+  $('cookie-banner').classList.add('show');
+} else if(localStorage.getItem('thotteu_cookies') === 'accepted'){
+  gtag('consent', 'update', {'analytics_storage':'granted'});
+  loadGA();
+}
 
 // ── PWA ───────────────────────────────────────────────────────────────────
 let _deferredPrompt=null;
