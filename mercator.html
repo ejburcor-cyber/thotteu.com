@@ -71,6 +71,9 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .pwa-hints{color:#6a8;font-size:.38rem;line-height:2.2;font-family:'Press Start 2P',monospace;padding-left:1rem}
 #cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#0d1020;border-top:2px solid #4af;padding:14px 18px;display:none;box-shadow:0 -8px 32px rgba(0,0,0,.6)}
 #cookie-banner.show{display:block}
+.level-btn{border:2px solid #4af;color:#4af;background:transparent;font-family:'Press Start 2P',monospace;font-size:.42rem;padding:9px 18px;cursor:pointer;letter-spacing:1px;transition:all .2s;min-width:120px}
+.level-btn:hover,.level-btn.active{background:#4af;color:#000}
+.level-desc{color:#6a8;font-size:.32rem;margin-top:3px;font-family:'Press Start 2P',monospace}
 .dpad-btn{width:52px;height:52px;background:rgba(0,5,20,0.75);border:2px solid rgba(68,170,255,.6);border-radius:8px;color:#4af;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .dpad-btn:active{background:rgba(68,170,255,.25);border-color:#fff;}
 .cookie-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -220,6 +223,7 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     <div>✦ <span data-i18n="score">SCORE</span>: <span id="score-display">500</span> &nbsp;<span style="color:#f84;font-size:.4rem"><span data-i18n="best">BEST</span>: <span id="highscore-display">0</span></span></div>
     <div>⏱ <span data-i18n="time">TIME</span>: <span id="time-display">250</span>s</div>
     <div id="terrain-display" style="color:#8a8;font-size:.4rem;letter-spacing:1px"></div>
+    <div id="cannons-left-display" style="color:#ff8;font-size:.38rem;letter-spacing:1px"></div>
   </div>
   <canvas id="c" width="700" height="460" tabindex="0" style="outline:none"></canvas>
   <!-- Mobile D-pad -->
@@ -242,6 +246,21 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:10px;margin-bottom:4px" data-i18n="instructions">INSTRUCCIONES</p>
     <div class="controls-box">
       <p data-i18n="controls">↑ — ADVANCE &nbsp;|&nbsp; ↓ — RETREAT<br>← — ROTATE LEFT &nbsp;|&nbsp; → — ROTATE RIGHT</p>
+    </div>
+    <p style="color:#4af;font-size:.42rem;letter-spacing:1px;margin-top:6px" data-i18n="diffLabel">SELECT DIFFICULTY</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+      <div style="text-align:center">
+        <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)"><span data-i18n="diffEasy">⭐ EASY</span></button>
+        <div class="level-desc" data-i18n="diffEasyDesc">1 cannon</div>
+      </div>
+      <div style="text-align:center">
+        <button class="level-btn" id="btn-mid" onclick="selectLevel(2)"><span data-i18n="diffMid">⭐⭐ MEDIUM</span></button>
+        <div class="level-desc" data-i18n="diffMidDesc">2 cannons</div>
+      </div>
+      <div style="text-align:center">
+        <button class="level-btn" id="btn-hard" onclick="selectLevel(3)"><span data-i18n="diffHard">⭐⭐⭐ HARD</span></button>
+        <div class="level-desc" data-i18n="diffHardDesc">3 cannons</div>
+      </div>
     </div>
     <button id="start-btn" onclick="startGame()" data-i18n="startBtn">START MISSION</button>
   </div>
@@ -335,6 +354,10 @@ const i18n = {
     lore:'YEAR 2050. The attack is imminent! The cannon must be urgently repositioned to defend a new sector. You have received deployment coordinates. Navigate the terrain — roads are fastest, plains are passable, forests slow you down, mountains are nearly impassable. Rivers cannot be crossed without a bridge. Reach the X before the alien fleet detects your position. Are you ready to read the map?',
     best:'BEST',
     cookiePrivacyLink:'Learn more',
+    diffLabel:'SELECT DIFFICULTY',
+    diffEasy:'⭐ EASY',diffMid:'⭐⭐ MEDIUM',diffHard:'⭐⭐⭐ HARD',
+    diffEasyDesc:'1 cannon',diffMidDesc:'2 cannons',diffHardDesc:'3 cannons',
+    cannon:'CANNON',cannonsLeft:'CANNONS LEFT',
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline, from your home screen — no browser needed.',pwaInstall:'INSTALL',
   },
   es:{
@@ -358,6 +381,10 @@ const i18n = {
     lore:'AÑO 2050. ¡El ataque es inminente! El cañón debe ser urgentemente reposicionado para defender un nuevo sector. Has recibido las coordenadas de despliegue. Navega el terreno — las carreteras son las más rápidas, las llanuras son transitables, los bosques te ralentizan, las montañas son casi infranqueables. Los ríos no pueden cruzarse sin un puente. Llega a la X antes de que la flota alienígena detecte tu posición. ¿Estás listo para interpretar el mapa?',
     best:'MEJOR',
     cookiePrivacyLink:'Más información',
+    diffLabel:'SELECCIONA DIFICULTAD',
+    diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MEDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
+    diffEasyDesc:'1 cañón',diffMidDesc:'2 cañones',diffHardDesc:'3 cañones',
+    cannon:'CAÑÓN',cannonsLeft:'CAÑONES RESTANTES',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio — sin navegador.',pwaInstall:'INSTALAR',
   },
   fr:{
@@ -381,6 +408,10 @@ const i18n = {
     lore:'ANNÉE 2050. L\'attaque est imminente ! Le canon doit être repositionné d\'urgence pour défendre un nouveau secteur. Vous avez reçu les coordonnées de déploiement. Naviguez le terrain — les routes sont les plus rapides, les plaines sont praticables, les forêts vous ralentissent, les montagnes sont presque infranchissables. Les rivières ne peuvent être traversées sans pont. Atteignez le X avant que la flotte extraterrestre ne détecte votre position. Êtes-vous prêt à lire la carte ?',
     best:'MEILLEUR',
     cookiePrivacyLink:'En savoir plus',
+    diffLabel:'CHOISIR DIFFICULTÉ',
+    diffEasy:'⭐ FACILE',diffMid:'⭐⭐ MOYEN',diffHard:'⭐⭐⭐ DIFFICILE',
+    diffEasyDesc:'1 canon',diffMidDesc:'2 canons',diffHardDesc:'3 canons',
+    cannon:'CANON',cannonsLeft:'CANONS RESTANTS',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne, depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
   },
   pt:{
@@ -404,6 +435,10 @@ const i18n = {
     lore:'ANO 2050. O ataque é iminente! O canhão deve ser urgentemente reposicionado para defender um novo setor. Recebeu as coordenadas de implantação. Navegue pelo terreno — as estradas são as mais rápidas, as planícies são transitáveis, as florestas abrandam-no, as montanhas são quase intransponíveis. Os rios não podem ser atravessados sem ponte. Alcance o X antes que a frota extraterrestre detecte a sua posição. Está pronto para interpretar o mapa?',
     best:'MELHOR',
     cookiePrivacyLink:'Mais informações',
+    diffLabel:'SELECIONAR DIFICULDADE',
+    diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MÉDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
+    diffEasyDesc:'1 canhão',diffMidDesc:'2 canhões',diffHardDesc:'3 canhões',
+    cannon:'CANHÃO',cannonsLeft:'CANHÕES RESTANTES',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline, a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
   },
   ca:{
@@ -427,6 +462,10 @@ const i18n = {
     lore:'ANY 2050. L\'atac és imminent! El canó ha de ser urgentment reposicionat per defensar un nou sector. Has rebut les coordenades de desplegament. Navega el terreny — les carreteres són les més ràpides, les planes són transitables, els boscos et frenen, les muntanyes són gairebé infranquejables. Els rius no es poden creuar sense pont. Arriba a la X abans que la flota extraterrestre detecte la teua posició. Estàs preparat per a interpretar el mapa?',
     best:'MILLOR',
     cookiePrivacyLink:'Més informació',
+    diffLabel:'SELECCIONA DIFICULTAT',
+    diffEasy:'⭐ FÀCIL',diffMid:'⭐⭐ MITJÀ',diffHard:'⭐⭐⭐ DIFÍCIL',
+    diffEasyDesc:'1 canó',diffMidDesc:'2 canons',diffHardDesc:'3 canons',
+    cannon:'CANÓ',cannonsLeft:'CANONS RESTANTS',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió, des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
   }
 };
@@ -611,47 +650,82 @@ function drawMap(ctx){
   }
 }
 
-let targetGX=0,targetGY=0;
-
-function placeTarget(){
-  // Random within central third, avoiding river/mountain
-  const xMin=Math.floor(COLS*0.35),xMax=Math.floor(COLS*0.65);
-  const yMin=Math.floor(ROWS*0.35),yMax=Math.floor(ROWS*0.65);
-  let tries=0;
-  do {
-    targetGX=xMin+Math.floor(Math.random()*(xMax-xMin));
-    targetGY=yMin+Math.floor(Math.random()*(yMax-yMin));
-    tries++;
-  } while(tries<50&&(grid[targetGY][targetGX]===T.RIVER||grid[targetGY][targetGX]===T.MOUNTAIN));
-  if(grid[targetGY][targetGX]===T.RIVER||grid[targetGY][targetGX]===T.MOUNTAIN){
-    grid[targetGY][targetGX]=T.PLAIN;
-  }
-}
+function placeTarget(){ initTargets(); } // alias
 
 function drawTarget(ctx){
-  const tx=targetGX*CW+CW/2,ty=targetGY*CH+CH/2;
-  ctx.strokeStyle='#ff4444';ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(tx-8,ty-8);ctx.lineTo(tx+8,ty+8);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(tx+8,ty-8);ctx.lineTo(tx-8,ty+8);ctx.stroke();
-  ctx.strokeStyle='#ff8888';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(tx,ty,10,0,Math.PI*2);ctx.stroke();
+  targets.forEach((t,i)=>{
+    const tx=t.gx*CW+CW/2, ty=t.gy*CH+CH/2;
+    const placed=cannons.some(c=>c.placed&&c.gx===t.gx&&c.gy===t.gy);
+    ctx.strokeStyle=placed?'#44ff88':'#ff4444';
+    ctx.lineWidth=placed?3:2;
+    ctx.beginPath();ctx.moveTo(tx-8,ty-8);ctx.lineTo(tx+8,ty+8);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(tx+8,ty-8);ctx.lineTo(tx-8,ty+8);ctx.stroke();
+    ctx.strokeStyle=placed?'#88ffaa':'#ff8888';
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(tx,ty,10,0,Math.PI*2);ctx.stroke();
+    // number label
+    ctx.fillStyle=placed?'#88ffaa':'#ff8888';
+    ctx.font='5px "Press Start 2P"';ctx.textAlign='center';
+    ctx.fillText(i+1,tx,ty-12);
+  });
 }
 
 // ── CANNON ────────────────────────────────────────────────────────────────
 const DIR_ANGLES=[270,315,0,45,90,135,180,225];
 const DIR_DX=[0,1,1,1,0,-1,-1,-1];
 const DIR_DY=[-1,-1,0,1,1,1,0,-1];
+
+let numCannons=1;
+let cannons=[];
+let activeCannon=0;
+let targets=[];
 let cannon={gx:0,gy:0,dir:2,px:0,py:0};
 
-function initCannon(){
-  const corners=[[2,2],[COLS-3,2],[2,ROWS-3],[COLS-3,ROWS-3]];
-  const cornerIdx=Math.floor(Math.random()*4);
-  const c=corners[cornerIdx];
-  cannon.gx=c[0];cannon.gy=c[1];cannon.dir=2;
-  // Store cannon corner for legend placement (0=TL,1=TR,2=BL,3=BR)
-  window._cannonCorner=cornerIdx;
-  cannon.px=cannon.gx*CW+CW/2;cannon.py=cannon.gy*CH+CH/2;
+function selectLevel(n){
+  numCannons=n;
+  [['btn-easy',1],['btn-mid',2],['btn-hard',3]].forEach(([id,v])=>{
+    const b=document.getElementById(id);if(b)b.classList.toggle('active',v===n);
+  });
 }
+
+function initCannons(){
+  cannons=[];
+  const corners=[[2,2],[COLS-3,2],[2,ROWS-3],[COLS-3,ROWS-3]];
+  const shuffled=corners.slice().sort(()=>Math.random()-.5);
+  for(let i=0;i<numCannons;i++){
+    let gx,gy;
+    if(i<4){gx=shuffled[i][0];gy=shuffled[i][1];}
+    else{do{gx=5+Math.floor(Math.random()*(COLS-10));gy=5+Math.floor(Math.random()*(ROWS-10));}while(grid[gy][gx]===T.RIVER);}
+    cannons.push({gx,gy,dir:2,px:gx*CW+CW/2,py:gy*CH+CH/2,placed:false,active:false});
+  }
+  activeCannon=Math.floor(Math.random()*numCannons);
+  cannons.forEach((cn,i)=>cn.active=(i===activeCannon));
+  cannon=cannons[activeCannon];
+  const c=cannons[activeCannon];
+  const cornerIdx=corners.findIndex(cr=>cr[0]===c.gx&&cr[1]===c.gy);
+  window._cannonCorner=cornerIdx>=0?cornerIdx:0;
+}
+
+function initTargets(){
+  targets=[];
+  const cx=Math.floor(COLS/2),cy=Math.floor(ROWS/2);
+  const offsets=[[0,0],[-6,0],[6,0],[0,-5],[0,5],[-6,-5],[6,-5]];
+  const used=[];
+  for(let i=0;i<numCannons;i++){
+    let tries=0,tx,ty;
+    do{
+      const off=offsets[i%offsets.length];
+      tx=Math.max(3,Math.min(COLS-4,cx+off[0]+Math.floor(Math.random()*3)-1));
+      ty=Math.max(3,Math.min(ROWS-4,cy+off[1]+Math.floor(Math.random()*3)-1));
+      tries++;
+    }while(tries<40&&(grid[ty][tx]===T.RIVER||grid[ty][tx]===T.MOUNTAIN||used.some(u=>Math.abs(u.gx-tx)<4&&Math.abs(u.gy-ty)<4)));
+    if(grid[ty][tx]===T.RIVER||grid[ty][tx]===T.MOUNTAIN)grid[ty][tx]=T.PLAIN;
+    targets.push({gx:tx,gy:ty});
+    used.push({gx:tx,gy:ty});
+  }
+}
+
+function initCannon(){initCannons();}
 
 function drawCannon(ctx,px,py,dir,alpha){
   ctx.save();ctx.globalAlpha=alpha||1;ctx.translate(px,py);ctx.rotate(DIR_ANGLES[dir]*Math.PI/180);
@@ -691,19 +765,28 @@ function drawParachute(ctx,px,py){
 }
 
 // ── UFO ───────────────────────────────────────────────────────────────────
-let ufo={active:false,x:0,y:40,vx:2,vy:0,targetX:0,targetY:0,arrived:false,flash:0};
+let ufos=[]; // one per unplaced cannon when time runs low
+let ufo={active:false,x:0,y:40,vx:2,vy:0,targetX:0,targetY:0,arrived:false,flash:0}; // compat
 let ufoWarningShown=false,ufoWarningAlpha=0,ufoWarningTimer=0;
 
 function spawnUFO(){
   ufoWarningShown=true;
-  ufo={
-    active:true,
-    x:-80, y:30,           // enter from left, high up
-    vx:0, vy:0,
-    targetX:cannon.px,     // fly directly to cannon
-    targetY:cannon.py,
-    arrived:false, flash:0
-  };
+  ufos=[];
+  // Spawn one UFO per unplaced cannon
+  cannons.forEach((cn,i)=>{
+    if(!cn.placed){
+      ufos.push({
+        active:true,
+        x:-80-(i*120), y:20+i*15,
+        vx:0,vy:0,
+        targetX:cn.px, targetY:cn.py,
+        arrived:false, flash:0,
+        cannonIdx:i
+      });
+    }
+  });
+  // compat
+  ufo=ufos[0]||{active:false};
 }
 
 function drawUFO(ctx,x,y){
@@ -748,6 +831,7 @@ function drawLegend(ctx){
     {idx:2,x:6,          y:460-lh-6},
   ];
   const chosen=freeCandidates.find(f=>f.idx!==corner)||freeCandidates[0];
+  window._legendCornerIdx=chosen.idx;
   const lx=chosen.x, ly=chosen.y;
   ctx.fillStyle='rgba(0,5,20,0.82)';
   ctx.strokeStyle='rgba(68,170,255,0.4)';
@@ -775,7 +859,19 @@ function drawLegend(ctx){
 
 // ── COMPASS ───────────────────────────────────────────────────────────────
 function drawCompass(ctx,dir){
-  const cx=649,cy=409,r=42;
+  // 4 possible corners for compass (r=42, margin=6)
+  // 0=TL, 1=TR, 2=BL, 3=BR
+  const compassCorners=[
+    {x:48, y:48},   // TL
+    {x:652,y:48},   // TR
+    {x:48, y:412},  // BL
+    {x:652,y:412},  // BR
+  ];
+  const cannonCorner=window._cannonCorner||0;
+  const legendCornerIdx=(window._legendCornerIdx!==undefined)?window._legendCornerIdx:1;
+  // Pick first corner that is neither cannon nor legend
+  const comp=compassCorners.find((p,i)=>i!==cannonCorner&&i!==legendCornerIdx)||compassCorners[3];
+  const cx=comp.x,cy=comp.y,r=42;
   ctx.fillStyle='rgba(0,5,20,0.88)';ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
   ctx.strokeStyle='rgba(68,170,255,0.6)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
   ctx.font='bold 7px "Press Start 2P"';ctx.textAlign='center';
@@ -802,6 +898,7 @@ let highScore=parseInt(localStorage.getItem('mercator_hs')||'0');
 let explosionParticles=[];
 
 function moveCannon(fwd){
+  if(!cannon||cannon.placed)return;
   const dx=DIR_DX[cannon.dir]*fwd,dy=DIR_DY[cannon.dir]*fwd;
   const nx=cannon.gx+dx,ny=cannon.gy+dy;
   if(nx<0||nx>=COLS||ny<0||ny>=ROWS)return;
@@ -809,16 +906,41 @@ function moveCannon(fwd){
   const cost=TERRAIN_COST[grid[ny][nx]]||0;
   cannon.gx=nx;cannon.gy=ny;
   cannon.px=cannon.gx*CW+CW/2;cannon.py=cannon.gy*CH+CH/2;
-  // Apply terrain cost as extra time lost
-  if(cost>0){ timeLeft=Math.max(0,timeLeft-cost); score=timeLeft; $('score-display').textContent=score; $('time-display').textContent=timeLeft; }
+  cannons[activeCannon].gx=cannon.gx;cannons[activeCannon].gy=cannon.gy;
+  cannons[activeCannon].px=cannon.px;cannons[activeCannon].py=cannon.py;
+  if(cost>0){timeLeft=Math.max(0,timeLeft-cost);score=timeLeft;$('score-display').textContent=score;$('time-display').textContent=timeLeft;}
   checkWin();
 }
 
-function rotateCannon(d){cannon.dir=(cannon.dir+d+8)%8;}
-
+function rotateCannon(d){
+  cannon.dir=(cannon.dir+d+8)%8;
+  cannons[activeCannon].dir=cannon.dir;
+}
 
 function checkWin(){
-  if(cannon.gx===targetGX&&cannon.gy===targetGY){state='win';showResult();}
+  const target=targets.find(t=>!cannons.some(cn=>cn.placed&&cn.gx===t.gx&&cn.gy===t.gy)&&cannon.gx===t.gx&&cannon.gy===t.gy);
+  if(!target)return;
+  cannons[activeCannon].placed=true;
+  score+=20;$('score-display').textContent=score;
+  if(cannons.every(cn=>cn.placed)){state='win';showResult();return;}
+  const unplaced=cannons.map((cn,i)=>({cn,i})).filter(o=>!o.cn.placed);
+  const nearest=unplaced.reduce((best,o)=>{
+    const d=Math.hypot(o.cn.gx-target.gx,o.cn.gy-target.gy);
+    return d<best.d?{...o,d}:best;
+  },{d:Infinity,i:0});
+  activeCannon=nearest.i;
+  cannon=cannons[activeCannon];
+  cannons.forEach((cn,i)=>cn.active=(i===activeCannon));
+  helicopter={active:true,x:cannon.px,y:-60,vy:1.5,deployed:false,done:false};
+  updateCannonsLeftDisplay();
+}
+
+function updateCannonsLeftDisplay(){
+  const el=document.getElementById('cannons-left-display');
+  if(!el)return;
+  const t=i18n[currentLang]||i18n.en;
+  const left=cannons.filter(cn=>!cn.placed).length;
+  el.textContent=left>0?t.cannonsLeft+': '+left:'';
 }
 
 document.addEventListener('keydown',e=>{
@@ -883,9 +1005,9 @@ function showResult(wasFired){
 
 // ── START ─────────────────────────────────────────────────────────────────
 function startGame(){
-  generateMap();placeTarget();initCannon();
+  generateMap();initCannons();initTargets();
   score=500;timeLeft=250;lastTick=0;lastTime=-1;
-  ufo={active:false,x:0,y:40,vx:2,firing:false,bullet:null,flash:0};
+  ufos=[];ufo={active:false};
   ufoWarningShown=false;ufoWarningAlpha=0;ufoWarningTimer=0;
   legendAlpha=1;legendTimer=0;
   explosionParticles=[];
@@ -893,6 +1015,7 @@ function startGame(){
   $('overlay').style.display='none';
   $('c').style.display='block';
   $('c').focus();
+  updateCannonsLeftDisplay();
   state='playing';
   requestAnimationFrame(loop);
 }
@@ -908,6 +1031,8 @@ function loop(ts){
       lastTick-=1000;timeLeft=Math.max(0,timeLeft-2);score=timeLeft;
       $('score-display').textContent=score;$('time-display').textContent=timeLeft;
       if(timeLeft===10&&!ufoWarningShown)spawnUFO();
+      // Update UFO targets if cannon moved
+      ufos.forEach(u=>{ if(!u.arrived){ const cn=cannons[u.cannonIdx]; if(cn){u.targetX=cn.px;u.targetY=cn.py;} } });
       if(timeLeft===0&&!ufo.active){state='lose';showResult(false);return;}
     }
     const tval=grid[cannon.gy]?.[cannon.gx];
@@ -920,54 +1045,52 @@ function loop(ts){
   ctx.clearRect(0,0,700,460);
   drawMap(ctx);drawTarget(ctx);
 
-  // Cannon halo — pulsing cyan ring to locate cannon easily
-  if(!helicopter.active){
-    const haloR=10+Math.sin(Date.now()/300)*3;
-    ctx.save();
-    ctx.globalAlpha=0.35+Math.sin(Date.now()/300)*0.15;
-    ctx.strokeStyle='#44ffff';
-    ctx.lineWidth=2;
-    ctx.beginPath();ctx.arc(cannon.px,cannon.py,haloR,0,Math.PI*2);ctx.stroke();
-    ctx.restore();
-  }
+  // Draw placed cannons (semi-transparent)
+  cannons.forEach((cn,i)=>{
+    if(i===activeCannon)return;
+    drawCannon(ctx,cn.px,cn.py,cn.dir,cn.placed?0.45:0.7);
+  });
 
+  // Active cannon: helicopter drop or halo+draw
   if(helicopter.active){
     if(!helicopter.deployed){helicopter.y+=helicopter.vy;if(helicopter.y>=60)helicopter.deployed=true;}
-    else{helicopter.y+=0.5;if(helicopter.y>=cannon.py-40){helicopter.done=true;helicopter.active=false;}}
+    else{helicopter.y+=0.5;if(helicopter.y>=cannon.py-40){helicopter.done=true;helicopter.active=false;$('c').focus();}}
     drawHelicopter(ctx,helicopter.x,helicopter.y-30);
     if(helicopter.deployed){drawParachute(ctx,helicopter.x,helicopter.y);drawCannon(ctx,helicopter.x,helicopter.y+10,cannon.dir,1);}
-  } else {
+  } else if(!cannon.placed){
+    const haloR=10+Math.sin(Date.now()/300)*3;
+    ctx.save();ctx.globalAlpha=0.35+Math.sin(Date.now()/300)*0.15;
+    ctx.strokeStyle='#44ffff';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(cannon.px,cannon.py,haloR,0,Math.PI*2);ctx.stroke();
+    ctx.restore();
     drawCannon(ctx,cannon.px,cannon.py,cannon.dir,1);
   }
 
-  if(ufo.active){
-    if(!ufo.arrived){
-      // fly toward cannon position
-      const dx=ufo.targetX-ufo.x, dy=ufo.targetY-30-ufo.y;
+  ufos.forEach(u=>{
+    if(!u.active) return;
+    if(!u.arrived){
+      const dx=u.targetX-u.x, dy=u.targetY-30-u.y;
       const dist=Math.hypot(dx,dy);
-      const spd=3;
-      if(dist<spd+1){
-        ufo.x=ufo.targetX; ufo.y=ufo.targetY-30;
-        ufo.arrived=true; ufo.flash=1.0;
-        state='exploding';
-        setTimeout(()=>{ state='lose'; showResult(true); }, 900);
+      if(dist<4){
+        u.x=u.targetX; u.y=u.targetY-30;
+        u.arrived=true; u.flash=1.0;
+        if(state==='playing'){
+          state='exploding';
+          setTimeout(()=>{ state='lose'; showResult(true); }, 900);
+        }
       } else {
-        ufo.x+=dx/dist*spd; ufo.y+=dy/dist*spd;
+        u.x+=dx/dist*3; u.y+=dy/dist*3;
       }
-      drawUFO(ctx,ufo.x,ufo.y);
+      drawUFO(ctx,u.x,u.y);
     } else {
-      // flash effect
-      drawUFO(ctx,ufo.x,ufo.y);
-      ufo.flash=Math.max(0,ufo.flash-0.06);
-      if(ufo.flash>0){
-        ctx.save();
-        ctx.globalAlpha=ufo.flash;
-        ctx.fillStyle='#ffffff';
-        ctx.fillRect(0,0,700,460);
-        ctx.restore();
+      drawUFO(ctx,u.x,u.y);
+      u.flash=Math.max(0,u.flash-0.06);
+      if(u.flash>0){
+        ctx.save();ctx.globalAlpha=u.flash;
+        ctx.fillStyle='#ffffff';ctx.fillRect(0,0,700,460);ctx.restore();
       }
     }
-  }
+  });
 
   if(ufoWarningShown){
     ufoWarningTimer+=dt;
