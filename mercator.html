@@ -445,43 +445,79 @@ let grid=[];
 // ── MAP GENERATOR ─────────────────────────────────────────────────────────
 function generateMap(){
   grid=Array.from({length:ROWS},()=>Array(COLS).fill(T.PLAIN));
-  const numRivers=1+Math.floor(Math.random()*2); // 1 or 2 rivers
+  const totalCells=COLS*ROWS;
+  const minMtn=Math.ceil(totalCells*0.15);
+  const minForest=Math.ceil(totalCells*0.30);
+
+  // 1. Mountains first (needed as river source)
+  let mtnAttempts=0;
+  while(countTerrain(T.MOUNTAIN)<minMtn&&mtnAttempts<30){
+    floodFill(2+Math.floor(Math.random()*(COLS-4)),2+Math.floor(Math.random()*(ROWS-4)),18+Math.floor(Math.random()*20),T.MOUNTAIN,[T.PLAIN]);
+    mtnAttempts++;
+  }
+
+  // 2. Rivers — start from a mountain cell, flow east
+  const numRivers=1+Math.floor(Math.random()*2);
   const riverRows=[];
   for(let r=0;r<numRivers;r++){
-    let row=3+Math.floor(Math.random()*(ROWS-6));
-    let tries=0;
-    while(riverRows.some(rr=>Math.abs(rr-row)<4)&&tries<20){row=3+Math.floor(Math.random()*(ROWS-6));tries++;}
+    const mtnCells=[];
+    for(let y=1;y<ROWS-1;y++) for(let x=1;x<COLS/2;x++) if(grid[y][x]===T.MOUNTAIN) mtnCells.push([x,y]);
+    if(!mtnCells.length) break;
+    const [sx,sy]=mtnCells[Math.floor(Math.random()*mtnCells.length)];
+    let row=sy,tries=0;
+    while(riverRows.some(rr=>Math.abs(rr-row)<6)&&tries<10){row=Math.max(3,Math.min(ROWS-4,sy+Math.floor(Math.random()*6)-3));tries++;}
     riverRows.push(row);
     let y=row;
-    for(let x=0;x<COLS;x++){
+    for(let x=sx;x<COLS;x++){
       grid[y][x]=T.RIVER;
-      if(x>0&&x<COLS-1&&Math.random()<0.25){
+      if(x>sx&&x<COLS-1&&Math.random()<0.18){
         const dy=Math.random()<0.5?-1:1,ny=y+dy;
         if(ny>1&&ny<ROWS-2){y=ny;grid[y][x]=T.RIVER;}
       }
     }
   }
+
+  // 3. Roads with bridges over rivers
   const numRoads=1+Math.floor(Math.random()*2);
   const roadRows=[];
   for(let r=0;r<numRoads;r++){
-    let row=2+Math.floor(Math.random()*(ROWS-4)),tries=0;
-    while((riverRows.some(rr=>Math.abs(rr-row)<2)||roadRows.some(rr=>Math.abs(rr-row)<3))&&tries<20){row=2+Math.floor(Math.random()*(ROWS-4));tries++;}
+    let row=3+Math.floor(Math.random()*(ROWS-6)),tries=0;
+    while((riverRows.some(rr=>Math.abs(rr-row)<3)||roadRows.some(rr=>Math.abs(rr-row)<5))&&tries<20){row=3+Math.floor(Math.random()*(ROWS-6));tries++;}
     roadRows.push(row);
     for(let x=0;x<COLS;x++) grid[row][x]=(grid[row][x]===T.RIVER)?T.BRIDGE:T.ROAD;
   }
-  for(let f=0;f<4+Math.floor(Math.random()*3);f++){
-    floodFill(1+Math.floor(Math.random()*(COLS-2)),1+Math.floor(Math.random()*(ROWS-2)),4+Math.floor(Math.random()*8),T.FOREST,[T.PLAIN]);
+
+  // 4. Guarantee at least one bridge per river
+  riverRows.forEach(rr=>{
+    const hasBridge=grid[rr].some(t=>t===T.BRIDGE);
+    if(!hasBridge){
+      const bx=2+Math.floor(Math.random()*(COLS-4));
+      grid[rr][bx]=T.BRIDGE;
+    }
+  });
+
+  // 5. Forest up to minimum
+  let forestAttempts=0;
+  while(countTerrain(T.FOREST)<minForest&&forestAttempts<40){
+    floodFill(1+Math.floor(Math.random()*(COLS-2)),1+Math.floor(Math.random()*(ROWS-2)),20+Math.floor(Math.random()*30),T.FOREST,[T.PLAIN]);
+    forestAttempts++;
   }
-  for(let m=0;m<2+Math.floor(Math.random()*2);m++){
-    floodFill(1+Math.floor(Math.random()*(COLS-2)),1+Math.floor(Math.random()*(ROWS-2)),3+Math.floor(Math.random()*5),T.MOUNTAIN,[T.PLAIN,T.FOREST]);
-  }
-  // clear center
+
+  // 6. Clear target area (9x9)
   const cx=Math.floor(COLS/2),cy=Math.floor(ROWS/2);
-  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+  for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++){
     const nx=cx+dx,ny=cy+dy;
-    if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&grid[ny][nx]===T.MOUNTAIN)grid[ny][nx]=T.PLAIN;
+    if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&grid[ny][nx]!==T.ROAD&&grid[ny][nx]!==T.BRIDGE) grid[ny][nx]=T.PLAIN;
+  }
+
+  // 7. Clear compass corner (bottom-right, 9x9)
+  for(let dy=0;dy<=8;dy++) for(let dx=0;dx<=8;dx++){
+    const nx=COLS-1-dx,ny=ROWS-1-dy;
+    if(nx>=0&&ny>=0&&(grid[ny][nx]===T.RIVER||grid[ny][nx]===T.MOUNTAIN)) grid[ny][nx]=T.PLAIN;
   }
 }
+
+function countTerrain(type){let n=0;for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(grid[y][x]===type)n++;return n;}
 
 function floodFill(x,y,size,type,allowed){
   const queue=[[x,y]],visited=new Set();let placed=0;
@@ -669,15 +705,6 @@ function moveCannon(fwd){
 
 function rotateCannon(d){cannon.dir=(cannon.dir+d+8)%8;}
 
-function moveDiag(num){
-  const offsets={7:-1,9:1,1:-1,3:1},fwdMap={7:1,9:1,1:-1,3:-1};
-  const diagDir=(cannon.dir+offsets[num]+8)%8,fwd=fwdMap[num];
-  const nx=cannon.gx+DIR_DX[diagDir]*fwd,ny=cannon.gy+DIR_DY[diagDir]*fwd;
-  if(nx<0||nx>=COLS||ny<0||ny>=ROWS)return;
-  if(grid[ny][nx]===T.RIVER)return;
-  cannon.gx=nx;cannon.gy=ny;cannon.px=cannon.gx*CW+CW/2;cannon.py=cannon.gy*CH+CH/2;
-  checkWin();
-}
 
 function checkWin(){
   if(cannon.gx===targetGX&&cannon.gy===targetGY){state='win';showResult();}
@@ -686,14 +713,10 @@ function checkWin(){
 document.addEventListener('keydown',e=>{
   if(state!=='playing')return;
   switch(e.code){
-    case'ArrowUp':case'Numpad8':e.preventDefault();moveCannon(1);break;
-    case'ArrowDown':case'Numpad2':e.preventDefault();moveCannon(-1);break;
-    case'ArrowLeft':case'Numpad4':e.preventDefault();rotateCannon(-1);break;
-    case'ArrowRight':case'Numpad6':e.preventDefault();rotateCannon(1);break;
-    case'Numpad7':e.preventDefault();moveDiag(7);break;
-    case'Numpad9':e.preventDefault();moveDiag(9);break;
-    case'Numpad1':e.preventDefault();moveDiag(1);break;
-    case'Numpad3':e.preventDefault();moveDiag(3);break;
+    case'ArrowUp':e.preventDefault();moveCannon(1);break;
+    case'ArrowDown':e.preventDefault();moveCannon(-1);break;
+    case'ArrowLeft':e.preventDefault();rotateCannon(-1);break;
+    case'ArrowRight':e.preventDefault();rotateCannon(1);break;
   }
 });
 
