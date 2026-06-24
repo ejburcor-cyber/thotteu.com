@@ -225,7 +225,7 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
     <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
     <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:10px;margin-bottom:4px" data-i18n="instructions">INSTRUCCIONES</p>
     <div class="controls-box">
-      <p data-i18n="controls">↑ / NUM8 — ADVANCE &nbsp;|&nbsp; ↓ / NUM2 — RETREAT<br>← / NUM4 — ROTATE LEFT &nbsp;|&nbsp; → / NUM6 — ROTATE RIGHT<br>NUM7/9/1/3 — DIAGONAL ADVANCE</p>
+      <p data-i18n="controls">↑ — ADVANCE &nbsp;|&nbsp; ↓ — RETREAT<br>← — ROTATE LEFT &nbsp;|&nbsp; → — ROTATE RIGHT</p>
     </div>
     <button id="start-btn" onclick="startGame()" data-i18n="startBtn">START MISSION</button>
   </div>
@@ -303,7 +303,7 @@ const i18n = {
     backBtn:'← THOTTEU',startBtn:'START MISSION',score:'SCORE',time:'TIME',
     briefingLabel:'MISSION BRIEFING',
     briefingBody:'Navigate across forests, plains and roads. Rivers cannot be crossed without a bridge. Roads are fastest. Reach the X in the centre before time runs out.',
-    controls:'↑ / NUM8 — ADVANCE  |  ↓ / NUM2 — RETREAT\n← / NUM4 — ROTATE LEFT  |  → / NUM6 — ROTATE RIGHT\nNUM7/9/1/3 — DIAGONAL MOVE',
+    controls:'↑ — ADVANCE  |  ↓ — RETREAT\n← — ROTATE LEFT  |  → — ROTATE RIGHT',
     terrainPlain:'PLAINS',terrainForest:'FOREST',terrainMtn:'MOUNTAIN',terrainRiver:'RIVER',terrainRoad:'ROAD',terrainBridge:'BRIDGE',
     win:'MISSION COMPLETE!',lose:'MISSION FAILED',scoreLabel:'SCORE',
     tryAgain:'TRY AGAIN',hofTitle:'HALL OF FAME',hofEmpty:'No records yet.',
@@ -324,7 +324,7 @@ const i18n = {
     backBtn:'← THOTTEU',startBtn:'INICIAR MISIÓN',score:'PUNTOS',time:'TIEMPO',
     briefingLabel:'INFORME DE MISIÓN',
     briefingBody:'Navega por bosques, llanuras y carreteras. Los ríos no pueden cruzarse sin puente. Las carreteras son la ruta más rápida. Llega a la X en el centro antes de que se acabe el tiempo.',
-    controls:'↑ / NUM8 — AVANZAR  |  ↓ / NUM2 — RETROCEDER\n← / NUM4 — GIRAR IZQ  |  → / NUM6 — GIRAR DER\nNUM7/9/1/3 — MOVIMIENTO DIAGONAL',
+    controls:'↑ — AVANZAR  |  ↓ — RETROCEDER\n← — GIRAR IZQ  |  → — GIRAR DER',
     terrainPlain:'LLANURA',terrainForest:'BOSQUE',terrainMtn:'MONTAÑA',terrainRiver:'RÍO',terrainRoad:'CARRETERA',terrainBridge:'PUENTE',
     win:'¡MISIÓN COMPLETADA!',lose:'MISIÓN FALLIDA',scoreLabel:'PUNTOS',
     tryAgain:'REINTENTAR',hofTitle:'SALÓN DE LA FAMA',hofEmpty:'Sin récords aún.',
@@ -345,7 +345,7 @@ const i18n = {
     backBtn:'← THOTTEU',startBtn:'LANCER LA MISSION',score:'POINTS',time:'TEMPS',
     briefingLabel:'BRIEFING DE MISSION',
     briefingBody:'Naviguez à travers forêts, plaines et routes. Les rivières ne peuvent être traversées sans pont. Les routes sont les plus rapides. Atteignez le X au centre avant la fin du temps.',
-    controls:'↑ / NUM8 — AVANCER  |  ↓ / NUM2 — RECULER\n← / NUM4 — TOURNER G  |  → / NUM6 — TOURNER D\nNUM7/9/1/3 — DÉPLACEMENT DIAGONAL',
+    controls:'↑ — AVANCER  |  ↓ — RECULER\n← — TOURNER G  |  → — TOURNER D',
     terrainPlain:'PLAINE',terrainForest:'FORÊT',terrainMtn:'MONTAGNE',terrainRiver:'RIVIÈRE',terrainRoad:'ROUTE',terrainBridge:'PONT',
     win:'MISSION ACCOMPLIE!',lose:'MISSION ÉCHOUÉE',scoreLabel:'POINTS',
     tryAgain:'RÉESSAYER',hofTitle:'PALMARÈS',hofEmpty:'Pas encore de records.',
@@ -366,7 +366,7 @@ const i18n = {
     backBtn:'← THOTTEU',startBtn:'INICIAR MISSÃO',score:'PONTOS',time:'TEMPO',
     briefingLabel:'BRIEFING DA MISSÃO',
     briefingBody:'Navegue por florestas, planícies e estradas. Os rios não podem ser atravessados sem ponte. As estradas são as mais rápidas. Alcance o X no centro antes do tempo esgotar.',
-    controls:'↑ / NUM8 — AVANÇAR  |  ↓ / NUM2 — RECUAR\n← / NUM4 — GIRAR ESQ  |  → / NUM6 — GIRAR DIR\nNUM7/9/1/3 — MOVIMENTO DIAGONAL',
+    controls:'↑ — AVANÇAR  |  ↓ — RECUAR\n← — GIRAR ESQ  |  → — GIRAR DIR',
     terrainPlain:'PLANÍCIE',terrainForest:'FLORESTA',terrainMtn:'MONTANHA',terrainRiver:'RIO',terrainRoad:'ESTRADA',terrainBridge:'PONTE',
     win:'MISSÃO CONCLUÍDA!',lose:'MISSÃO FALHADA',scoreLabel:'PONTOS',
     tryAgain:'TENTAR NOVAMENTE',hofTitle:'SALÃO DA FAMA',hofEmpty:'Sem recordes ainda.',
@@ -387,7 +387,7 @@ const i18n = {
     backBtn:'← THOTTEU',startBtn:'INICIAR MISSIÓ',score:'PUNTS',time:'TEMPS',
     briefingLabel:'INFORME DE MISSIÓ',
     briefingBody:'Navega per boscos, planes i carreteres. Els rius no es poden creuar sense pont. Les carreteres són les més ràpides. Arriba a la X al centre abans que s\'esgote el temps.',
-    controls:'↑ / NUM8 — AVANÇAR  |  ↓ / NUM2 — RETROCEDIR\n← / NUM4 — GIRAR ESQ  |  → / NUM6 — GIRAR DRE\nNUM7/9/1/3 — MOVIMENT DIAGONAL',
+    controls:'↑ — AVANÇAR  |  ↓ — RETROCEDIR\n← — GIRAR ESQ  |  → — GIRAR DRE',
     terrainPlain:'PLANA',terrainForest:'BOSC',terrainMtn:'MUNTANYA',terrainRiver:'RIU',terrainRoad:'CARRETERA',terrainBridge:'PONT',
     win:'MISSIÓ COMPLETADA!',lose:'MISSIÓ FALLIDA',scoreLabel:'PUNTS',
     tryAgain:'TORNAR-HO A INTENTAR',hofTitle:'SALÓ DE LA FAMA',hofEmpty:'Sense rècords encara.',
