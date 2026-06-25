@@ -43,12 +43,12 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .lang-option:hover{background:rgba(255,160,0,.12);color:#fff}
 .lang-option.active{color:#fca}
 #header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
-#game-wrap{position:relative;width:700px;max-width:100%}
+#game-wrap{position:relative;width:700px;max-width:100%;min-height:420px}
 #hud{background:#0d1020;border:2px solid #fa0;border-bottom:none;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;width:100%;font-size:.45rem;color:#fa0;letter-spacing:1px}
 #game-canvas-wrap{position:relative;width:700px;height:420px}
 #canvas-bg{position:absolute;top:0;left:0;display:block;border:2px solid #fa0}
 #canvas-fg{position:absolute;top:0;left:0;display:block;cursor:pointer}
-#overlay{position:absolute;inset:0;background:rgba(0,0,0,.93);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;z-index:10;padding:12px 20px 20px;overflow-y:auto}
+#overlay{width:700px;max-width:100%;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;z-index:10;padding:12px 20px 20px}
 #overlay h2{color:#fa0;font-size:1rem;text-align:center;line-height:1.8}
 #overlay p{color:#fff;font-size:.5rem;text-align:center;line-height:2}
 .score-final{color:#ff0;font-size:.7rem}
@@ -178,14 +178,6 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
     <div>🔁 <span data-i18n="round">ROUND</span>: <span id="round-display">-</span></div>
     <div id="lives-display" style="color:#f44;font-size:.4rem"></div>
   </div>
-  <div id="game-canvas-wrap">
-    <canvas id="canvas-bg" width="700" height="420"></canvas>
-    <canvas id="canvas-fg" width="700" height="420"></canvas>
-    <div class="tooltip-label" id="tooltip"></div>
-    <button id="repeat-btn" data-i18n="repeatBtn">↺ REPEAT (-<span id="repeat-cost">10</span>pts)</button>
-    <div id="phase-label"></div>
-  </div>
-
   <div id="overlay">
     <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
     <p style="color:#f84;font-size:.4rem;letter-spacing:2px;margin-top:10px;margin-bottom:4px" data-i18n="instructions">INSTRUCTIONS</p>
@@ -208,6 +200,13 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
       </div>
     </div>
     <button id="start-btn" onclick="startGame()" data-i18n="startBtn">START MISSION</button>
+  </div>
+  <div id="game-canvas-wrap" style="display:none">
+    <canvas id="canvas-bg" width="700" height="420"></canvas>
+    <canvas id="canvas-fg" width="700" height="420"></canvas>
+    <div class="tooltip-label" id="tooltip"></div>
+    <button id="repeat-btn" data-i18n="repeatBtn">↺ REPEAT (-<span id="repeat-cost">10</span>pts)</button>
+    <div id="phase-label"></div>
   </div>
 </div>
 
@@ -895,6 +894,7 @@ function showResult(isWin){
   if(isWin){recordHOF(score);if(score>highScore){highScore=score;localStorage.setItem('ss_hs',highScore);document.getElementById('highscore-display').textContent=highScore;}}
   const t=i18n[currentLang]||i18n.en;
   const comment=getComment(isWin);
+  document.getElementById('game-canvas-wrap').style.display='none';
   const ov=document.getElementById('overlay');
   ov.style.display='flex';
   ov.innerHTML=
@@ -921,6 +921,7 @@ function startGame(){
   document.getElementById('round-display').textContent='1/'+maxRounds;
   document.getElementById('lives-display').textContent='❤❤';
   document.getElementById('overlay').style.display='none';
+  document.getElementById('game-canvas-wrap').style.display='block';
   buildBackground();
   // Build initial sequence with 1 random object
   activeObjects=getActiveObjects();
