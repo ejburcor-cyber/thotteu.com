@@ -11,12 +11,22 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thotteu.com/mathcannon</loc>
+    <loc>https://thotteu.com/mnemosine</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thotteu.com/mnemosine</loc>
+    <loc>https://thotteu.com/solarsymphony</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thotteu.com/mercator</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thotteu.com/mathcannon</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
