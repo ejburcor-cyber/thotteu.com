@@ -967,13 +967,42 @@ else if(localStorage.getItem('thotteu_cookies')==='accepted'){gtag('consent','up
 
 // ── PWA ───────────────────────────────────────────────────────────────────
 let _dp=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_dp=e;const b=document.getElementById('ss-pwa-btn');if(b)b.style.display='inline-flex';});
-const _pb=document.getElementById('ss-pwa-btn');
-if(_pb)_pb.addEventListener('click',async()=>{if(!_dp)return;_dp.prompt();const{outcome}=await _dp.userChoice;if(outcome==='accepted')_pb.style.display='none';_dp=null;});
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();_dp=e;
+  const b=document.getElementById('ss-pwa-btn');
+  if(b)b.style.display='inline-flex';
+});
 
-// ── SHARE ─────────────────────────────────────────────────────────────────
-(function(){
-  const SHARE_URL='https://thotteu.com/solarsymphony';let _qrBlob=null;
+// ── SHARE + PWA CLICK (moved to DOMContentLoaded) ───────────────────────
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  bgCanvas=document.getElementById('canvas-bg');
+  fgCanvas=document.getElementById('canvas-fg');
+  bgCtx=bgCanvas.getContext('2d');
+  fgCtx=fgCanvas.getContext('2d');
+  // Wire fg canvas events
+  fgCanvas.addEventListener('mousemove',onMouseMove);
+  fgCanvas.addEventListener('mouseleave',()=>{ document.getElementById('tooltip').style.display='none'; });
+  fgCanvas.addEventListener('click',onCanvasClick);
+  initStars();
+  const saved=localStorage.getItem('thotteu_lang');
+  const bl=(navigator.language||'en').slice(0,2).toLowerCase();
+  const supported=['en','es','fr','pt','ca'];
+  const initial=saved||(supported.includes(bl)?bl:'en');
+  applyLang(initial);
+  startTypewriter(initial);
+  document.getElementById('highscore-display').textContent=highScore;
+  buildBackground();
+  renderHOF();
+
+  // ── PWA click ──
+  const _pb=document.getElementById('ss-pwa-btn');
+  if(_pb)_pb.addEventListener('click',async()=>{if(!_dp)return;_dp.prompt();const{outcome}=await _dp.userChoice;if(outcome==='accepted')_pb.style.display='none';_dp=null;});
+
+  // ── SHARE ──
+  (function(){
+const SHARE_URL='https://thotteu.com/solarsymphony';let _qrBlob=null;
   function loadQR(){
     const loading=document.getElementById('ss-qr-loading'),preview=document.getElementById('ss-qr-preview');
     const qrDiv=document.createElement('div');qrDiv.style.display='none';document.body.appendChild(qrDiv);
@@ -999,28 +1028,7 @@ if(_pb)_pb.addEventListener('click',async()=>{if(!_dp)return;_dp.prompt();const{
   };
   const bqr=document.getElementById('ss-btn-qr');if(bqr)bqr.onclick=()=>{if(_qrBlob){const url=URL.createObjectURL(_qrBlob);const a=document.createElement('a');a.href=url;a.download='qr-thotteu.png';a.click();URL.revokeObjectURL(url);}};
   loadQR();
-})();
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  bgCanvas=document.getElementById('canvas-bg');
-  fgCanvas=document.getElementById('canvas-fg');
-  bgCtx=bgCanvas.getContext('2d');
-  fgCtx=fgCanvas.getContext('2d');
-  // Wire fg canvas events
-  fgCanvas.addEventListener('mousemove',onMouseMove);
-  fgCanvas.addEventListener('mouseleave',()=>{ document.getElementById('tooltip').style.display='none'; });
-  fgCanvas.addEventListener('click',onCanvasClick);
-  initStars();
-  const saved=localStorage.getItem('thotteu_lang');
-  const bl=(navigator.language||'en').slice(0,2).toLowerCase();
-  const supported=['en','es','fr','pt','ca'];
-  const initial=saved||(supported.includes(bl)?bl:'en');
-  applyLang(initial);
-  startTypewriter(initial);
-  document.getElementById('highscore-display').textContent=highScore;
-  buildBackground();
-  renderHOF();
+  })();
 });
 </script>
 </body>
