@@ -540,18 +540,18 @@ function playNote(freq,duration=0.6,vol=0.3){
 }
 
 // ── CANVAS SETUP ──────────────────────────────────────────────────────────
-const bgCanvas=document.getElementById('canvas-bg');
-const fgCanvas=document.getElementById('canvas-fg');
-const bgCtx=bgCanvas.getContext('2d');
-const fgCtx=fgCanvas.getContext('2d');
+let bgCanvas,fgCanvas,bgCtx,fgCtx;
 const W=700,H=420;
 
 // ── STARS ─────────────────────────────────────────────────────────────────
-const STARS=Array.from({length:120},()=>({
-  x:Math.random()*W, y:Math.random()*H,
-  r:Math.random()*1.2+0.3,
-  a:Math.random()*0.4+0.3
-}));
+let STARS=[];
+function initStars(){
+  STARS=Array.from({length:120},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()*1.2+0.3,
+    a:Math.random()*0.4+0.3
+  }));
+}
 
 // ── DRAW BACKGROUND (static) ──────────────────────────────────────────────
 function drawBackground(){
@@ -755,7 +755,7 @@ function highlightObject(obj,on){
 }
 
 // ── HOVER / CLICK ─────────────────────────────────────────────────────────
-fgCanvas.addEventListener('mousemove',e=>{
+function onMouseMove(e){
   if(state!=='input') return;
   const rect=fgCanvas.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
@@ -773,11 +773,9 @@ fgCanvas.addEventListener('mousemove',e=>{
   } else {
     tooltip.style.display='none';
   }
-});
+}
 
-fgCanvas.addEventListener('mouseleave',()=>{ document.getElementById('tooltip').style.display='none'; });
-
-fgCanvas.addEventListener('click',e=>{
+function onCanvasClick(e){
   if(state!=='input') return;
   const rect=fgCanvas.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
@@ -787,7 +785,7 @@ fgCanvas.addEventListener('click',e=>{
   });
   if(!clicked) return;
   handleInput(clicked);
-});
+}
 
 function handleInput(obj){
   const expected=sequence[playerInput.length];
@@ -1004,6 +1002,15 @@ if(_pb)_pb.addEventListener('click',async()=>{if(!_dp)return;_dp.prompt();const{
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
+  bgCanvas=document.getElementById('canvas-bg');
+  fgCanvas=document.getElementById('canvas-fg');
+  bgCtx=bgCanvas.getContext('2d');
+  fgCtx=fgCanvas.getContext('2d');
+  // Wire fg canvas events
+  fgCanvas.addEventListener('mousemove',onMouseMove);
+  fgCanvas.addEventListener('mouseleave',()=>{ document.getElementById('tooltip').style.display='none'; });
+  fgCanvas.addEventListener('click',onCanvasClick);
+  initStars();
   const saved=localStorage.getItem('thotteu_lang');
   const bl=(navigator.language||'en').slice(0,2).toLowerCase();
   const supported=['en','es','fr','pt','ca'];
