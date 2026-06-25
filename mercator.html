@@ -221,7 +221,7 @@ canvas{display:block;border:2px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 <div id="game-wrap">
   <div id="hud">
     <div>✦ <span data-i18n="score">SCORE</span>: <span id="score-display">500</span> &nbsp;<span style="color:#f84;font-size:.4rem"><span data-i18n="best">BEST</span>: <span id="highscore-display">0</span></span></div>
-    <div>⏱ <span data-i18n="time">TIME</span>: <span id="time-display">250</span>s</div>
+    <div>⏱ <span data-i18n="time">TIME</span>: <span id="time-display">--</span>s</div>
     <div id="terrain-display" style="color:#8a8;font-size:.4rem;letter-spacing:1px"></div>
     <div id="cannons-left-display" style="color:#ff8;font-size:.38rem;letter-spacing:1px"></div>
   </div>
@@ -356,7 +356,7 @@ const i18n = {
     cookiePrivacyLink:'Learn more',
     diffLabel:'SELECT DIFFICULTY',
     diffEasy:'⭐ EASY',diffMid:'⭐⭐ MEDIUM',diffHard:'⭐⭐⭐ HARD',
-    diffEasyDesc:'1 cannon',diffMidDesc:'2 cannons',diffHardDesc:'3 cannons',
+    diffEasyDesc:'1 cannon',diffMidDesc:'2 cannons · +10s',diffHardDesc:'3 cannons · +15s',
     cannon:'CANNON',cannonsLeft:'CANNONS LEFT',
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline, from your home screen — no browser needed.',pwaInstall:'INSTALL',
   },
@@ -383,7 +383,7 @@ const i18n = {
     cookiePrivacyLink:'Más información',
     diffLabel:'SELECCIONA DIFICULTAD',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MEDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'1 cañón',diffMidDesc:'2 cañones',diffHardDesc:'3 cañones',
+    diffEasyDesc:'1 cañón',diffMidDesc:'2 cañones · +10s',diffHardDesc:'3 cañones · +15s',
     cannon:'CAÑÓN',cannonsLeft:'CAÑONES RESTANTES',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio — sin navegador.',pwaInstall:'INSTALAR',
   },
@@ -410,7 +410,7 @@ const i18n = {
     cookiePrivacyLink:'En savoir plus',
     diffLabel:'CHOISIR DIFFICULTÉ',
     diffEasy:'⭐ FACILE',diffMid:'⭐⭐ MOYEN',diffHard:'⭐⭐⭐ DIFFICILE',
-    diffEasyDesc:'1 canon',diffMidDesc:'2 canons',diffHardDesc:'3 canons',
+    diffEasyDesc:'1 canon',diffMidDesc:'2 canons · +10s',diffHardDesc:'3 canons · +15s',
     cannon:'CANON',cannonsLeft:'CANONS RESTANTS',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne, depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
   },
@@ -437,7 +437,7 @@ const i18n = {
     cookiePrivacyLink:'Mais informações',
     diffLabel:'SELECIONAR DIFICULDADE',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MÉDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'1 canhão',diffMidDesc:'2 canhões',diffHardDesc:'3 canhões',
+    diffEasyDesc:'1 canhão',diffMidDesc:'2 canhões · +10s',diffHardDesc:'3 canhões · +15s',
     cannon:'CANHÃO',cannonsLeft:'CANHÕES RESTANTES',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline, a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
   },
@@ -464,7 +464,7 @@ const i18n = {
     cookiePrivacyLink:'Més informació',
     diffLabel:'SELECCIONA DIFICULTAT',
     diffEasy:'⭐ FÀCIL',diffMid:'⭐⭐ MITJÀ',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'1 canó',diffMidDesc:'2 canons',diffHardDesc:'3 canons',
+    diffEasyDesc:'1 canó',diffMidDesc:'2 canons · +10s',diffHardDesc:'3 canons · +15s',
     cannon:'CANÓ',cannonsLeft:'CANONS RESTANTS',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió, des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
   }
@@ -514,72 +514,82 @@ function generateMap(){
   const minMtn=Math.ceil(totalCells*0.15);
   const minForest=Math.ceil(totalCells*0.30);
 
-  // 1. Mountains first (needed as river source)
+  // 1. Mountains first
   let mtnAttempts=0;
   while(countTerrain(T.MOUNTAIN)<minMtn&&mtnAttempts<30){
     floodFill(2+Math.floor(Math.random()*(COLS-4)),2+Math.floor(Math.random()*(ROWS-4)),18+Math.floor(Math.random()*20),T.MOUNTAIN,[T.PLAIN]);
     mtnAttempts++;
   }
 
-  // 2. Rivers — start from a mountain cell, flow east
-  const numRivers=1+Math.floor(Math.random()*2);
-  const riverRows=[];
-  for(let r=0;r<numRivers;r++){
-    const mtnCells=[];
-    for(let y=1;y<ROWS-1;y++) for(let x=1;x<COLS/2;x++) if(grid[y][x]===T.MOUNTAIN) mtnCells.push([x,y]);
-    if(!mtnCells.length) break;
-    const [sx,sy]=mtnCells[Math.floor(Math.random()*mtnCells.length)];
-    let row=sy,tries=0;
-    while(riverRows.some(rr=>Math.abs(rr-row)<6)&&tries<10){row=Math.max(3,Math.min(ROWS-4,sy+Math.floor(Math.random()*6)-3));tries++;}
-    riverRows.push(row);
-    let y=row;
-    for(let x=sx;x<COLS;x++){
-      grid[y][x]=T.RIVER;
-      if(x>sx&&x<COLS-1&&Math.random()<0.18){
-        const dy=Math.random()<0.5?-1:1,ny=y+dy;
-        if(ny>1&&ny<ROWS-2){y=ny;grid[y][x]=T.RIVER;}
-      }
+  // 2. ONE river — starts from a mountain cell on the left half, flows east
+  const mtnCells=[];
+  for(let y=4;y<ROWS-4;y++) for(let x=1;x<Math.floor(COLS/3);x++) if(grid[y][x]===T.MOUNTAIN) mtnCells.push([x,y]);
+  const riverSrc=mtnCells.length?mtnCells[Math.floor(Math.random()*mtnCells.length)]:[1,Math.floor(ROWS/2)];
+  let ry=riverSrc[1];
+  // store river cells for bridge placement
+  const riverCells=[];
+  for(let x=riverSrc[0];x<COLS;x++){
+    grid[ry][x]=T.RIVER; riverCells.push({x,y:ry});
+    if(x>riverSrc[0]&&x<COLS-2&&Math.random()<0.18){
+      const dy=Math.random()<0.5?-1:1,ny=ry+dy;
+      if(ny>2&&ny<ROWS-3){ry=ny;grid[ry][x]=T.RIVER;riverCells.push({x,y:ry});}
     }
   }
 
-  // 3. Roads with bridges over rivers
-  const numRoads=1+Math.floor(Math.random()*2);
-  const roadRows=[];
-  for(let r=0;r<numRoads;r++){
-    let row=3+Math.floor(Math.random()*(ROWS-6)),tries=0;
-    while((riverRows.some(rr=>Math.abs(rr-row)<3)||roadRows.some(rr=>Math.abs(rr-row)<5))&&tries<20){row=3+Math.floor(Math.random()*(ROWS-6));tries++;}
-    roadRows.push(row);
-    for(let x=0;x<COLS;x++) grid[row][x]=(grid[row][x]===T.RIVER)?T.BRIDGE:T.ROAD;
+  // 3. ONE road — must cross the river (guaranteed bridge at crossing)
+  // Pick a road row that is different from river rows, then route across
+  const riverYs=new Set(riverCells.map(r=>r.y));
+  let roadRow=4+Math.floor(Math.random()*(ROWS-8));
+  let tries=0;
+  // Avoid road row being same as river start row
+  while([...riverYs].some(ry=>Math.abs(ry-roadRow)<4)&&tries<30){
+    roadRow=4+Math.floor(Math.random()*(ROWS-8));tries++;
   }
+  // Draw road across full width
+  for(let x=0;x<COLS;x++) grid[roadRow][x]=T.ROAD;
 
-  // 4. Guarantee at least one bridge per river
-  riverRows.forEach(rr=>{
-    const hasBridge=grid[rr].some(t=>t===T.BRIDGE);
-    if(!hasBridge){
-      const bx=2+Math.floor(Math.random()*(COLS-4));
-      grid[rr][bx]=T.BRIDGE;
+  // Find where road crosses river cells and convert to BRIDGE
+  // The road row may not directly overlap river — force one crossing point
+  // Find the column range where river passes closest to road row
+  let bridgeX=null;
+  let minDist=999;
+  riverCells.forEach(rc=>{
+    const d=Math.abs(rc.y-roadRow);
+    if(d<minDist){minDist=d;bridgeX=rc.x;}
+  });
+  // Place bridge: for each river cell near bridgeX, draw road over it
+  riverCells.filter(rc=>Math.abs(rc.x-bridgeX)<=2).forEach(rc=>{
+    grid[rc.y][rc.x]=T.BRIDGE;
+    // Also connect road to bridge vertically if road doesn't directly cross
+    if(rc.y!==roadRow){
+      const step=rc.y<roadRow?1:-1;
+      for(let y=rc.y+step;y!==roadRow;y+=step){
+        if(grid[y][rc.x]===T.PLAIN||grid[y][rc.x]===T.FOREST) grid[y][rc.x]=T.ROAD;
+      }
     }
   });
 
-  // 5. Forest up to minimum
+  // 4. Forest up to minimum
   let forestAttempts=0;
   while(countTerrain(T.FOREST)<minForest&&forestAttempts<40){
     floodFill(1+Math.floor(Math.random()*(COLS-2)),1+Math.floor(Math.random()*(ROWS-2)),20+Math.floor(Math.random()*30),T.FOREST,[T.PLAIN]);
     forestAttempts++;
   }
 
-  // 6. Clear target area (9x9)
+  // 5. Clear target area (9x9 around centre)
   const cx=Math.floor(COLS/2),cy=Math.floor(ROWS/2);
   for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++){
     const nx=cx+dx,ny=cy+dy;
     if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&grid[ny][nx]!==T.ROAD&&grid[ny][nx]!==T.BRIDGE) grid[ny][nx]=T.PLAIN;
   }
 
-  // 7. Clear compass corner (bottom-right, 9x9)
-  for(let dy=0;dy<=8;dy++) for(let dx=0;dx<=8;dx++){
-    const nx=COLS-1-dx,ny=ROWS-1-dy;
-    if(nx>=0&&ny>=0&&(grid[ny][nx]===T.RIVER||grid[ny][nx]===T.MOUNTAIN)) grid[ny][nx]=T.PLAIN;
-  }
+  // 6. Clear corners (for cannons and compass)
+  [[0,0],[COLS-1,0],[0,ROWS-1],[COLS-1,ROWS-1]].forEach(([cx,cy])=>{
+    for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++){
+      const nx=Math.max(0,Math.min(COLS-1,cx+dx)),ny=Math.max(0,Math.min(ROWS-1,cy+dy));
+      if(grid[ny][nx]===T.RIVER||grid[ny][nx]===T.MOUNTAIN) grid[ny][nx]=T.PLAIN;
+    }
+  });
 }
 
 function countTerrain(type){let n=0;for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++)if(grid[y][x]===type)n++;return n;}
@@ -626,20 +636,26 @@ function drawMap(ctx){
         ctx.fillStyle='#aa9a60';
         ctx.fillRect(x*CW,y*CH+3,CW,CH-6);
       } else if(t===T.BRIDGE){
-        // bridge: river blue + road stripe on top (clearly crosses the river)
+        // River below
         ctx.fillStyle='#0a2a6a';
         ctx.fillRect(x*CW,y*CH,CW,CH);
         ctx.fillStyle='#2a5aaa';
         ctx.fillRect(x*CW,y*CH+1,CW,CH-2);
-        // road stripe over river
+        // Road surface on bridge
         ctx.fillStyle='#8a7a50';
-        ctx.fillRect(x*CW,y*CH+2,CW,CH-4);
+        ctx.fillRect(x*CW,y*CH+1,CW,CH-2);
         ctx.fillStyle='#aa9a60';
-        ctx.fillRect(x*CW,y*CH+3,CW,CH-6);
-        // bridge rails: small dark dots at edges
-        ctx.fillStyle='rgba(0,0,0,0.4)';
-        ctx.fillRect(x*CW,y*CH+2,CW,1);
-        ctx.fillRect(x*CW,y*CH+CH-3,CW,1);
+        ctx.fillRect(x*CW,y*CH+2,CW,CH-4);
+        // Railings (top and bottom)
+        ctx.fillStyle='#5a4a20';
+        ctx.fillRect(x*CW,y*CH+1,CW,1);
+        ctx.fillRect(x*CW,y*CH+CH-2,CW,1);
+        // Bridge bolts every 3 tiles
+        if(x%3===0){
+          ctx.fillStyle='#3a2a10';
+          ctx.fillRect(x*CW,y*CH+1,2,2);
+          ctx.fillRect(x*CW,y*CH+CH-3,2,2);
+        }
       } else {
         if(x%3===0&&y%3===0){
           ctx.strokeStyle='rgba(0,80,0,0.12)';ctx.lineWidth=0.5;
@@ -1006,7 +1022,11 @@ function showResult(wasFired){
 // ── START ─────────────────────────────────────────────────────────────────
 function startGame(){
   generateMap();initCannons();initTargets();
-  score=500;timeLeft=250;lastTick=0;lastTime=-1;
+  // Time by difficulty: easy=250, mid=260, hard=255
+  const baseTime={1:250,2:260,3:265};
+  timeLeft=baseTime[numCannons]||250;
+  score=timeLeft;
+  lastTick=0;lastTime=-1;
   ufos=[];ufo={active:false};
   ufoWarningShown=false;ufoWarningAlpha=0;ufoWarningTimer=0;
   legendAlpha=1;legendTimer=0;
