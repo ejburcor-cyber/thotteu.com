@@ -43,9 +43,9 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .lang-option:hover{background:rgba(255,160,0,.12);color:#fff}
 .lang-option.active{color:#fca}
 #header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
-#game-wrap{position:relative;width:700px;max-width:100%;min-height:420px}
+#game-wrap{position:relative;width:900px;max-width:100%;min-height:540px}
 #hud{background:#0d1020;border:2px solid #fa0;border-bottom:none;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;width:100%;font-size:.45rem;color:#fa0;letter-spacing:1px}
-#game-canvas-wrap{position:relative;width:700px;height:420px}
+#game-canvas-wrap{position:relative;width:900px;height:540px}
 #canvas-bg{position:absolute;top:0;left:0;display:block;border:2px solid #fa0}
 #canvas-fg{position:absolute;top:0;left:0;display:block;cursor:pointer}
 #overlay{width:700px;max-width:100%;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;z-index:10;padding:12px 20px 20px}
@@ -54,6 +54,7 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .score-final{color:#ff0;font-size:.7rem}
 #lore-box{color:#fca;font-size:.42rem;line-height:1.9;text-align:center;width:100%;max-width:620px;min-height:5rem;letter-spacing:.5px;border:1px solid rgba(255,160,0,.3);padding:10px 16px;background:rgba(20,10,0,.6)}
 #lore-cursor{display:inline-block;width:7px;height:.7em;background:#fca;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
+@font-face{font-family:pressp;src:local("Press Start 2P");}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 #start-btn{background:#fa0;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:4px;letter-spacing:1px}
 #start-btn:hover{background:#ffd050}
@@ -213,8 +214,8 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
     <button id="start-btn" onclick="startGame()" data-i18n="startBtn" style="background:#fa0;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;letter-spacing:1px;margin-top:6px">START MISSION</button>
   </div>
   <div id="game-canvas-wrap" style="display:none">
-    <canvas id="canvas-bg" width="700" height="420"></canvas>
-    <canvas id="canvas-fg" width="700" height="420"></canvas>
+    <canvas id="canvas-bg" width="900" height="540"></canvas>
+    <canvas id="canvas-fg" width="900" height="540"></canvas>
     <div class="tooltip-label" id="tooltip"></div>
     <button id="repeat-btn" data-i18n="repeatBtn">↺ REPEAT (-<span id="repeat-cost">10</span>pts)</button>
     <div id="phase-label"></div>
@@ -512,38 +513,37 @@ document.addEventListener('click',()=>{var dd=document.getElementById('lang-drop
 // x,y: canvas position (700x420); r: click radius; color; note freq (Hz)
 // Scale: logarithmic from Sun(left) to Oort(right)
 const ALL_OBJECTS=[
-  // id, name_en, x, y, r, draw_r, color, freq, level(1=easy+,2=mid+,3=hard), type
-  {id:'sun',        name:'Sun',            x:18,  y:210, r:28, dr:28, col:'#ffaa00', freq:130.8, lv:1, type:'star'},
-  {id:'mercury',    name:'Mercury',        x:72,  y:210, r:9,  dr:5,  col:'#aaaaaa', freq:164.8, lv:1, type:'planet'},
-  {id:'venus',      name:'Venus',          x:112, y:210, r:11, dr:8,  col:'#e8c060', freq:185.0, lv:1, type:'planet'},
-  {id:'earth',      name:'Earth',          x:158, y:210, r:12, dr:9,  col:'#4488ff', freq:196.0, lv:1, type:'planet'},
-  {id:'moon',       name:'Moon',           x:158, y:193, r:7,  dr:4,  col:'#cccccc', freq:207.7, lv:2, type:'moon'},
-  {id:'mars',       name:'Mars',           x:210, y:210, r:10, dr:7,  col:'#cc4422', freq:220.0, lv:1, type:'planet'},
-  {id:'phobos',     name:'Phobos',         x:203, y:197, r:6,  dr:3,  col:'#aa8866', freq:233.1, lv:2, type:'moon'},
-  {id:'deimos',     name:'Deimos',         x:218, y:198, r:6,  dr:3,  col:'#998877', freq:246.9, lv:2, type:'moon'},
-  {id:'asteroidbelt',name:'Asteroid Belt', x:258, y:210, r:16, dr:16, col:'#888888', freq:261.6, lv:1, type:'belt'},
-  {id:'ceres',      name:'Ceres',          x:258, y:225, r:7,  dr:4,  col:'#bbaa99', freq:277.2, lv:2, type:'dwarf'},
-  {id:'jupiter',    name:'Jupiter',        x:330, y:210, r:22, dr:22, col:'#c8a878', freq:293.7, lv:1, type:'planet'},
-  {id:'io',         name:'Io',             x:313, y:192, r:7,  dr:4,  col:'#ddcc44', freq:311.1, lv:2, type:'moon'},
-  {id:'europa',     name:'Europa',         x:325, y:188, r:7,  dr:4,  col:'#ddbb99', freq:329.6, lv:2, type:'moon'},
-  {id:'ganymede',   name:'Ganymede',       x:340, y:187, r:8,  dr:5,  col:'#aaaaaa', freq:349.2, lv:2, type:'moon'},
-  {id:'callisto',   name:'Callisto',       x:353, y:190, r:7,  dr:4,  col:'#887766', freq:370.0, lv:2, type:'moon'},
-  {id:'saturn',     name:'Saturn',         x:430, y:210, r:18, dr:18, col:'#dfc080', freq:392.0, lv:1, type:'planet'},
-  {id:'titan',      name:'Titan',          x:416, y:192, r:7,  dr:5,  col:'#cc9944', freq:415.3, lv:2, type:'moon'},
-  {id:'enceladus',  name:'Enceladus',      x:427, y:190, r:6,  dr:3,  col:'#eeeeff', freq:440.0, lv:2, type:'moon'},
-  {id:'rhea',       name:'Rhea',           x:437, y:190, r:6,  dr:3,  col:'#ccccbb', freq:466.2, lv:2, type:'moon'},
-  {id:'dione',      name:'Dione',          x:447, y:192, r:6,  dr:3,  col:'#bbbbcc', freq:493.9, lv:2, type:'moon'},
-  {id:'iapetus',    name:'Iapetus',        x:415, y:225, r:6,  dr:3,  col:'#886644', freq:523.3, lv:2, type:'moon'},
-  {id:'uranus',     name:'Uranus',         x:520, y:210, r:14, dr:14, col:'#7ad4e8', freq:554.4, lv:1, type:'planet'},
-  {id:'titania',    name:'Titania',        x:510, y:196, r:6,  dr:3,  col:'#aaccdd', freq:587.3, lv:2, type:'moon'},
-  {id:'oberon',     name:'Oberon',         x:522, y:195, r:6,  dr:3,  col:'#9988aa', freq:622.3, lv:2, type:'moon'},
-  {id:'miranda',    name:'Miranda',        x:533, y:197, r:6,  dr:3,  col:'#ccbbaa', freq:659.3, lv:2, type:'moon'},
-  {id:'neptune',    name:'Neptune',        x:594, y:210, r:13, dr:13, col:'#3355cc', freq:698.5, lv:1, type:'planet'},
-  {id:'triton',     name:'Triton',         x:585, y:196, r:7,  dr:4,  col:'#66aacc', freq:740.0, lv:2, type:'moon'},
-  {id:'kuiperbelt', name:'Kuiper Belt',    x:635, y:210, r:15, dr:15, col:'#6688aa', freq:784.0, lv:1, type:'belt'},
-  {id:'pluto',      name:'Pluto',          x:640, y:224, r:7,  dr:4,  col:'#ddbb99', freq:830.6, lv:2, type:'dwarf'},
-  {id:'eris',       name:'Eris',           x:650, y:196, r:7,  dr:4,  col:'#bbccdd', freq:880.0, lv:2, type:'dwarf'},
-  {id:'oortscloud', name:'Oort Cloud',     x:685, y:210, r:14, dr:14, col:'#aabbcc', freq:1046.5,lv:1, type:'belt'},
+  {id:'sun',         name:'Sun',          x:28,  y:270, r:40, dr:38, col:'#ffaa00', freq:130.8,  lv:1, type:'star'},
+  {id:'mercury',     name:'Mercury',      x:105, y:155, r:14, dr:7,  col:'#aaaaaa', freq:164.8,  lv:1, type:'planet'},
+  {id:'venus',       name:'Venus',        x:162, y:390, r:16, dr:11, col:'#e8c060', freq:185.0,  lv:1, type:'planet'},
+  {id:'earth',       name:'Earth',        x:225, y:125, r:17, dr:13, col:'#4488ff', freq:196.0,  lv:1, type:'planet'},
+  {id:'moon',        name:'Moon',         x:254, y:104, r:14, dr:7,  col:'#cccccc', freq:207.7,  lv:2, type:'moon'},
+  {id:'mars',        name:'Mars',         x:302, y:408, r:16, dr:11, col:'#cc4422', freq:220.0,  lv:1, type:'planet'},
+  {id:'phobos',      name:'Phobos',       x:280, y:386, r:14, dr:5,  col:'#aa8866', freq:233.1,  lv:2, type:'moon'},
+  {id:'deimos',      name:'Deimos',       x:325, y:385, r:14, dr:5,  col:'#998877', freq:246.9,  lv:2, type:'moon'},
+  {id:'asteroidbelt',name:'Asteroid Belt',x:372, y:270, r:26, dr:26, col:'#888888', freq:261.6,  lv:1, type:'belt'},
+  {id:'ceres',       name:'Ceres',        x:372, y:322, r:14, dr:7,  col:'#bbaa99', freq:277.2,  lv:2, type:'dwarf'},
+  {id:'jupiter',     name:'Jupiter',      x:470, y:145, r:30, dr:30, col:'#c8a878', freq:293.7,  lv:1, type:'planet'},
+  {id:'io',          name:'Io',           x:430, y:112, r:14, dr:7,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
+  {id:'europa',      name:'Europa',       x:450, y:99,  r:14, dr:7,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
+  {id:'ganymede',    name:'Ganymede',     x:492, y:99,  r:15, dr:9,  col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
+  {id:'callisto',    name:'Callisto',     x:514, y:114, r:14, dr:7,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
+  {id:'saturn',      name:'Saturn',       x:578, y:402, r:28, dr:24, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
+  {id:'titan',       name:'Titan',        x:538, y:368, r:15, dr:9,  col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
+  {id:'enceladus',   name:'Enceladus',    x:554, y:352, r:14, dr:6,  col:'#eeeeff', freq:440.0,  lv:2, type:'moon'},
+  {id:'rhea',        name:'Rhea',         x:574, y:346, r:14, dr:6,  col:'#ccccbb', freq:466.2,  lv:2, type:'moon'},
+  {id:'dione',       name:'Dione',        x:596, y:350, r:14, dr:6,  col:'#bbbbcc', freq:493.9,  lv:2, type:'moon'},
+  {id:'iapetus',     name:'Iapetus',      x:618, y:366, r:14, dr:6,  col:'#886644', freq:523.3,  lv:2, type:'moon'},
+  {id:'uranus',      name:'Uranus',       x:692, y:142, r:22, dr:18, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
+  {id:'titania',     name:'Titania',      x:656, y:112, r:14, dr:6,  col:'#aaccdd', freq:587.3,  lv:2, type:'moon'},
+  {id:'oberon',      name:'Oberon',       x:674, y:102, r:14, dr:6,  col:'#9988aa', freq:622.3,  lv:2, type:'moon'},
+  {id:'miranda',     name:'Miranda',      x:716, y:106, r:14, dr:6,  col:'#ccbbaa', freq:659.3,  lv:2, type:'moon'},
+  {id:'neptune',     name:'Neptune',      x:780, y:402, r:21, dr:17, col:'#3355cc', freq:698.5,  lv:1, type:'planet'},
+  {id:'triton',      name:'Triton',       x:752, y:372, r:14, dr:7,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
+  {id:'kuiperbelt',  name:'Kuiper Belt',  x:840, y:270, r:26, dr:26, col:'#6688aa', freq:784.0,  lv:1, type:'belt'},
+  {id:'pluto',       name:'Pluto',        x:855, y:440, r:14, dr:7,  col:'#ddbb99', freq:830.6,  lv:2, type:'dwarf'},
+  {id:'eris',        name:'Eris',         x:862, y:100, r:14, dr:7,  col:'#bbccdd', freq:880.0,  lv:2, type:'dwarf'},
+  {id:'oortscloud',  name:'Oort Cloud',   x:882, y:270, r:20, dr:20, col:'#aabbcc', freq:1046.5, lv:1, type:'belt'},
 ];
 
 // ── AUDIO ─────────────────────────────────────────────────────────────────
@@ -566,7 +566,7 @@ function playNote(freq,duration=0.6,vol=0.3){
 
 // ── CANVAS SETUP ──────────────────────────────────────────────────────────
 let bgCanvas,fgCanvas,bgCtx,fgCtx;
-const W=700,H=420;
+const W=900,H=540;
 
 // ── STARS ─────────────────────────────────────────────────────────────────
 let STARS=[];
@@ -589,86 +589,71 @@ function drawBackground(){
     bgCtx.beginPath();bgCtx.arc(s.x,s.y,s.r,0,Math.PI*2);bgCtx.fill();
   });
   bgCtx.globalAlpha=1;
-  // Orbit arcs (ellipses centered off-canvas to the left)
   const OX=-80, OY=H/2;
   const orbits=[
-    {rx:160,ry:30,col:'rgba(255,255,255,.12)'},
-    {rx:210,ry:45,col:'rgba(255,255,255,.1)'},
-    {rx:260,ry:60,col:'rgba(255,255,255,.1)'},
-    {rx:320,ry:78,col:'rgba(255,255,255,.09)'},
-    {rx:430,ry:105,col:'rgba(255,255,255,.08)'},
-    {rx:530,ry:130,col:'rgba(255,255,255,.07)'},
-    {rx:615,ry:150,col:'rgba(255,255,255,.06)'},
-    {rx:700,ry:170,col:'rgba(255,255,255,.05)'},
-    {rx:790,ry:190,col:'rgba(255,255,255,.04)'},
+    {rx:198, ry:40,  a:.12, dash:false},
+    {rx:268, ry:58,  a:.10, dash:false},
+    {rx:342, ry:78,  a:.10, dash:false},
+    {rx:426, ry:100, a:.09, dash:false},
+    {rx:522, ry:130, a:.08, dash:false},
+    {rx:630, ry:162, a:.07, dash:false},
+    {rx:740, ry:194, a:.06, dash:false},
+    {rx:848, ry:220, a:.05, dash:false},
+    {rx:958, ry:248, a:.04, dash:true},
   ];
   orbits.forEach(o=>{
-    bgCtx.strokeStyle=o.col; bgCtx.lineWidth=0.8;
-    bgCtx.beginPath();
-    bgCtx.ellipse(OX,OY,o.rx,o.ry,0,0,Math.PI*2);
-    bgCtx.stroke();
+    bgCtx.strokeStyle='rgba(255,255,255,'+o.a+')';
+    bgCtx.lineWidth=o.dash?1.2:0.8;
+    bgCtx.setLineDash(o.dash?[5,7]:[]);
+    bgCtx.beginPath(); bgCtx.ellipse(OX,OY,o.rx,o.ry,0,0,Math.PI*2); bgCtx.stroke();
   });
+  bgCtx.setLineDash([]);
 }
 
 // ── DRAW OBJECTS (on bg) ──────────────────────────────────────────────────
-function drawObjects(activeObjects){
-  activeObjects.forEach(obj=>{
+function lightenColor(hex){
+  var r=Math.min(255,parseInt(hex.slice(1,3),16)+65);
+  var g=Math.min(255,parseInt(hex.slice(3,5),16)+65);
+  var b=Math.min(255,parseInt(hex.slice(5,7),16)+65);
+  return 'rgb('+r+','+g+','+b+')';
+}
+function drawLabel(obj,isHL){
+  var fs=isHL?9:obj.type==='planet'||obj.type==='star'||obj.type==='belt'?7:6;
+  bgCtx.font=fs+'px "Press Start 2P"'; bgCtx.textAlign='center';
+  var tw=bgCtx.measureText(obj.name).width;
+  var lx=Math.max(tw/2+4,Math.min(W-tw/2-4,obj.x));
+  var ly=obj.y>H/2?obj.y-obj.dr-9:obj.y+obj.dr+fs+5;
+  ly=Math.max(fs+4,Math.min(H-4,ly));
+  bgCtx.fillStyle='rgba(0,0,15,0.78)'; bgCtx.fillRect(lx-tw/2-3,ly-fs-1,tw+6,fs+4);
+  bgCtx.fillStyle=isHL?'#ffe080':obj.type==='moon'?'rgba(200,210,255,.82)':'rgba(255,200,100,.92)';
+  bgCtx.fillText(obj.name,lx,ly);
+}
+function drawObjects(activeObjects,hlId){
+  activeObjects.forEach(function(obj){
     bgCtx.save();
+    var isHL=obj.id===hlId, dr=obj.dr*(isHL?1.5:1);
     if(obj.type==='star'){
-      // Sun glow
-      var grad=bgCtx.createRadialGradient(obj.x,obj.y,2,obj.x,obj.y,obj.dr*1.5);
-      grad.addColorStop(0,'#fff7aa');
-      grad.addColorStop(0.3,'#ffaa00');
-      grad.addColorStop(1,'rgba(200,60,0,0)');
-      bgCtx.fillStyle=grad;
-      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr*1.5,0,Math.PI*2);bgCtx.fill();
-      bgCtx.fillStyle='#ffdd44';
-      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr,0,Math.PI*2);bgCtx.fill();
+      var rad=obj.dr*(isHL?2.2:1.6);
+      var grad=bgCtx.createRadialGradient(obj.x,obj.y,2,obj.x,obj.y,rad);
+      grad.addColorStop(0,'#fff7aa');grad.addColorStop(0.3,'#ffaa00');grad.addColorStop(1,'rgba(200,60,0,0)');
+      bgCtx.fillStyle=grad;bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,rad,0,Math.PI*2);bgCtx.fill();
+      bgCtx.fillStyle=isHL?'#ffffff':'#ffdd44';bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr*(isHL?1.5:1),0,Math.PI*2);bgCtx.fill();
     } else if(obj.type==='belt'){
-      var dots=obj._dots||[];
-      dots.forEach(function(d){
-        bgCtx.globalAlpha=d.a;
-        bgCtx.fillStyle=obj.col;
-        bgCtx.beginPath();bgCtx.arc(d.x,d.y,d.r,0,Math.PI*2);bgCtx.fill();
+      (obj._dots||[]).forEach(function(d){
+        bgCtx.globalAlpha=isHL?Math.min(1,d.a*2):d.a;
+        bgCtx.fillStyle=isHL?'#ffe080':obj.col;
+        bgCtx.beginPath();bgCtx.arc(d.x,d.y,d.r*(isHL?2:1),0,Math.PI*2);bgCtx.fill();
       });
       bgCtx.globalAlpha=1;
-    } else if(obj.type==='planet'){
-      // Planet body
-      bgCtx.fillStyle=obj.col;
-      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr,0,Math.PI*2);bgCtx.fill();
-      // Saturn rings
-      if(obj.id==='saturn'){
-        bgCtx.strokeStyle='rgba(220,180,100,.7)';bgCtx.lineWidth=3;
-        bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y,obj.dr*1.8,obj.dr*0.45,0,0,Math.PI*2);bgCtx.stroke();
-      }
-      // Earth continents hint
-      if(obj.id==='earth'){
-        bgCtx.fillStyle='#2a6a2a';bgCtx.globalAlpha=0.6;
-        bgCtx.beginPath();bgCtx.arc(obj.x-2,obj.y-2,4,0,Math.PI*2);bgCtx.fill();
-        bgCtx.globalAlpha=1;
-      }
-      // Jupiter bands
-      if(obj.id==='jupiter'){
-        bgCtx.strokeStyle='rgba(160,110,60,.5)';bgCtx.lineWidth=2;
-        [-5,-1,3,7].forEach(dy=>{
-          bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,obj.dr,obj.dr*0.2,0,0,Math.PI*2);bgCtx.stroke();
-        });
-      }
     } else {
-      // Moon / dwarf planet: small circle
-      bgCtx.fillStyle=obj.col;
-      bgCtx.globalAlpha=0.85;
-      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr,0,Math.PI*2);bgCtx.fill();
-      bgCtx.globalAlpha=1;
+      bgCtx.globalAlpha=obj.type==='moon'||obj.type==='dwarf'?0.9:1;
+      bgCtx.fillStyle=isHL?lightenColor(obj.col):obj.col;
+      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,dr,0,Math.PI*2);bgCtx.fill();bgCtx.globalAlpha=1;
+      if(obj.id==='saturn'){bgCtx.strokeStyle=isHL?'rgba(255,230,130,.9)':'rgba(220,180,100,.7)';bgCtx.lineWidth=isHL?5:3;bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y,dr*1.85,dr*0.42,0,0,Math.PI*2);bgCtx.stroke();}
+      if(obj.id==='earth'){bgCtx.fillStyle='#2a6a2a';bgCtx.globalAlpha=0.6;bgCtx.beginPath();bgCtx.arc(obj.x-dr*0.2,obj.y-dr*0.2,dr*0.45,0,Math.PI*2);bgCtx.fill();bgCtx.globalAlpha=1;}
+      if(obj.id==='jupiter'){bgCtx.strokeStyle='rgba(160,110,60,.4)';bgCtx.lineWidth=2;[-dr*0.36,-dr*0.1,dr*0.15,dr*0.38].forEach(function(dy){bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,dr,dr*0.18,0,0,Math.PI*2);bgCtx.stroke();});}
     }
-    // Label for non-moon objects
-    if(obj.type!=='moon'&&obj.type!=='dwarf'){
-      bgCtx.fillStyle='rgba(255,200,100,.55)';
-      bgCtx.font='4px "Press Start 2P"';
-      bgCtx.textAlign='center';
-      bgCtx.fillText(obj.name,obj.x,obj.y+obj.dr+7);
-    }
-    bgCtx.restore();
+    drawLabel(obj,isHL);bgCtx.restore();
   });
 }
 
@@ -700,27 +685,27 @@ function getActiveObjects(){
   return ALL_OBJECTS.filter(o=>o.lv<=diffLevel||(diffLevel===1&&o.lv===1));
 }
 
-function buildBackground(){
+var _hlId=null;
+function buildBackground(hlId){
+  if(hlId!==undefined)_hlId=hlId;
   activeObjects=getActiveObjects();
   // Pre-calculate belt dots so they don't flicker
+  var beltOrbitMap={'asteroidbelt':{rx:522,ry:130},'kuiperbelt':{rx:958,ry:248},'oortscloud':{rx:958,ry:248}};
   activeObjects.forEach(function(obj){
     if(obj.type==='belt'&&!obj._dots){
-      var n=obj.id==='oortscloud'?80:obj.id==='kuiperbelt'?50:35;
-      obj._dots=[];
+      var orb=beltOrbitMap[obj.id]||{rx:obj.dr*3,ry:obj.dr};
+      var n=obj.id==='oortscloud'?100:obj.id==='kuiperbelt'?80:55;
+      obj._dots=[]; var OX2=-80,OY2=H/2;
       for(var i=0;i<n;i++){
-        var a=Math.random()*Math.PI*2;
-        var sp=obj.dr*0.9;
-        obj._dots.push({
-          x:obj.x+Math.cos(a)*sp*(0.4+Math.random()*0.6),
-          y:obj.y+Math.sin(a)*sp*(0.2+Math.random()*0.4),
-          r:Math.random()*1.5+0.5,
-          a:0.4+Math.random()*0.4
-        });
+        var a=Math.random()*Math.PI*2, jitter=0.90+Math.random()*0.20;
+        var bx=OX2+Math.cos(a)*orb.rx*jitter, by=OY2+Math.sin(a)*orb.ry*jitter;
+        if(bx<4||bx>W-4||by<4||by>H-4) continue;
+        obj._dots.push({x:bx,y:by,r:Math.random()*2+0.7,a:0.3+Math.random()*0.55});
       }
     }
   });
   drawBackground();
-  drawObjects(activeObjects);
+  drawObjects(activeObjects,_hlId);
 }
 
 // ── SEQUENCE PLAYBACK ─────────────────────────────────────────────────────
@@ -776,8 +761,7 @@ async function playSequence(){
 }
 
 function highlightObject(obj,on){
-  // Redraw bg then overlay highlight
-  buildBackground();
+  buildBackground(on?obj.id:null);
   if(on){
     bgCtx.save();
     bgCtx.shadowColor=obj.col;bgCtx.shadowBlur=20;
@@ -954,66 +938,95 @@ function showResult(isWin){
 
 // ── START GAME ────────────────────────────────────────────────────────────
 // ── SYMPHONY MODE ────────────────────────────────────────────────────────
+// ── SYMPHONY MODE ─────────────────────────────────────────────────────────
+var _symDisc=new Set(), _symTime=270, _symInt=null;
+
+function _symHOF(){try{return JSON.parse(localStorage.getItem('ss_sym_hof')||'[]');}catch(e){return[];}}
+function _symHOFsave(h){localStorage.setItem('ss_sym_hof',JSON.stringify(h));}
+function _symHOFrec(pts){var h=_symHOF();h.push({score:pts,date:new Date().toLocaleDateString()});h.sort(function(a,b){return b.score-a.score;});h.splice(5);_symHOFsave(h);}
+
+function drawSymphonyHUD(){
+  if(!fgCtx)return;
+  var total=ALL_OBJECTS.length, found=_symDisc.size, pct=total>0?found/total:0;
+  var cx=W-42, cy=42, r=30;
+  fgCtx.save();
+  fgCtx.fillStyle='rgba(0,5,20,.65)';fgCtx.beginPath();fgCtx.arc(cx,cy,r+6,0,Math.PI*2);fgCtx.fill();
+  fgCtx.strokeStyle='rgba(255,160,0,.2)';fgCtx.lineWidth=5;fgCtx.beginPath();fgCtx.arc(cx,cy,r,-Math.PI/2,Math.PI*2-Math.PI/2);fgCtx.stroke();
+  if(pct>0){fgCtx.strokeStyle='#fa0';fgCtx.lineWidth=5;fgCtx.beginPath();fgCtx.arc(cx,cy,r,-Math.PI/2,Math.PI*2*pct-Math.PI/2);fgCtx.stroke();}
+  fgCtx.fillStyle='#fa0';fgCtx.font='6px "Press Start 2P"';fgCtx.textAlign='center';fgCtx.fillText(found+'/'+total,cx,cy+3);
+  fgCtx.fillStyle='rgba(0,5,20,.65)';fgCtx.fillRect(4,H-24,76,20);
+  fgCtx.fillStyle=_symTime<=30?'#f44':'rgba(255,160,0,.9)';fgCtx.font='6px "Press Start 2P"';fgCtx.textAlign='left';
+  fgCtx.fillText('⏱ '+_symTime+'s',8,H-8);
+  fgCtx.restore();
+}
+
 function startSymphony(){
-  getAudio();
-  state='symphony';
-  activeObjects=ALL_OBJECTS; // all objects visible
+  getAudio(); state='symphony'; _symDisc=new Set(); _symTime=270;
+  activeObjects=ALL_OBJECTS.slice();
+  if(_symInt)clearInterval(_symInt);
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
-  // Re-init canvas
-  bgCanvas=document.getElementById('canvas-bg');
-  fgCanvas=document.getElementById('canvas-fg');
-  bgCtx=bgCanvas.getContext('2d');
-  fgCtx=fgCanvas.getContext('2d');
-  ALL_OBJECTS.forEach(o=>delete o._dots);
-  buildBackground();
-  // Show symphony UI
-  const t=i18n[currentLang]||i18n.en;
-  const back=document.getElementById('symphony-back');
-  if(back){ back.style.display='block'; back.textContent=t.symphonyBack||'← BACK'; back.onclick=exitSymphony; }
-  const hl=document.getElementById('symphony-hud-label');
-  if(hl){ hl.style.display='block'; hl.textContent=t.symphonyHud||'SYMPHONY'; }
+  bgCanvas=document.getElementById('canvas-bg');fgCanvas=document.getElementById('canvas-fg');
+  bgCtx=bgCanvas.getContext('2d');fgCtx=fgCanvas.getContext('2d');
+  ALL_OBJECTS.forEach(function(o){delete o._dots;});
+  buildBackground(null);
+  var t=i18n[currentLang]||i18n.en;
+  var back=document.getElementById('symphony-back');
+  if(back){back.style.display='block';back.textContent=t.symphonyBack||'← BACK';back.onclick=exitSymphony;}
+  var hl=document.getElementById('symphony-hud-label');if(hl){hl.style.display='block';hl.textContent=t.symphonyHud||'SYMPHONY';}
   document.getElementById('lives-display').textContent='';
-  document.getElementById('round-display').textContent='🎹';
+  document.getElementById('round-display').textContent='&#9834;';
   document.getElementById('score-display').textContent='';
-  // Show hint
-  const info=document.getElementById('symphony-info');
-  const infoName=document.getElementById('symphony-info-name');
-  const infoDesc=document.getElementById('symphony-info-desc');
-  if(info){ info.style.display='block'; }
-  if(infoName) infoName.textContent='';
-  if(infoDesc) infoDesc.textContent=t.symphonyHint||'Click any object to play its note';
+  var info=document.getElementById('symphony-info');if(info)info.style.display='block';
+  var infoDesc=document.getElementById('symphony-info-desc');if(infoDesc)infoDesc.textContent=t.symphonyHint||'Click any object to play its note';
+  var infoName=document.getElementById('symphony-info-name');if(infoName)infoName.textContent='';
+  var tick=0;
+  _symInt=setInterval(function(){
+    if(state!=='symphony'){clearInterval(_symInt);return;}
+    if(++tick%10===0){_symTime=Math.max(0,_symTime-1);if(_symTime===0){clearInterval(_symInt);endSymphony();return;}}
+    fgCtx.clearRect(0,0,W,H); drawSymphonyHUD();
+  },100);
 }
 
 function playSymphonyNote(obj){
+  _symDisc.add(obj.id); buildBackground(obj.id);
   playNote(obj.freq,0.8,0.35);
-  addWave(obj); startAnim();
-  setTimeout(stopAnim,1200);
-  // Highlight briefly
-  highlight(obj,true);
-  setTimeout(()=>highlight(obj,false),700);
-  // Show info panel
-  const t=i18n[currentLang]||i18n.en;
-  const info=t.objInfo||i18n.en.objInfo;
-  const infoName=document.getElementById('symphony-info-name');
-  const infoDesc=document.getElementById('symphony-info-desc');
-  if(infoName) infoName.textContent=obj.name;
-  if(infoDesc) infoDesc.textContent=(info&&info[obj.id])||obj.name;
+  addWave(obj); if(!_af)startAnim(); setTimeout(stopAnim,1200);
+  var t=i18n[currentLang]||i18n.en, info=t.objInfo||i18n.en.objInfo;
+  var nameEl=document.getElementById('symphony-info-name');
+  var descEl=document.getElementById('symphony-info-desc');
+  if(nameEl)nameEl.textContent=obj.name;
+  if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
+}
+
+function endSymphony(){
+  state='idle'; if(_symInt){clearInterval(_symInt);_symInt=null;} stopAnim();
+  var pts=_symDisc.size*10; _symHOFrec(pts);
+  var t=i18n[currentLang]||i18n.en;
+  document.getElementById('game-canvas-wrap').style.display='none';
+  var back=document.getElementById('symphony-back');if(back)back.style.display='none';
+  var hl=document.getElementById('symphony-hud-label');if(hl)hl.style.display='none';
+  var info=document.getElementById('symphony-info');if(info)info.style.display='none';
+  document.getElementById('round-display').textContent='-';document.getElementById('score-display').textContent='0';
+  var ov=document.getElementById('overlay'); ov.style.display='flex';
+  ov.innerHTML='<h2 style="color:#fa0">&#9834; '+(t.symphonyHud||'SYMPHONY')+'</h2>'+
+    '<p class="score-final">'+_symDisc.size+' / '+ALL_OBJECTS.length+' objects</p>'+
+    '<p style="color:#f84;font-size:.45rem">Score: '+pts+'</p>'+
+    '<div style="display:flex;gap:10px;margin-top:10px">'+
+    '<button onclick="startSymphony()" style="background:#fa0;color:#000;border:none;font-family:pressp,monospace;font-size:.42rem;padding:10px 16px;cursor:pointer">&#9834; AGAIN</button>'+
+    '<button onclick="exitSymphony()" style="background:transparent;color:#fa0;border:2px solid #fa0;font-family:pressp,monospace;font-size:.42rem;padding:10px 16px;cursor:pointer">&#8592; MENU</button>'+
+    '</div>';
+  renderHOF();
 }
 
 function exitSymphony(){
-  state='idle';
-  stopAnim();
+  state='idle'; if(_symInt){clearInterval(_symInt);_symInt=null;} stopAnim();
   document.getElementById('game-canvas-wrap').style.display='none';
-  document.getElementById('overlay').style.display='flex';
-  const back=document.getElementById('symphony-back');
-  if(back) back.style.display='none';
-  const hl=document.getElementById('symphony-hud-label');
-  if(hl) hl.style.display='none';
-  const info=document.getElementById('symphony-info');
-  if(info) info.style.display='none';
-  document.getElementById('round-display').textContent='-';
-  document.getElementById('score-display').textContent='0';
+  var back=document.getElementById('symphony-back');if(back)back.style.display='none';
+  var hl=document.getElementById('symphony-hud-label');if(hl)hl.style.display='none';
+  var info=document.getElementById('symphony-info');if(info)info.style.display='none';
+  document.getElementById('round-display').textContent='-';document.getElementById('score-display').textContent='0';
+  document.getElementById('overlay').style.display='flex'; renderHOF();
 }
 
 function startGame(){
