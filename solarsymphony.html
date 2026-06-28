@@ -88,6 +88,12 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .cookie-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;padding:9px 16px;cursor:pointer;border:1.5px solid #fa0;background:transparent;color:#fff;transition:all .2s}
 .cookie-btn.accept{background:#fa0;color:#000}
 .cookie-btn.accept:hover{background:#ffd050}
+.symphony-info{position:absolute;bottom:0;left:0;right:0;background:rgba(0,5,20,.88);border-top:1px solid rgba(255,160,0,.3);padding:8px 14px;display:none;z-index:12}
+.symphony-info-name{color:#fa0;font-size:.45rem;font-family:'Press Start 2P',monospace;margin-bottom:4px}
+.symphony-info-desc{color:#cde;font-size:.32rem;font-family:'Press Start 2P',monospace;line-height:1.8}
+#symphony-back{position:absolute;top:6px;left:8px;z-index:15;background:rgba(0,5,20,.85);border:1.5px solid #fa0;color:#fa0;font-family:'Press Start 2P',monospace;font-size:.35rem;padding:5px 10px;cursor:pointer;display:none}
+#symphony-back:hover{background:#fa0;color:#000}
+#symphony-hud-label{font-size:.38rem;color:#fa8;letter-spacing:1px}
 .tooltip-label{position:absolute;background:rgba(0,0,0,.85);border:1px solid #fa0;color:#fa0;font-family:'Press Start 2P',monospace;font-size:.32rem;padding:3px 7px;border-radius:3px;pointer-events:none;display:none;z-index:20;white-space:nowrap}
 #repeat-btn{position:absolute;bottom:8px;right:8px;z-index:15;background:rgba(0,5,20,.8);border:1.5px solid #fa0;color:#fa0;font-family:'Press Start 2P',monospace;font-size:.35rem;padding:5px 10px;cursor:pointer;display:none}
 #repeat-btn:hover{background:#fa0;color:#000}
@@ -177,6 +183,7 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
     <div>♪ <span data-i18n="score">SCORE</span>: <span id="score-display">0</span> &nbsp;<span style="color:#f84;font-size:.38rem"><span data-i18n="best">BEST</span>: <span id="highscore-display">0</span></span></div>
     <div>🔁 <span data-i18n="round">ROUND</span>: <span id="round-display">-</span></div>
     <div id="lives-display" style="color:#f44;font-size:.4rem"></div>
+    <div id="symphony-hud-label" style="display:none"></div>
   </div>
   <div id="overlay">
     <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
@@ -185,21 +192,25 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
       <p data-i18n="controls">👁 WATCH the signal sequence<br>🖱 CLICK the objects in order<br>🔁 REPEAT costs points<br>❌ TWO mistakes = mission over</p>
     </div>
     <p style="color:#fa0;font-size:.42rem;letter-spacing:1px;margin-top:6px" data-i18n="diffLabel">SELECT DIFFICULTY</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:4px">
       <div style="text-align:center">
-        <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)"><span data-i18n="diffEasy">⭐ EASY</span></button>
-        <div class="level-desc" data-i18n="diffEasyDesc">Planets only · 4 rounds</div>
+        <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffEasy">EASY</span></button>
+        <div class="level-desc" data-i18n="diffEasyDesc">4 rounds</div>
       </div>
       <div style="text-align:center">
-        <button class="level-btn" id="btn-mid" onclick="selectLevel(2)"><span data-i18n="diffMid">⭐⭐ MEDIUM</span></button>
-        <div class="level-desc" data-i18n="diffMidDesc">+Moons · 6 rounds</div>
+        <button class="level-btn" id="btn-mid" onclick="selectLevel(2)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffMid">MEDIUM</span></button>
+        <div class="level-desc" data-i18n="diffMidDesc">6 rounds</div>
       </div>
       <div style="text-align:center">
-        <button class="level-btn" id="btn-hard" onclick="selectLevel(3)"><span data-i18n="diffHard">⭐⭐⭐ HARD</span></button>
-        <div class="level-desc" data-i18n="diffHardDesc">All objects · 7 rounds</div>
+        <button class="level-btn" id="btn-hard" onclick="selectLevel(3)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffHard">HARD</span></button>
+        <div class="level-desc" data-i18n="diffHardDesc">7 rounds</div>
+      </div>
+      <div style="text-align:center">
+        <button class="level-btn" id="symphony-btn" onclick="startSymphony()" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="symphonyMode">SYMPHONY</span></button>
+        <div class="level-desc" data-i18n="symphonyDesc">Objects &amp; Sounds</div>
       </div>
     </div>
-    <button id="start-btn" onclick="startGame()" data-i18n="startBtn">START MISSION</button>
+    <button id="start-btn" onclick="startGame()" data-i18n="startBtn" style="background:#fa0;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;letter-spacing:1px;margin-top:6px">START MISSION</button>
   </div>
   <div id="game-canvas-wrap" style="display:none">
     <canvas id="canvas-bg" width="700" height="420"></canvas>
@@ -207,6 +218,11 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
     <div class="tooltip-label" id="tooltip"></div>
     <button id="repeat-btn" data-i18n="repeatBtn">↺ REPEAT (-<span id="repeat-cost">10</span>pts)</button>
     <div id="phase-label"></div>
+    <button id="symphony-back"></button>
+    <div class="symphony-info" id="symphony-info">
+      <div class="symphony-info-name" id="symphony-info-name"></div>
+      <div class="symphony-info-desc" id="symphony-info-desc"></div>
+    </div>
   </div>
 </div>
 
@@ -284,7 +300,9 @@ const i18n={
     controls:'👁 WATCH the signal sequence\n🖱 CLICK the objects in order\n🔁 REPEAT costs points\n❌ TWO mistakes = mission over',
     diffLabel:'SELECT DIFFICULTY',
     diffEasy:'⭐ EASY',diffMid:'⭐⭐ MEDIUM',diffHard:'⭐⭐⭐ HARD',
-    diffEasyDesc:'Planets only · 4 rounds',diffMidDesc:'+Moons · 6 rounds',diffHardDesc:'All objects · 7 rounds',
+    diffEasyDesc:'4 rounds',diffMidDesc:'6 rounds',diffHardDesc:'7 rounds',
+    symphonyMode:'SYMPHONY',symphonyDesc:'Objects &amp; Sounds',
+    symphonyHud:'SYMPHONY MODE',symphonyBack:'← BACK',symphonyHint:'Click any object to play its note',
     repeatBtn:'↺ REPEAT',lives:'LIVES',
     phaseWatch:'WATCH THE SEQUENCE',phaseRepeat:'REPEAT THE SEQUENCE',
     win:'MISSION COMPLETE!',lose:'MISSION FAILED',scoreLabel:'SCORE',tryAgain:'TRY AGAIN',
@@ -339,7 +357,9 @@ const i18n={
     controls:'👁 OBSERVA la secuencia de señales\n🖱 HAZ CLIC en los objetos en orden\n🔁 REPETIR cuesta puntos\n❌ DOS errores = misión fallida',
     diffLabel:'SELECCIONA DIFICULTAD',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MEDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'Solo planetas · 4 rondas',diffMidDesc:'+Lunas · 6 rondas',diffHardDesc:'Todos los objetos · 7 rondas',
+    diffEasyDesc:'4 rondas',diffMidDesc:'6 rondas',diffHardDesc:'7 rondas',
+    symphonyMode:'SINFONÍA',symphonyDesc:'Objetos y Sonidos',
+    symphonyHud:'MODO SINFONÍA',symphonyBack:'← VOLVER',symphonyHint:'Pulsa cualquier objeto para escuchar su nota',
     repeatBtn:'↺ REPETIR',lives:'VIDAS',
     phaseWatch:'OBSERVA LA SECUENCIA',phaseRepeat:'REPITE LA SECUENCIA',
     win:'¡MISIÓN COMPLETADA!',lose:'MISIÓN FALLIDA',scoreLabel:'PUNTOS',tryAgain:'REINTENTAR',
@@ -394,7 +414,9 @@ const i18n={
     controls:'👁 OBSERVE la séquence de signaux\n🖱 CLIQUEZ les objets dans l\'ordre\n🔁 RÉPÉTER coûte des points\n❌ DEUX erreurs = mission échouée',
     diffLabel:'CHOISIR DIFFICULTÉ',
     diffEasy:'⭐ FACILE',diffMid:'⭐⭐ MOYEN',diffHard:'⭐⭐⭐ DIFFICILE',
-    diffEasyDesc:'Planètes seulement · 4 manches',diffMidDesc:'+Lunes · 6 manches',diffHardDesc:'Tous les objets · 7 manches',
+    diffEasyDesc:'4 manches',diffMidDesc:'6 manches',diffHardDesc:'7 manches',
+    symphonyMode:'SYMPHONIE',symphonyDesc:'Objets &amp; Sons',
+    symphonyHud:'MODE SYMPHONIE',symphonyBack:'← RETOUR',symphonyHint:'Cliquez sur un objet pour entendre sa note',
     repeatBtn:'↺ RÉPÉTER',lives:'VIES',
     phaseWatch:'OBSERVEZ LA SÉQUENCE',phaseRepeat:'RÉPÉTEZ LA SÉQUENCE',
     win:'MISSION ACCOMPLIE!',lose:'MISSION ÉCHOUÉE',scoreLabel:'POINTS',tryAgain:'RÉESSAYER',
@@ -417,7 +439,9 @@ const i18n={
     controls:'👁 OBSERVE a sequência de sinais\n🖱 CLIQUE nos objetos em ordem\n🔁 REPETIR custa pontos\n❌ DOIS erros = missão falhada',
     diffLabel:'SELECIONAR DIFICULDADE',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MÉDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'Só planetas · 4 rondas',diffMidDesc:'+Luas · 6 rondas',diffHardDesc:'Todos os objetos · 7 rondas',
+    diffEasyDesc:'4 rondas',diffMidDesc:'6 rondas',diffHardDesc:'7 rondas',
+    symphonyMode:'SINFONIA',symphonyDesc:'Objetos e Sons',
+    symphonyHud:'MODO SINFONIA',symphonyBack:'← VOLTAR',symphonyHint:'Clique em qualquer objeto para ouvir a sua nota',
     repeatBtn:'↺ REPETIR',lives:'VIDAS',
     phaseWatch:'OBSERVE A SEQUÊNCIA',phaseRepeat:'REPITA A SEQUÊNCIA',
     win:'MISSÃO CONCLUÍDA!',lose:'MISSÃO FALHADA',scoreLabel:'PONTOS',tryAgain:'TENTAR NOVAMENTE',
@@ -440,7 +464,9 @@ const i18n={
     controls:'👁 OBSERVA la seqüència de senyals\n🖱 FAZ CLIC als objectes en ordre\n🔁 REPETIR costa punts\n❌ DOS errors = missió fallida',
     diffLabel:'SELECCIONA DIFICULTAT',
     diffEasy:'⭐ FÀCIL',diffMid:'⭐⭐ MITJÀ',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'Només planetes · 4 rondes',diffMidDesc:'+Llunes · 6 rondes',diffHardDesc:'Tots els objectes · 7 rondes',
+    diffEasyDesc:'4 rondes',diffMidDesc:'6 rondes',diffHardDesc:'7 rondes',
+    symphonyMode:'SIMFONIA',symphonyDesc:'Objectes i Sons',
+    symphonyHud:'MODE SIMFONIA',symphonyBack:'← TORNAR',symphonyHint:'Prem qualsevol objecte per escoltar la seua nota',
     repeatBtn:'↺ REPETIR',lives:'VIDES',
     phaseWatch:'OBSERVA LA SEQÜÈNCIA',phaseRepeat:'REPETEIX LA SEQÜÈNCIA',
     win:'MISSIÓ COMPLETADA!',lose:'MISSIÓ FALLIDA',scoreLabel:'PUNTS',tryAgain:'TORNAR-HO A INTENTAR',
@@ -665,6 +691,9 @@ function selectLevel(n){
   [['btn-easy',1],['btn-mid',2],['btn-hard',3]].forEach(([id,v])=>{
     const b=document.getElementById(id);if(b)b.classList.toggle('active',v===n);
   });
+  // Deactivate symphony button when a level is selected
+  const sb=document.getElementById('symphony-btn');
+  if(sb) sb.classList.remove('active');
 }
 
 function getActiveObjects(){
@@ -787,7 +816,6 @@ function onMouseMove(e){
 }
 
 function onCanvasClick(e){
-  if(state!=='input') return;
   const rect=fgCanvas.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   let clicked=null;
@@ -795,6 +823,8 @@ function onCanvasClick(e){
     if(!clicked&&Math.hypot(mx-obj.x,my-obj.y)<obj.r) clicked=obj;
   });
   if(!clicked) return;
+  if(state==='symphony'){ playSymphonyNote(clicked); return; }
+  if(state!=='input') return;
   handleInput(clicked);
 }
 
@@ -923,8 +953,71 @@ function showResult(isWin){
 }
 
 // ── START GAME ────────────────────────────────────────────────────────────
-function startGame(){
+// ── SYMPHONY MODE ────────────────────────────────────────────────────────
+function startSymphony(){
   getAudio();
+  state='symphony';
+  activeObjects=ALL_OBJECTS; // all objects visible
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('game-canvas-wrap').style.display='block';
+  // Re-init canvas
+  bgCanvas=document.getElementById('canvas-bg');
+  fgCanvas=document.getElementById('canvas-fg');
+  bgCtx=bgCanvas.getContext('2d');
+  fgCtx=fgCanvas.getContext('2d');
+  ALL_OBJECTS.forEach(o=>delete o._dots);
+  buildBackground();
+  // Show symphony UI
+  const t=i18n[currentLang]||i18n.en;
+  const back=document.getElementById('symphony-back');
+  if(back){ back.style.display='block'; back.textContent=t.symphonyBack||'← BACK'; back.onclick=exitSymphony; }
+  const hl=document.getElementById('symphony-hud-label');
+  if(hl){ hl.style.display='block'; hl.textContent=t.symphonyHud||'SYMPHONY'; }
+  document.getElementById('lives-display').textContent='';
+  document.getElementById('round-display').textContent='🎹';
+  document.getElementById('score-display').textContent='';
+  // Show hint
+  const info=document.getElementById('symphony-info');
+  const infoName=document.getElementById('symphony-info-name');
+  const infoDesc=document.getElementById('symphony-info-desc');
+  if(info){ info.style.display='block'; }
+  if(infoName) infoName.textContent='';
+  if(infoDesc) infoDesc.textContent=t.symphonyHint||'Click any object to play its note';
+}
+
+function playSymphonyNote(obj){
+  playNote(obj.freq,0.8,0.35);
+  addWave(obj); startAnim();
+  setTimeout(stopAnim,1200);
+  // Highlight briefly
+  highlight(obj,true);
+  setTimeout(()=>highlight(obj,false),700);
+  // Show info panel
+  const t=i18n[currentLang]||i18n.en;
+  const info=t.objInfo||i18n.en.objInfo;
+  const infoName=document.getElementById('symphony-info-name');
+  const infoDesc=document.getElementById('symphony-info-desc');
+  if(infoName) infoName.textContent=obj.name;
+  if(infoDesc) infoDesc.textContent=(info&&info[obj.id])||obj.name;
+}
+
+function exitSymphony(){
+  state='idle';
+  stopAnim();
+  document.getElementById('game-canvas-wrap').style.display='none';
+  document.getElementById('overlay').style.display='flex';
+  const back=document.getElementById('symphony-back');
+  if(back) back.style.display='none';
+  const hl=document.getElementById('symphony-hud-label');
+  if(hl) hl.style.display='none';
+  const info=document.getElementById('symphony-info');
+  if(info) info.style.display='none';
+  document.getElementById('round-display').textContent='-';
+  document.getElementById('score-display').textContent='0';
+}
+
+function startGame(){
+  getAudio(); // init AudioContext on user gesture
   maxRounds={1:4,2:6,3:7}[diffLevel]||4;
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   document.getElementById('repeat-cost').textContent=repeatCost;
@@ -934,14 +1027,6 @@ function startGame(){
   document.getElementById('lives-display').textContent='❤❤';
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
-  // Re-init canvas here — ensures context is valid after canvas becomes visible
-  bgCanvas=document.getElementById('canvas-bg');
-  fgCanvas=document.getElementById('canvas-fg');
-  bgCtx=bgCanvas.getContext('2d');
-  fgCtx=fgCanvas.getContext('2d');
-  fgCanvas.addEventListener('mousemove',onMouseMove);
-  fgCanvas.addEventListener('mouseleave',function(){document.getElementById('tooltip').style.display='none';});
-  fgCanvas.addEventListener('click',onCanvasClick);
   ALL_OBJECTS.forEach(function(o){delete o._dots;});
   buildBackground();
   // Build initial sequence with 1 random object
@@ -1014,6 +1099,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   applyLang(initial);
   startTypewriter(initial);
   document.getElementById('highscore-display').textContent=highScore;
+  buildBackground();
   renderHOF();
 
   // ── PWA click ──
