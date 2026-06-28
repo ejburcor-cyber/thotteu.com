@@ -924,7 +924,7 @@ function showResult(isWin){
 
 // ── START GAME ────────────────────────────────────────────────────────────
 function startGame(){
-  getAudio(); // init AudioContext on user gesture
+  getAudio();
   maxRounds={1:4,2:6,3:7}[diffLevel]||4;
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   document.getElementById('repeat-cost').textContent=repeatCost;
@@ -934,6 +934,14 @@ function startGame(){
   document.getElementById('lives-display').textContent='❤❤';
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
+  // Re-init canvas here — ensures context is valid after canvas becomes visible
+  bgCanvas=document.getElementById('canvas-bg');
+  fgCanvas=document.getElementById('canvas-fg');
+  bgCtx=bgCanvas.getContext('2d');
+  fgCtx=fgCanvas.getContext('2d');
+  fgCanvas.addEventListener('mousemove',onMouseMove);
+  fgCanvas.addEventListener('mouseleave',function(){document.getElementById('tooltip').style.display='none';});
+  fgCanvas.addEventListener('click',onCanvasClick);
   ALL_OBJECTS.forEach(function(o){delete o._dots;});
   buildBackground();
   // Build initial sequence with 1 random object
@@ -1006,7 +1014,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   applyLang(initial);
   startTypewriter(initial);
   document.getElementById('highscore-display').textContent=highScore;
-  buildBackground();
   renderHOF();
 
   // ── PWA click ──
