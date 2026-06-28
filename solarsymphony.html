@@ -301,7 +301,7 @@ const i18n={
     controls:'👁 WATCH the signal sequence\n🖱 CLICK the objects in order\n🔁 REPEAT costs points\n❌ TWO mistakes = mission over',
     diffLabel:'SELECT DIFFICULTY',
     diffEasy:'⭐ EASY',diffMid:'⭐⭐ MEDIUM',diffHard:'⭐⭐⭐ HARD',
-    diffEasyDesc:'4 rounds',diffMidDesc:'6 rounds',diffHardDesc:'7 rounds',
+    diffEasyDesc:'Sol · 9 objects · 4 rounds',diffMidDesc:'Planets + Moons · 6 rounds',diffHardDesc:'All objects · 7 rounds',
     symphonyMode:'SYMPHONY',symphonyDesc:'Objects &amp; Sounds',
     symphonyHud:'SYMPHONY MODE',symphonyBack:'← BACK',symphonyHint:'Click any object to play its note',
     repeatBtn:'↺ REPEAT',lives:'LIVES',
@@ -358,7 +358,7 @@ const i18n={
     controls:'👁 OBSERVA la secuencia de señales\n🖱 HAZ CLIC en los objetos en orden\n🔁 REPETIR cuesta puntos\n❌ DOS errores = misión fallida',
     diffLabel:'SELECCIONA DIFICULTAD',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MEDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'4 rondas',diffMidDesc:'6 rondas',diffHardDesc:'7 rondas',
+    diffEasyDesc:'Sol · 9 objetos · 4 rondas',diffMidDesc:'Planetas + Lunas · 6 rondas',diffHardDesc:'Todos los objetos · 7 rondas',
     symphonyMode:'SINFONÍA',symphonyDesc:'Objetos y Sonidos',
     symphonyHud:'MODO SINFONÍA',symphonyBack:'← VOLVER',symphonyHint:'Pulsa cualquier objeto para escuchar su nota',
     repeatBtn:'↺ REPETIR',lives:'VIDAS',
@@ -415,7 +415,7 @@ const i18n={
     controls:'👁 OBSERVE la séquence de signaux\n🖱 CLIQUEZ les objets dans l\'ordre\n🔁 RÉPÉTER coûte des points\n❌ DEUX erreurs = mission échouée',
     diffLabel:'CHOISIR DIFFICULTÉ',
     diffEasy:'⭐ FACILE',diffMid:'⭐⭐ MOYEN',diffHard:'⭐⭐⭐ DIFFICILE',
-    diffEasyDesc:'4 manches',diffMidDesc:'6 manches',diffHardDesc:'7 manches',
+    diffEasyDesc:'Soleil · 9 objets · 4 manches',diffMidDesc:'Planètes + Lunes · 6 manches',diffHardDesc:'Tous les objets · 7 manches',
     symphonyMode:'SYMPHONIE',symphonyDesc:'Objets &amp; Sons',
     symphonyHud:'MODE SYMPHONIE',symphonyBack:'← RETOUR',symphonyHint:'Cliquez sur un objet pour entendre sa note',
     repeatBtn:'↺ RÉPÉTER',lives:'VIES',
@@ -440,7 +440,7 @@ const i18n={
     controls:'👁 OBSERVE a sequência de sinais\n🖱 CLIQUE nos objetos em ordem\n🔁 REPETIR custa pontos\n❌ DOIS erros = missão falhada',
     diffLabel:'SELECIONAR DIFICULDADE',
     diffEasy:'⭐ FÁCIL',diffMid:'⭐⭐ MÉDIO',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'4 rondas',diffMidDesc:'6 rondas',diffHardDesc:'7 rondas',
+    diffEasyDesc:'Sol · 9 objetos · 4 rondas',diffMidDesc:'Planetas + Luas · 6 rondas',diffHardDesc:'Todos os objetos · 7 rondas',
     symphonyMode:'SINFONIA',symphonyDesc:'Objetos e Sons',
     symphonyHud:'MODO SINFONIA',symphonyBack:'← VOLTAR',symphonyHint:'Clique em qualquer objeto para ouvir a sua nota',
     repeatBtn:'↺ REPETIR',lives:'VIDAS',
@@ -465,7 +465,7 @@ const i18n={
     controls:'👁 OBSERVA la seqüència de senyals\n🖱 FAZ CLIC als objectes en ordre\n🔁 REPETIR costa punts\n❌ DOS errors = missió fallida',
     diffLabel:'SELECCIONA DIFICULTAT',
     diffEasy:'⭐ FÀCIL',diffMid:'⭐⭐ MITJÀ',diffHard:'⭐⭐⭐ DIFÍCIL',
-    diffEasyDesc:'4 rondes',diffMidDesc:'6 rondes',diffHardDesc:'7 rondes',
+    diffEasyDesc:'Sol · 9 objectes · 4 rondes',diffMidDesc:'Planetes + Llunes · 6 rondes',diffHardDesc:'Tots els objectes · 7 rondes',
     symphonyMode:'SIMFONIA',symphonyDesc:'Objectes i Sons',
     symphonyHud:'MODE SIMFONIA',symphonyBack:'← TORNAR',symphonyHint:'Prem qualsevol objecte per escoltar la seua nota',
     repeatBtn:'↺ REPETIR',lives:'VIDES',
@@ -517,33 +517,42 @@ const ALL_OBJECTS=[
   {id:'mercury',     name:'Mercury',      x:105, y:155, r:14, dr:7,  col:'#aaaaaa', freq:164.8,  lv:1, type:'planet'},
   {id:'venus',       name:'Venus',        x:162, y:390, r:16, dr:11, col:'#e8c060', freq:185.0,  lv:1, type:'planet'},
   {id:'earth',       name:'Earth',        x:225, y:125, r:17, dr:13, col:'#4488ff', freq:196.0,  lv:1, type:'planet'},
-  {id:'moon',        name:'Moon',         x:254, y:104, r:14, dr:7,  col:'#cccccc', freq:207.7,  lv:2, type:'moon'},
+  // Earth moon — clearly above Earth
+  {id:'moon',        name:'Moon',         x:242, y:98,  r:14, dr:7,  col:'#cccccc', freq:207.7,  lv:2, type:'moon'},
   {id:'mars',        name:'Mars',         x:302, y:408, r:16, dr:11, col:'#cc4422', freq:220.0,  lv:1, type:'planet'},
-  {id:'phobos',      name:'Phobos',       x:280, y:386, r:14, dr:5,  col:'#aa8866', freq:233.1,  lv:2, type:'moon'},
-  {id:'deimos',      name:'Deimos',       x:325, y:385, r:14, dr:5,  col:'#998877', freq:246.9,  lv:2, type:'moon'},
-  {id:'asteroidbelt',name:'Asteroid Belt',x:372, y:270, r:26, dr:26, col:'#888888', freq:261.6,  lv:1, type:'belt'},
-  {id:'ceres',       name:'Ceres',        x:372, y:322, r:14, dr:7,  col:'#bbaa99', freq:277.2,  lv:2, type:'dwarf'},
+  // Mars moons — left/right of Mars
+  {id:'phobos',      name:'Phobos',       x:278, y:400, r:14, dr:5,  col:'#aa8866', freq:233.1,  lv:2, type:'moon'},
+  {id:'deimos',      name:'Deimos',       x:328, y:400, r:14, dr:5,  col:'#998877', freq:246.9,  lv:2, type:'moon'},
+  {id:'asteroidbelt',name:'Asteroid Belt',x:372, y:270, r:26, dr:26, col:'#888888', freq:261.6,  lv:3, type:'belt'},
+  // Ceres — slightly left in belt, bigger/brighter
+  {id:'ceres',       name:'Ceres',        x:356, y:310, r:14, dr:11, col:'#d4c090', freq:277.2,  lv:3, type:'dwarf'},
   {id:'jupiter',     name:'Jupiter',      x:470, y:145, r:30, dr:30, col:'#c8a878', freq:293.7,  lv:1, type:'planet'},
-  {id:'io',          name:'Io',           x:430, y:112, r:14, dr:7,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
-  {id:'europa',      name:'Europa',       x:450, y:99,  r:14, dr:7,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
-  {id:'ganymede',    name:'Ganymede',     x:492, y:99,  r:15, dr:9,  col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
-  {id:'callisto',    name:'Callisto',     x:514, y:114, r:14, dr:7,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
+  // Jupiter moons — arc above Jupiter, well spaced
+  {id:'io',          name:'Io',           x:432, y:100, r:14, dr:7,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
+  {id:'europa',      name:'Europa',       x:453, y:88,  r:14, dr:7,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
+  {id:'ganymede',    name:'Ganymede',     x:488, y:84,  r:15, dr:9,  col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
+  {id:'callisto',    name:'Callisto',     x:512, y:94,  r:14, dr:7,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
   {id:'saturn',      name:'Saturn',       x:578, y:402, r:28, dr:24, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
-  {id:'titan',       name:'Titan',        x:538, y:368, r:15, dr:9,  col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
-  {id:'enceladus',   name:'Enceladus',    x:554, y:352, r:14, dr:6,  col:'#eeeeff', freq:440.0,  lv:2, type:'moon'},
-  {id:'rhea',        name:'Rhea',         x:574, y:346, r:14, dr:6,  col:'#ccccbb', freq:466.2,  lv:2, type:'moon'},
-  {id:'dione',       name:'Dione',        x:596, y:350, r:14, dr:6,  col:'#bbbbcc', freq:493.9,  lv:2, type:'moon'},
-  {id:'iapetus',     name:'Iapetus',      x:618, y:366, r:14, dr:6,  col:'#886644', freq:523.3,  lv:2, type:'moon'},
+  // Saturn moons — arc above Saturn, well spaced
+  {id:'titan',       name:'Titan',        x:530, y:358, r:15, dr:9,  col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
+  {id:'enceladus',   name:'Enceladus',    x:548, y:340, r:14, dr:6,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
+  {id:'rhea',        name:'Rhea',         x:566, y:330, r:14, dr:6,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
+  {id:'dione',       name:'Dione',        x:588, y:326, r:14, dr:6,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
+  {id:'iapetus',     name:'Iapetus',      x:610, y:334, r:14, dr:6,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
   {id:'uranus',      name:'Uranus',       x:692, y:142, r:22, dr:18, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
-  {id:'titania',     name:'Titania',      x:656, y:112, r:14, dr:6,  col:'#aaccdd', freq:587.3,  lv:2, type:'moon'},
-  {id:'oberon',      name:'Oberon',       x:674, y:102, r:14, dr:6,  col:'#9988aa', freq:622.3,  lv:2, type:'moon'},
-  {id:'miranda',     name:'Miranda',      x:716, y:106, r:14, dr:6,  col:'#ccbbaa', freq:659.3,  lv:2, type:'moon'},
+  // Uranus moons — arc above Uranus
+  {id:'titania',     name:'Titania',      x:654, y:106, r:14, dr:6,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
+  {id:'oberon',      name:'Oberon',       x:674, y:96,  r:14, dr:6,  col:'#9988aa', freq:622.3,  lv:3, type:'moon'},
+  {id:'miranda',     name:'Miranda',      x:718, y:102, r:14, dr:6,  col:'#ccbbaa', freq:659.3,  lv:3, type:'moon'},
   {id:'neptune',     name:'Neptune',      x:780, y:402, r:21, dr:17, col:'#3355cc', freq:698.5,  lv:1, type:'planet'},
-  {id:'triton',      name:'Triton',       x:752, y:372, r:14, dr:7,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
-  {id:'kuiperbelt',  name:'Kuiper Belt',  x:840, y:270, r:26, dr:26, col:'#6688aa', freq:784.0,  lv:1, type:'belt'},
-  {id:'pluto',       name:'Pluto',        x:855, y:440, r:14, dr:7,  col:'#ddbb99', freq:830.6,  lv:2, type:'dwarf'},
-  {id:'eris',        name:'Eris',         x:862, y:100, r:14, dr:7,  col:'#bbccdd', freq:880.0,  lv:2, type:'dwarf'},
-  {id:'oortscloud',  name:'Oort Cloud',   x:882, y:270, r:20, dr:20, col:'#aabbcc', freq:1046.5, lv:1, type:'belt'},
+  // Neptune moon
+  {id:'triton',      name:'Triton',       x:756, y:376, r:14, dr:7,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
+  // Kuiper belt — centred, with Pluto/Eris as bright dwarfs on ellipse arc
+  {id:'kuiperbelt',  name:'Kuiper Belt',  x:830, y:270, r:26, dr:26, col:'#6688aa', freq:784.0,  lv:3, type:'belt'},
+  {id:'pluto',       name:'Pluto',        x:845, y:425, r:14, dr:11, col:'#e0c070', freq:830.6,  lv:3, type:'dwarf'},
+  {id:'eris',        name:'Eris',         x:860, y:115, r:14, dr:11, col:'#b8cce8', freq:880.0,  lv:3, type:'dwarf'},
+  // Oort cloud — offset right so label doesn't overlap Kuiper
+  {id:'oortscloud',  name:'Oort Cloud',   x:878, y:270, r:20, dr:20, col:'#aabbcc', freq:1046.5, lv:3, type:'belt'},
 ];
 
 // ── AUDIO ─────────────────────────────────────────────────────────────────
@@ -582,13 +591,7 @@ function initStars(){
 function drawBackground(){
   bgCtx.fillStyle='#0a0a1a';
   bgCtx.fillRect(0,0,W,H);
-  // Stars
-  STARS.forEach(s=>{
-    bgCtx.globalAlpha=s.a;
-    bgCtx.fillStyle='#ffffff';
-    bgCtx.beginPath();bgCtx.arc(s.x,s.y,s.r,0,Math.PI*2);bgCtx.fill();
-  });
-  bgCtx.globalAlpha=1;
+  // Stars removed — confusing with clickable objects
   const OX=-80, OY=H/2;
   const orbits=[
     {rx:198, ry:40,  a:.12, dash:false},
@@ -618,18 +621,37 @@ function lightenColor(hex){
   return 'rgb('+r+','+g+','+b+')';
 }
 function drawLabel(obj,isHL){
-  var fs=isHL?9:obj.type==='planet'||obj.type==='star'||obj.type==='belt'?7:6;
+  var fs=isHL?9:obj.type==='planet'||obj.type==='star'||obj.type==='belt'||obj.type==='dwarf'?7:5;
   bgCtx.font=fs+'px "Press Start 2P"'; bgCtx.textAlign='center';
   var tw=bgCtx.measureText(obj.name).width;
-  var lx=Math.max(tw/2+4,Math.min(W-tw/2-4,obj.x));
+  // Special offsets to avoid overlaps
+  var lx=obj.x;
+  if(obj.id==='kuiperbelt') lx=obj.x-18;
+  if(obj.id==='oortscloud') lx=obj.x+14;
+  if(obj.id==='pluto') lx=obj.x-10;
+  if(obj.id==='eris')  lx=obj.x+10;
+  lx=Math.max(tw/2+4,Math.min(W-tw/2-4,lx));
   var ly=obj.y>H/2?obj.y-obj.dr-9:obj.y+obj.dr+fs+5;
+  // Moons: label closer to planet, alternating sides
+  if(obj.type==='moon'){
+    ly=obj.y<H/2?obj.y-obj.dr-6:obj.y+obj.dr+fs+3;
+  }
+  if(obj.id==='pluto') ly=obj.y>H/2?obj.y-obj.dr-6:obj.y+obj.dr+fs+3;
+  if(obj.id==='eris')  ly=obj.y<H/2?obj.y-obj.dr-6:obj.y+obj.dr+fs+3;
   ly=Math.max(fs+4,Math.min(H-4,ly));
-  bgCtx.fillStyle='rgba(0,0,15,0.78)'; bgCtx.fillRect(lx-tw/2-3,ly-fs-1,tw+6,fs+4);
-  bgCtx.fillStyle=isHL?'#ffe080':obj.type==='moon'?'rgba(200,210,255,.82)':'rgba(255,200,100,.92)';
+  bgCtx.fillStyle='rgba(0,0,15,0.82)'; bgCtx.fillRect(lx-tw/2-3,ly-fs-1,tw+6,fs+4);
+  bgCtx.fillStyle=isHL?'#ffe080':
+    obj.type==='moon'?'rgba(180,200,255,.88)':
+    obj.type==='dwarf'?'rgba(255,210,80,.98)':
+    'rgba(255,200,100,.92)';
   bgCtx.fillText(obj.name,lx,ly);
 }
 function drawObjects(activeObjects,hlId){
-  activeObjects.forEach(function(obj){
+  // Draw order: belts first (background), then all other objects on top
+  var belts=activeObjects.filter(function(o){return o.type==='belt';});
+  var others=activeObjects.filter(function(o){return o.type!=='belt';});
+  var ordered=belts.concat(others);
+  ordered.forEach(function(obj){
     bgCtx.save();
     var isHL=obj.id===hlId, dr=obj.dr*(isHL?1.5:1);
     if(obj.type==='star'){
@@ -639,19 +661,37 @@ function drawObjects(activeObjects,hlId){
       bgCtx.fillStyle=grad;bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,rad,0,Math.PI*2);bgCtx.fill();
       bgCtx.fillStyle=isHL?'#ffffff':'#ffdd44';bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.dr*(isHL?1.5:1),0,Math.PI*2);bgCtx.fill();
     } else if(obj.type==='belt'){
+      // Dots are purely decorative background — small and faint
       (obj._dots||[]).forEach(function(d){
-        bgCtx.globalAlpha=isHL?Math.min(1,d.a*2):d.a;
+        bgCtx.globalAlpha=isHL?d.a*1.4:d.a*0.55;
         bgCtx.fillStyle=isHL?'#ffe080':obj.col;
-        bgCtx.beginPath();bgCtx.arc(d.x,d.y,d.r*(isHL?2:1),0,Math.PI*2);bgCtx.fill();
+        bgCtx.beginPath();bgCtx.arc(d.x,d.y,Math.min(d.r,1.2),0,Math.PI*2);bgCtx.fill();
       });
       bgCtx.globalAlpha=1;
     } else {
-      bgCtx.globalAlpha=obj.type==='moon'||obj.type==='dwarf'?0.9:1;
+      // Dwarf planets: bigger visual, bright ring
+      var visualDr = dr;
+      if(obj.type==='dwarf') visualDr = Math.max(dr, isHL?14:9);
+      bgCtx.globalAlpha=obj.type==='moon'?0.88:1;
       bgCtx.fillStyle=isHL?lightenColor(obj.col):obj.col;
-      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,dr,0,Math.PI*2);bgCtx.fill();bgCtx.globalAlpha=1;
-      if(obj.id==='saturn'){bgCtx.strokeStyle=isHL?'rgba(255,230,130,.9)':'rgba(220,180,100,.7)';bgCtx.lineWidth=isHL?5:3;bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y,dr*1.85,dr*0.42,0,0,Math.PI*2);bgCtx.stroke();}
-      if(obj.id==='earth'){bgCtx.fillStyle='#2a6a2a';bgCtx.globalAlpha=0.6;bgCtx.beginPath();bgCtx.arc(obj.x-dr*0.2,obj.y-dr*0.2,dr*0.45,0,Math.PI*2);bgCtx.fill();bgCtx.globalAlpha=1;}
-      if(obj.id==='jupiter'){bgCtx.strokeStyle='rgba(160,110,60,.4)';bgCtx.lineWidth=2;[-dr*0.36,-dr*0.1,dr*0.15,dr*0.38].forEach(function(dy){bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,dr,dr*0.18,0,0,Math.PI*2);bgCtx.stroke();});}
+      bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,visualDr,0,Math.PI*2);bgCtx.fill();
+      bgCtx.globalAlpha=1;
+      // Dwarf planet: bright ring + subtle glow so it stands out from belt dots
+      if(obj.type==='dwarf'){
+        // Glow
+        bgCtx.save();
+        bgCtx.globalAlpha=0.25;
+        bgCtx.fillStyle=obj.col;
+        bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,visualDr+5,0,Math.PI*2);bgCtx.fill();
+        bgCtx.restore();
+        // Ring
+        bgCtx.strokeStyle=isHL?'#ffe080':'rgba(255,210,80,.85)';
+        bgCtx.lineWidth=isHL?2.5:1.8;
+        bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,visualDr+3,0,Math.PI*2);bgCtx.stroke();
+      }
+      if(obj.id==='saturn'){bgCtx.strokeStyle=isHL?'rgba(255,230,130,.9)':'rgba(220,180,100,.7)';bgCtx.lineWidth=isHL?5:3;bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y,visualDr*1.85,visualDr*0.42,0,0,Math.PI*2);bgCtx.stroke();}
+      if(obj.id==='earth'){bgCtx.fillStyle='#2a6a2a';bgCtx.globalAlpha=0.6;bgCtx.beginPath();bgCtx.arc(obj.x-visualDr*0.2,obj.y-visualDr*0.2,visualDr*0.45,0,Math.PI*2);bgCtx.fill();bgCtx.globalAlpha=1;}
+      if(obj.id==='jupiter'){bgCtx.strokeStyle='rgba(160,110,60,.4)';bgCtx.lineWidth=2;[-visualDr*0.36,-visualDr*0.1,visualDr*0.15,visualDr*0.38].forEach(function(dy){bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,visualDr,visualDr*0.18,0,0,Math.PI*2);bgCtx.stroke();});}
     }
     drawLabel(obj,isHL);bgCtx.restore();
   });
@@ -682,7 +722,7 @@ function selectLevel(n){
 }
 
 function getActiveObjects(){
-  return ALL_OBJECTS.filter(o=>o.lv<=diffLevel||(diffLevel===1&&o.lv===1));
+  return ALL_OBJECTS.filter(function(o){ return o.lv<=diffLevel; });
 }
 
 var _hlId=null;
@@ -1031,7 +1071,7 @@ function exitSymphony(){
 
 function startGame(){
   getAudio(); // init AudioContext on user gesture
-  maxRounds={1:4,2:6,3:7}[diffLevel]||4;
+  maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   document.getElementById('repeat-cost').textContent=repeatCost;
   score=0; currentRound=0; seenObjects=[];
@@ -1041,9 +1081,9 @@ function startGame(){
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
   ALL_OBJECTS.forEach(function(o){delete o._dots;});
+  activeObjects=getActiveObjects();
   buildBackground();
   // Build initial sequence with 1 random object
-  activeObjects=getActiveObjects();
   const first=activeObjects[Math.floor(Math.random()*activeObjects.length)];
   sequence=[first];
   setTimeout(()=>playSequence(),600);
