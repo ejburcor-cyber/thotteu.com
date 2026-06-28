@@ -197,9 +197,9 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
       <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffEasy">EASY</span></button>
       <button class="level-btn" id="btn-mid" onclick="selectLevel(2)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffMid">MEDIUM</span></button>
       <button class="level-btn" id="btn-hard" onclick="selectLevel(3)" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="diffHard">HARD</span></button>
-      <button class="level-btn" id="symphony-btn" onclick="startSymphony()" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="symphonyMode">SYMPHONY</span></button>
+      <button class="level-btn" id="symphony-btn" onclick="selectSymphony()" style="min-width:90px;font-size:.36rem;padding:8px 10px"><span data-i18n="symphonyMode">SYMPHONY</span></button>
     </div>
-    <button id="start-btn" onclick="startGame()" data-i18n="startBtn" style="background:#fa0;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;letter-spacing:1px;margin-top:6px">START MISSION</button>
+    <button id="start-btn" onclick="onStartMission()" data-i18n="startBtn" style="background:#fa0;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;letter-spacing:1px;margin-top:6px">START MISSION</button>
   </div>
   <div id="game-canvas-wrap" style="display:none">
     <canvas id="canvas-bg" width="900" height="540"></canvas>
@@ -703,14 +703,25 @@ let state='idle'; // idle|watching|input|result
 let repeatCost=10;
 let seenObjects=[]; // objects that appeared in sequence for result screen
 
+var _symphonySelected=false;
+
 function selectLevel(n){
+  _symphonySelected=false;
   diffLevel=n;
   [['btn-easy',1],['btn-mid',2],['btn-hard',3]].forEach(([id,v])=>{
     const b=document.getElementById(id);if(b)b.classList.toggle('active',v===n);
   });
-  // Deactivate symphony button when a level is selected
   const sb=document.getElementById('symphony-btn');
   if(sb) sb.classList.remove('active');
+}
+
+function selectSymphony(){
+  _symphonySelected=true;
+  ['btn-easy','btn-mid','btn-hard'].forEach(function(id){
+    const b=document.getElementById(id);if(b)b.classList.remove('active');
+  });
+  const sb=document.getElementById('symphony-btn');
+  if(sb) sb.classList.add('active');
 }
 
 function getActiveObjects(){
@@ -964,7 +975,7 @@ function showResult(isWin){
     '<span class="general-briefing-label">'+t.generalLabel+'</span>'+
     '<div class="general-briefing-text">'+comment+'</div></div></div>'+
     buildObjectCards()+
-    '<button id="start-btn" onclick="startGame()" style="background:#fa0;color:#000;border:none;font-family:\'Press Start 2P\',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">'+t.tryAgain+'</button>';
+    '<button id="start-btn" onclick="onStartMission()" style="background:#fa0;color:#000;border:none;font-family:\'Press Start 2P\',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px">'+t.tryAgain+'</button>';
   renderHOF();
   window.scrollTo({top:document.getElementById('game-wrap').offsetTop-10,behavior:'smooth'});
 }
@@ -1005,6 +1016,9 @@ function startSymphony(){
   if(_idesc){var _t=i18n[currentLang]||i18n.en;_idesc.textContent=_t.symphonyHint||'Click any object to play its note';}
   bgCanvas=document.getElementById('canvas-bg');fgCanvas=document.getElementById('canvas-fg');
   bgCtx=bgCanvas.getContext('2d');fgCtx=fgCanvas.getContext('2d');
+  fgCanvas.addEventListener('mousemove',onMouseMove);
+  fgCanvas.addEventListener('mouseleave',function(){document.getElementById('tooltip').style.display='none';});
+  fgCanvas.addEventListener('click',onCanvasClick);
   ALL_OBJECTS.forEach(function(o){delete o._dots;});
   buildBackground(null);
   var t=i18n[currentLang]||i18n.en;
@@ -1050,7 +1064,7 @@ function endSymphony(){
     '<p class="score-final">'+_symDisc.size+' / '+ALL_OBJECTS.length+' objects</p>'+
     '<p style="color:#f84;font-size:.45rem">Score: '+pts+'</p>'+
     '<div style="display:flex;gap:10px;margin-top:10px">'+
-    '<button onclick="startSymphony()" style="background:#fa0;color:#000;border:none;font-family:pressp,monospace;font-size:.42rem;padding:10px 16px;cursor:pointer">&#9834; AGAIN</button>'+
+    '<button onclick="selectSymphony()" style="background:#fa0;color:#000;border:none;font-family:pressp,monospace;font-size:.42rem;padding:10px 16px;cursor:pointer">&#9834; AGAIN</button>'+
     '<button onclick="exitSymphony()" style="background:transparent;color:#fa0;border:2px solid #fa0;font-family:pressp,monospace;font-size:.42rem;padding:10px 16px;cursor:pointer">&#8592; MENU</button>'+
     '</div>';
   renderHOF();
@@ -1077,6 +1091,11 @@ function showInfoPanel(obj){
   if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
 }
 
+function onStartMission(){
+  if(_symphonySelected) startSymphony();
+  else startGame();
+}
+
 function startGame(){
   getAudio(); // init AudioContext on user gesture
   maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
@@ -1088,11 +1107,15 @@ function startGame(){
   document.getElementById('lives-display').textContent='❤❤';
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
-  // Re-init canvas context (ensures valid after canvas becomes visible)
+  // Init canvas (now visible)
   bgCanvas=document.getElementById('canvas-bg');
   fgCanvas=document.getElementById('canvas-fg');
   bgCtx=bgCanvas.getContext('2d');
   fgCtx=fgCanvas.getContext('2d');
+  // Wire canvas events (safe to call multiple times — addEventListener deduplicates same fn ref)
+  fgCanvas.addEventListener('mousemove',onMouseMove);
+  fgCanvas.addEventListener('mouseleave',function(){document.getElementById('tooltip').style.display='none';});
+  fgCanvas.addEventListener('click',onCanvasClick);
   ALL_OBJECTS.forEach(function(o){delete o._dots;});
   activeObjects=getActiveObjects();
   buildBackground();
@@ -1149,14 +1172,8 @@ window.addEventListener('beforeinstallprompt',e=>{
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  bgCanvas=document.getElementById('canvas-bg');
-  fgCanvas=document.getElementById('canvas-fg');
-  bgCtx=bgCanvas.getContext('2d');
-  fgCtx=fgCanvas.getContext('2d');
-  // Wire fg canvas events
-  fgCanvas.addEventListener('mousemove',onMouseMove);
-  fgCanvas.addEventListener('mouseleave',()=>{ document.getElementById('tooltip').style.display='none'; });
-  fgCanvas.addEventListener('click',onCanvasClick);
+  // Canvas init deferred to startGame/startSymphony (canvas hidden until then)
+  // Wire events after canvas is shown
   initStars();
   const saved=localStorage.getItem('thotteu_lang');
   const bl=(navigator.language||'en').slice(0,2).toLowerCase();
@@ -1165,7 +1182,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   applyLang(initial);
   startTypewriter(initial);
   document.getElementById('highscore-display').textContent=highScore;
-  buildBackground();
   renderHOF();
 
   // ── PWA click ──
