@@ -516,25 +516,25 @@ const ALL_OBJECTS=[
   {id:'ceres',       name:'Ceres',        x:345, y:215, r:14, dr:11,  col:'#d4c090', freq:277.2,  lv:3, type:'dwarf'},
   {id:'jupiter',     name:'Jupiter',      x:470, y:145, r:34, dr:34, col:'#c8a878', freq:293.7,  lv:1, type:'planet'},
   // Jupiter moons — arc above Jupiter, well spaced
-  {id:'io',          name:'Io',           x:415, y:102, r:14, dr:9,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
-  {id:'europa',      name:'Europa',       x:437, y:83, r:14, dr:9,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
-  {id:'ganymede',    name:'Ganymede',     x:468, y:75, r:15, dr:11, col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
-  {id:'callisto',    name:'Callisto',     x:496, y:80, r:14, dr:9,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
+  {id:'io',          name:'Io',           x:400, y:96, r:14, dr:9,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
+  {id:'europa',      name:'Europa',       x:427, y:71, r:14, dr:9,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
+  {id:'ganymede',    name:'Ganymede',     x:467, y:60, r:15, dr:11, col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
+  {id:'callisto',    name:'Callisto',     x:505, y:67, r:14, dr:9,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
   {id:'saturn',      name:'Saturn',       x:578, y:402, r:30, dr:28, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
   // Saturn moons — arc above Saturn, well spaced
-  {id:'titan',       name:'Titan',        x:514, y:374, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
-  {id:'enceladus',   name:'Enceladus',    x:529, y:352, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
-  {id:'rhea',        name:'Rhea',         x:554, y:336, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
-  {id:'dione',       name:'Dione',        x:583, y:332, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
-  {id:'iapetus',     name:'Iapetus',      x:611, y:340, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
+  {id:'titan',       name:'Titan',        x:505, y:368, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
+  {id:'enceladus',   name:'Enceladus',    x:524, y:343, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
+  {id:'rhea',        name:'Rhea',         x:553, y:326, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
+  {id:'dione',       name:'Dione',        x:586, y:322, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
+  {id:'iapetus',     name:'Iapetus',      x:618, y:333, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
   {id:'uranus',      name:'Uranus',       x:692, y:142, r:24, dr:20, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
   // Uranus moons — arc above Uranus
-  {id:'titania',     name:'Titania',      x:639, y:105, r:14, dr:8,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
-  {id:'oberon',      name:'Oberon',       x:678, y:78, r:14, dr:8,  col:'#9988aa', freq:622.3,  lv:3, type:'moon'},
-  {id:'miranda',     name:'Miranda',      x:723, y:85, r:14, dr:8,  col:'#ccbbaa', freq:659.3,  lv:3, type:'moon'},
+  {id:'titania',     name:'Titania',      x:628, y:102, r:14, dr:8,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
+  {id:'oberon',      name:'Oberon',       x:676, y:69, r:14, dr:8,  col:'#9988aa', freq:622.3,  lv:3, type:'moon'},
+  {id:'miranda',     name:'Miranda',      x:727, y:76, r:14, dr:8,  col:'#ccbbaa', freq:659.3,  lv:3, type:'moon'},
   {id:'neptune',     name:'Neptune',      x:780, y:402, r:23, dr:19, col:'#3355cc', freq:698.5,  lv:1, type:'planet'},
   // Neptune moon
-  {id:'triton',      name:'Triton',       x:733, y:362, r:14, dr:9,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
+  {id:'triton',      name:'Triton',       x:725, y:356, r:14, dr:9,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
   // Kuiper belt — centred, with Pluto/Eris as bright dwarfs on ellipse arc
   {id:'kuiperbelt',  name:'Kuiper Belt',  x:830, y:270, r:45, dr:26, col:'#6688aa', freq:784.0,  lv:3, type:'belt'},
   {id:'pluto',       name:'Pluto',        x:845, y:425, r:14, dr:13, col:'#e0c070', freq:830.6,  lv:3, type:'dwarf'},
@@ -685,8 +685,33 @@ function drawObjects(activeObjects,hlId){
       }
       if(obj.id==='jupiter'){bgCtx.strokeStyle='rgba(160,110,60,.4)';bgCtx.lineWidth=2;[-visualDr*0.36,-visualDr*0.1,visualDr*0.15,visualDr*0.38].forEach(function(dy){bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,visualDr,visualDr*0.18,0,0,Math.PI*2);bgCtx.stroke();});}
     }
-    drawLabel(obj,isHL);bgCtx.restore();
+    if(!isHL) drawLabel(obj,isHL);
+    bgCtx.restore();
   });
+  // Draw highlighted object on top (fg canvas) so it's above everything
+  if(hlId){
+    var hlObj=activeObjects.find(function(o){return o.id===hlId;});
+    if(hlObj){
+      fgCtx.clearRect(0,0,W,H);
+      fgCtx.save();
+      var dr2=hlObj.dr*1.5;
+      // Glow ring
+      fgCtx.strokeStyle=hlObj.col;fgCtx.lineWidth=3;fgCtx.globalAlpha=0.8;
+      fgCtx.shadowColor=hlObj.col;fgCtx.shadowBlur=20;
+      fgCtx.beginPath();fgCtx.arc(hlObj.x,hlObj.y,hlObj.r+6,0,Math.PI*2);fgCtx.stroke();
+      fgCtx.shadowBlur=0;fgCtx.globalAlpha=1;
+      // Label on fg
+      var fs2=11;
+      fgCtx.font=fs2+'px "Press Start 2P"';fgCtx.textAlign='center';
+      var tw2=fgCtx.measureText(hlObj.name).width;
+      var lx2=Math.max(tw2/2+4,Math.min(W-tw2/2-4,hlObj.x));
+      var ly2=hlObj.y>H/2?hlObj.y-dr2-12:hlObj.y+dr2+fs2+6;
+      ly2=Math.max(fs2+4,Math.min(H-4,ly2));
+      fgCtx.fillStyle='rgba(0,0,15,0.9)';fgCtx.fillRect(lx2-tw2/2-4,ly2-fs2-2,tw2+8,fs2+6);
+      fgCtx.fillStyle='#ffe080';fgCtx.fillText(hlObj.name,lx2,ly2);
+      fgCtx.restore();
+    }
+  }
 }
 
 // ── GAME STATE ────────────────────────────────────────────────────────────
@@ -731,7 +756,7 @@ function getActiveObjects(){
 var _hlId=null;
 function buildBackground(hlId){
   if(hlId!==undefined)_hlId=hlId;
-  activeObjects=getActiveObjects();
+  activeObjects=(state==='symphony')?ALL_OBJECTS.slice():getActiveObjects();
   // Pre-calculate belt dots so they don't flicker
   var beltOrbitMap={'asteroidbelt':{rx:522,ry:130},'kuiperbelt':{rx:958,ry:248},'oortscloud':{rx:958,ry:248}};
   activeObjects.forEach(function(obj){
