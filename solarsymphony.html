@@ -685,30 +685,17 @@ function drawObjects(activeObjects,hlId){
       }
       if(obj.id==='jupiter'){bgCtx.strokeStyle='rgba(160,110,60,.4)';bgCtx.lineWidth=2;[-visualDr*0.36,-visualDr*0.1,visualDr*0.15,visualDr*0.38].forEach(function(dy){bgCtx.beginPath();bgCtx.ellipse(obj.x,obj.y+dy,visualDr,visualDr*0.18,0,0,Math.PI*2);bgCtx.stroke();});}
     }
-    if(!isHL) drawLabel(obj,isHL);
+    drawLabel(obj,isHL);
     bgCtx.restore();
   });
-  // Draw highlighted object on top (fg canvas) so it's above everything
+  // Draw glow ring on fg canvas for highlighted object
   if(hlId){
     var hlObj=activeObjects.find(function(o){return o.id===hlId;});
-    if(hlObj){
-      fgCtx.clearRect(0,0,W,H);
+    if(hlObj&&fgCtx){
       fgCtx.save();
-      var dr2=hlObj.dr*1.5;
-      // Glow ring
-      fgCtx.strokeStyle=hlObj.col;fgCtx.lineWidth=3;fgCtx.globalAlpha=0.8;
-      fgCtx.shadowColor=hlObj.col;fgCtx.shadowBlur=20;
-      fgCtx.beginPath();fgCtx.arc(hlObj.x,hlObj.y,hlObj.r+6,0,Math.PI*2);fgCtx.stroke();
-      fgCtx.shadowBlur=0;fgCtx.globalAlpha=1;
-      // Label on fg
-      var fs2=11;
-      fgCtx.font=fs2+'px "Press Start 2P"';fgCtx.textAlign='center';
-      var tw2=fgCtx.measureText(hlObj.name).width;
-      var lx2=Math.max(tw2/2+4,Math.min(W-tw2/2-4,hlObj.x));
-      var ly2=hlObj.y>H/2?hlObj.y-dr2-12:hlObj.y+dr2+fs2+6;
-      ly2=Math.max(fs2+4,Math.min(H-4,ly2));
-      fgCtx.fillStyle='rgba(0,0,15,0.9)';fgCtx.fillRect(lx2-tw2/2-4,ly2-fs2-2,tw2+8,fs2+6);
-      fgCtx.fillStyle='#ffe080';fgCtx.fillText(hlObj.name,lx2,ly2);
+      fgCtx.strokeStyle=hlObj.col;fgCtx.lineWidth=3;fgCtx.globalAlpha=0.85;
+      fgCtx.shadowColor=hlObj.col;fgCtx.shadowBlur=22;
+      fgCtx.beginPath();fgCtx.arc(hlObj.x,hlObj.y,hlObj.r+8,0,Math.PI*2);fgCtx.stroke();
       fgCtx.restore();
     }
   }
@@ -848,7 +835,7 @@ function highlightObject(obj,on){
 
 // ── HOVER / CLICK ─────────────────────────────────────────────────────────
 function onMouseMove(e){
-  if(state!=='input') return;
+  if(state==='idle'||state==='result') return;
   const rect=fgCanvas.getBoundingClientRect();
   const mx=e.clientX-rect.left, my=e.clientY-rect.top;
   const tooltip=document.getElementById('tooltip');
