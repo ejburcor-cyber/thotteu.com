@@ -501,40 +501,40 @@ document.addEventListener('click',()=>{var dd=document.getElementById('lang-drop
 // x,y: canvas position (700x420); r: click radius; color; note freq (Hz)
 // Scale: logarithmic from Sun(left) to Oort(right)
 const ALL_OBJECTS=[
-  {id:'sun',         name:'Sun',          x:28,  y:270, r:44, dr:42, col:'#ffaa00', freq:130.8,  lv:1, type:'star'},
-  {id:'mercury',     name:'Mercury',      x:105, y:155, r:14, dr:9,  col:'#aaaaaa', freq:164.8,  lv:1, type:'planet'},
-  {id:'venus',       name:'Venus',        x:162, y:390, r:16, dr:13, col:'#e8c060', freq:185.0,  lv:1, type:'planet'},
-  {id:'earth',       name:'Earth',        x:225, y:125, r:17, dr:15, col:'#4488ff', freq:196.0,  lv:1, type:'planet'},
+  {id:'sun',         name:'Sun',          x:22,  y:270, r:52, dr:52, col:'#ffaa00', freq:130.8,  lv:1, type:'star'},
+  {id:'mercury',     name:'Mercury',      x:105, y:155, r:16, dr:13,  col:'#aaaaaa', freq:164.8,  lv:1, type:'planet'},
+  {id:'venus',       name:'Venus',        x:162, y:390, r:18, dr:17, col:'#e8c060', freq:185.0,  lv:1, type:'planet'},
+  {id:'earth',       name:'Earth',        x:225, y:125, r:19, dr:19, col:'#4488ff', freq:196.0,  lv:1, type:'planet'},
   // Earth moon — clearly above Earth
   {id:'moon',        name:'Moon',         x:242, y:98,  r:14, dr:9,  col:'#cccccc', freq:207.7,  lv:2, type:'moon'},
-  {id:'mars',        name:'Mars',         x:302, y:408, r:16, dr:13, col:'#cc4422', freq:220.0,  lv:1, type:'planet'},
+  {id:'mars',        name:'Mars',         x:302, y:408, r:18, dr:17, col:'#cc4422', freq:220.0,  lv:1, type:'planet'},
   // Mars moons — left/right of Mars
   {id:'phobos',      name:'Phobos',       x:278, y:432, r:14, dr:7,  col:'#aa8866', freq:233.1,  lv:2, type:'moon'},
   {id:'deimos',      name:'Deimos',       x:328, y:432, r:14, dr:7,  col:'#998877', freq:246.9,  lv:2, type:'moon'},
   {id:'asteroidbelt',name:'Asteroid Belt',x:372, y:270, r:45, dr:26, col:'#888888', freq:261.6,  lv:3, type:'belt'},
   // Ceres — slightly left in belt, bigger/brighter
   {id:'ceres',       name:'Ceres',        x:345, y:215, r:14, dr:11,  col:'#d4c090', freq:277.2,  lv:3, type:'dwarf'},
-  {id:'jupiter',     name:'Jupiter',      x:470, y:145, r:34, dr:34, col:'#c8a878', freq:293.7,  lv:1, type:'planet'},
+  {id:'jupiter',     name:'Jupiter',      x:470, y:145, r:38, dr:38, col:'#c8a878', freq:293.7,  lv:1, type:'planet'},
   // Jupiter moons — arc above Jupiter, well spaced
-  {id:'io',          name:'Io',           x:400, y:96, r:14, dr:9,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
-  {id:'europa',      name:'Europa',       x:427, y:71, r:14, dr:9,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
-  {id:'ganymede',    name:'Ganymede',     x:467, y:60, r:15, dr:11, col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
-  {id:'callisto',    name:'Callisto',     x:505, y:67, r:14, dr:9,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
-  {id:'saturn',      name:'Saturn',       x:578, y:402, r:30, dr:28, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
+  {id:'io',          name:'Io',           x:388, y:88, r:14, dr:9,  col:'#ddcc44', freq:311.1,  lv:2, type:'moon'},
+  {id:'europa',      name:'Europa',       x:420, y:58, r:14, dr:9,  col:'#ddbb99', freq:329.6,  lv:2, type:'moon'},
+  {id:'ganymede',    name:'Ganymede',     x:465, y:45, r:15, dr:11, col:'#aaaaaa', freq:349.2,  lv:2, type:'moon'},
+  {id:'callisto',    name:'Callisto',     x:509, y:53, r:14, dr:9,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
+  {id:'saturn',      name:'Saturn',       x:578, y:402, r:34, dr:32, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
   // Saturn moons — arc above Saturn, well spaced
-  {id:'titan',       name:'Titan',        x:505, y:368, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
-  {id:'enceladus',   name:'Enceladus',    x:524, y:343, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
-  {id:'rhea',        name:'Rhea',         x:553, y:326, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
-  {id:'dione',       name:'Dione',        x:586, y:322, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
-  {id:'iapetus',     name:'Iapetus',      x:618, y:333, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
-  {id:'uranus',      name:'Uranus',       x:692, y:142, r:24, dr:20, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
+  {id:'titan',       name:'Titan',        x:493, y:360, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
+  {id:'enceladus',   name:'Enceladus',    x:514, y:331, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
+  {id:'rhea',        name:'Rhea',         x:547, y:312, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
+  {id:'dione',       name:'Dione',        x:588, y:308, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
+  {id:'iapetus',     name:'Iapetus',      x:626, y:320, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
+  {id:'uranus',      name:'Uranus',       x:692, y:142, r:28, dr:25, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
   // Uranus moons — arc above Uranus
-  {id:'titania',     name:'Titania',      x:628, y:102, r:14, dr:8,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
-  {id:'oberon',      name:'Oberon',       x:676, y:69, r:14, dr:8,  col:'#9988aa', freq:622.3,  lv:3, type:'moon'},
-  {id:'miranda',     name:'Miranda',      x:727, y:76, r:14, dr:8,  col:'#ccbbaa', freq:659.3,  lv:3, type:'moon'},
-  {id:'neptune',     name:'Neptune',      x:780, y:402, r:23, dr:19, col:'#3355cc', freq:698.5,  lv:1, type:'planet'},
+  {id:'titania',     name:'Titania',      x:614, y:97, r:14, dr:8,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
+  {id:'oberon',      name:'Oberon',       x:672, y:54, r:14, dr:8,  col:'#9988aa', freq:622.3,  lv:3, type:'moon'},
+  {id:'miranda',     name:'Miranda',      x:737, y:64, r:14, dr:8,  col:'#ccbbaa', freq:659.3,  lv:3, type:'moon'},
+  {id:'neptune',     name:'Neptune',      x:780, y:402, r:27, dr:24, col:'#3355cc', freq:698.5,  lv:1, type:'planet'},
   // Neptune moon
-  {id:'triton',      name:'Triton',       x:725, y:356, r:14, dr:9,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
+  {id:'triton',      name:'Triton',       x:717, y:345, r:14, dr:9,  col:'#66aacc', freq:740.0,  lv:2, type:'moon'},
   // Kuiper belt — centred, with Pluto/Eris as bright dwarfs on ellipse arc
   {id:'kuiperbelt',  name:'Kuiper Belt',  x:830, y:270, r:45, dr:26, col:'#6688aa', freq:784.0,  lv:3, type:'belt'},
   {id:'pluto',       name:'Pluto',        x:845, y:425, r:14, dr:13, col:'#e0c070', freq:830.6,  lv:3, type:'dwarf'},
