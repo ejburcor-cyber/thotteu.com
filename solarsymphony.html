@@ -89,9 +89,9 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .cookie-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;padding:9px 16px;cursor:pointer;border:1.5px solid #fa0;background:transparent;color:#fff;transition:all .2s}
 .cookie-btn.accept{background:#fa0;color:#000}
 .cookie-btn.accept:hover{background:#ffd050}
-.symphony-info{width:900px;max-width:100%;background:rgba(0,5,20,.95);border:1px solid rgba(255,160,0,.3);border-top:2px solid #fa0;padding:12px 18px;display:none;margin:0 auto;min-height:48px}
-.symphony-info-name{color:#fa0;font-size:.50rem;font-family:'Press Start 2P',monospace;margin-bottom:6px;letter-spacing:1px}
-.symphony-info-desc{color:#cde;font-size:.38rem;font-family:'Press Start 2P',monospace;line-height:2.0}
+.symphony-info{width:900px;max-width:100%;background:rgba(0,5,20,.95);border:1px solid rgba(255,160,0,.3);border-top:2px solid #fa0;padding:10px 16px;display:none;margin:0 auto}
+.symphony-info-name{color:#fa0;font-size:.45rem;font-family:'Press Start 2P',monospace;margin-bottom:4px}
+.symphony-info-desc{color:#cde;font-size:.32rem;font-family:'Press Start 2P',monospace;line-height:1.8}
 #symphony-back{position:absolute;top:6px;left:8px;z-index:15;background:rgba(0,5,20,.85);border:1.5px solid #fa0;color:#fa0;font-family:'Press Start 2P',monospace;font-size:.35rem;padding:5px 10px;cursor:pointer;display:none}
 #symphony-back:hover{background:#fa0;color:#000}
 #symphony-hud-label{font-size:.38rem;color:#fa8;letter-spacing:1px}
@@ -306,38 +306,39 @@ const i18n={
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline, from your home screen.',pwaInstall:'INSTALL',
     lore:'YEAR 2050. Following the success of Project Mnemosine, the decoded alien signals have been traced to their origin points across the solar system. Detection probes have been deployed to every major object — from the Sun to the Oort Cloud. Alien frequencies are being received. Your mission: identify the source of each signal and log it correctly. This data will determine where the Math Cannon must be deployed next. Will you be our signal operator?',
     objectInfo:{
-      sun:'The Sun is the star at the heart of our solar system — a giant ball of hot gas so massive that all the planets, moons, asteroids and comets combined make up less than 0.2% of its total mass. Its surface glows at 5,500°C, while its outer atmosphere, the corona, reaches millions of degrees. Every second, the Sun converts 600 million tonnes of hydrogen into helium through nuclear fusion, releasing the light and heat that make life on Earth possible. Without the Sun, our planet would be a frozen, lifeless rock drifting through the dark.',
-      mercury:"Mercury is named after the Roman messenger god — the fastest of all the gods — and fittingly, it is the fastest planet, racing around the Sun in just 88 Earth days. It is the smallest planet in our solar system, barely larger than Earth's Moon, and has almost no atmosphere to protect it. This means temperatures swing wildly: scorching 430°C in the day and plummeting to -180°C at night. Mercury's surface is covered in craters from billions of years of asteroid impacts, giving it an ancient, battered appearance.",
-      venus:'Venus is named after the Roman goddess of love and beauty, yet it is one of the most hostile worlds in the solar system. Shrouded in thick clouds of sulfuric acid, it traps heat so effectively that its surface reaches 465°C — hotter than Mercury, despite being further from the Sun. A day on Venus lasts longer than its entire year, and it spins backwards compared to most planets. From Earth, Venus shines as the brightest object in the sky after the Sun and Moon, often called the Morning Star or Evening Star.',
-      earth:"Earth is our extraordinary home — the only world we know of where life exists. It formed about 4.5 billion years ago and is covered 71% by liquid water, essential for life as we know it. Earth's atmosphere, a mix of nitrogen and oxygen, acts like a protective blanket, shielding us from harmful radiation and keeping temperatures stable. We have one moon, which stabilises our axial tilt and creates the tides. Earth is in the habitable zone of the Sun — not too hot, not too cold — sometimes called the 'Goldilocks zone'.",
-      mars:'Mars is named after the Roman god of war, likely because of its fiery red colour — caused by iron oxide, or rust, on its surface. It is home to Olympus Mons, the largest volcano in the entire solar system, standing 27 km tall — three times the height of Everest. Mars has two tiny moons, Phobos and Deimos (Fear and Dread in Greek, companions of the war god). Scientists believe Mars once had liquid water and a thicker atmosphere. Today it is cold, dusty, and thin-aired, but missions are exploring whether microbial life ever existed there.',
-      asteroidbelt:"The Asteroid Belt is a vast region between Mars and Jupiter filled with millions of rocky and metallic objects, ranging from tiny pebbles to the dwarf planet Ceres. These are the leftover building blocks of the solar system — material that never managed to form a planet, largely because Jupiter's immense gravity kept stirring things up. Despite what movies suggest, the asteroid belt is mostly empty space; spacecraft pass through it without difficulty. It is a living archive of the early solar system, over 4.5 billion years old.",
-      ceres:"Ceres is the largest object in the asteroid belt and the only dwarf planet in the inner solar system. It was discovered in 1801 by Italian astronomer Giuseppe Piazzi, who initially thought it was a planet. Ceres is named after the Roman goddess of agriculture and harvests. With a diameter of about 945 km, it is large enough to have pulled itself into a spherical shape. NASA's Dawn spacecraft discovered bright spots on its surface in 2015, caused by reflective salt deposits — evidence that Ceres has water ice beneath its crust.",
-      jupiter:'Jupiter is named after the king of the Roman gods, and it truly rules the solar system — it is so massive that all the other planets could fit inside it with room to spare. It is a gas giant, made almost entirely of hydrogen and helium, with no solid surface. Its most famous feature is the Great Red Spot, a storm larger than Earth that has been raging for over 400 years. Jupiter acts as a cosmic bodyguard for the inner planets, its powerful gravity deflecting or capturing many asteroids and comets that might otherwise hit Earth. It has at least 95 known moons.',
-      saturn:'Saturn is named after the Roman god of agriculture and time — the father of Jupiter. It is the second largest planet and is instantly recognisable by its magnificent ring system, made of billions of ice and rock particles ranging from tiny grains to chunks as large as houses. Saturn is so light for its size that it would float on water if you could find an ocean big enough. It is a gas giant with no solid surface, and it has at least 146 known moons — more than any other planet. Titan, its largest moon, even has a thick atmosphere and liquid methane lakes.',
-      uranus:'Uranus is named after the ancient Greek god of the sky — the grandfather of Jupiter. It is an ice giant, composed mainly of water, methane and ammonia ice beneath its hydrogen and helium atmosphere. What makes Uranus truly unique is that it rotates on its side — its axis is tilted 98 degrees, so it essentially rolls around the Sun like a ball. This may have been caused by a giant collision billions of years ago. Its methane atmosphere gives it a beautiful blue-green colour. Uranus has faint rings and 28 known moons, many named after characters from Shakespeare.',
-      neptune:'Neptune is named after the Roman god of the sea, fitting for a world with a deep blue colour caused by methane in its atmosphere. It is the furthest planet from the Sun and the windiest world in the solar system — winds reach 2,100 km/h, faster than the speed of sound on Earth. Neptune takes 165 Earth years to complete one orbit of the Sun. It was discovered in 1846 using mathematics alone, before anyone had even seen it through a telescope, making it the only planet predicted by calculation. It has 16 known moons and a faint ring system.',
-      pluto:"Pluto was discovered in 1930 and was considered the ninth planet for 76 years, until 2006 when it was reclassified as a dwarf planet. It is named after the Roman god of the underworld — a fitting name for such a cold, distant, dark world. Pluto is in the Kuiper Belt, far beyond Neptune, and takes 248 Earth years to orbit the Sun. NASA's New Horizons spacecraft flew past in 2015 and revealed a stunning heart-shaped plain of nitrogen ice, towering ice mountains, and a surprisingly complex, colourful world. Pluto has five moons, the largest being Charon.",
-      eris:"Eris is a dwarf planet in the scattered disc, even further from the Sun than Pluto. It is named after the Greek goddess of discord and strife — because its discovery in 2005 by Mike Brown's team caused great debate about what counts as a planet, ultimately leading to Pluto's reclassification. Eris is slightly smaller than Pluto in size but more massive, covered in methane ice that makes it one of the most reflective objects in the solar system. It has one known moon, Dysnomia, named after the goddess of lawlessness — daughter of Eris.",
-      kuiperbelt:'The Kuiper Belt is a vast ring of icy objects beyond Neptune, stretching from about 30 to 50 times the Earth-Sun distance. It is named after Dutch-American astronomer Gerard Kuiper, who proposed its existence in the 1950s. The Kuiper Belt is home to thousands of icy worlds, including dwarf planets like Pluto and Eris, and is the source of short-period comets that visit the inner solar system. It is like a frozen fossil — a remnant of the early solar system, preserving conditions from over 4.5 billion years ago when the planets were still forming.',
-      oortscloud:"The Oort Cloud is the most distant region of our solar system — a vast, spherical shell of icy objects surrounding the Sun at distances of up to one light-year. It is named after Dutch astronomer Jan Oort, who proposed its existence in 1950. The Oort Cloud has never been directly observed — it is too far and too faint — but its existence is inferred from long-period comets that fall inward toward the Sun. These icy wanderers can take millions of years to complete a single orbit. The Oort Cloud marks the very boundary of the Sun's gravitational influence.",
-      moon:"The Moon is Earth's only natural satellite and our closest companion in space. It formed about 4.5 billion years ago, likely from debris ejected when a Mars-sized body collided with the young Earth. The Moon stabilises Earth's axial tilt, preventing wild swings in climate, and its gravity creates the ocean tides. It is the only world beyond Earth that humans have walked on — twelve astronauts did so during the Apollo programme between 1969 and 1972. The Moon has no atmosphere, so its surface is covered in craters and ancient volcanic plains called maria.",
-      phobos:"Phobos is the larger of Mars's two tiny moons, named after Phobos, the Greek god of fear and panic — a son of Ares (Mars). It is a small, irregularly shaped world, only about 27 km across, covered in craters and a thick layer of dusty regolith. Phobos orbits Mars so closely and so quickly that it rises in the west and sets in the east twice a day. Slowly but surely, tidal forces are pulling it closer to Mars — in about 50 million years, Phobos will either crash into Mars or break apart to form a ring around it.",
-      deimos:"Deimos is the smaller and more distant of Mars's two moons, named after Deimos, the Greek god of dread — twin brother of Phobos and son of Ares (Mars). It is tiny, just 15 km across, and has a smoother surface than Phobos, covered in a thick layer of fine regolith that fills many of its craters. Unlike Phobos, Deimos is slowly drifting away from Mars. From the Martian surface, Deimos would look like a very bright star, too small to appear as a disc to the naked eye.",
-      io:"Io is the most volcanically active world in the entire solar system — more so than Earth. Named after a priestess of Hera in Greek mythology, who was transformed into a white heifer by Zeus, Io has over 400 active volcanoes erupting almost constantly, covering its surface in sulphur and sulphur dioxide, giving it a vivid yellow, orange and red colour. This extraordinary activity is caused by tidal heating — the gravitational pull of Jupiter and its other large moons constantly flexes and squeezes Io's interior, generating immense heat. Io was discovered by Galileo in 1610.",
-      europa:"Europa is one of the most exciting worlds in the solar system for scientists searching for life beyond Earth. Named after a Phoenician princess loved by Zeus in Greek mythology, Europa is covered in a smooth shell of water ice — the smoothest solid surface in the solar system. Beneath this ice lies a vast saltwater ocean, kept liquid by tidal heating from Jupiter's gravity. This ocean has likely existed for billions of years and may contain the right chemistry and energy sources for microbial life. NASA's Europa Clipper mission is en route to investigate.",
-      ganymede:'Ganymede is the largest moon in the entire solar system — bigger than the planet Mercury. It is named after a beautiful youth from Greek mythology who was carried to Mount Olympus by Zeus to serve as cup-bearer to the gods. Ganymede is a world of ice and rock, with a metallic iron core and its own magnetic field — the only moon known to have one. This magnetic field creates beautiful auroral belts near its poles. Ganymede was discovered by Galileo Galilei in 1610 and has a subsurface ocean of saltwater beneath its icy crust.',
-      callisto:"Callisto is the outermost of Jupiter's four large Galilean moons and the most heavily cratered body in the solar system, its ancient surface virtually unchanged for four billion years. It is named after a nymph in Greek mythology who was transformed into a bear by the goddess Hera out of jealousy. Callisto is a mix of ice and rock, and scientists believe it may harbour a subsurface ocean beneath its battered exterior. Unlike Io and Europa, Callisto lies outside Jupiter's intense radiation belts, making it a potentially interesting target for future human exploration.",
-      titan:"Titan is Saturn's largest moon and one of the most fascinating worlds in the solar system. Named after the Titans of Greek mythology — the powerful gods who preceded the Olympians — Titan is the only moon with a thick atmosphere, denser than Earth's, made mostly of nitrogen. Remarkably, Titan has lakes, rivers and rain — but made of liquid methane and ethane rather than water. Its chemistry may resemble early Earth, making it a natural laboratory for understanding the origins of life. The Huygens probe landed on Titan in 2005, becoming the most distant landing in history.",
-      enceladus:"Enceladus is a small, icy moon of Saturn that has astonished scientists with its geological activity. Named after one of the Giants of Greek mythology who was buried beneath a volcano, Enceladus has a south polar region so active that it shoots plumes of water vapour and ice particles hundreds of kilometres into space, feeding Saturn's E ring. These geysers come from a subsurface ocean of liquid water, which may contain the chemical ingredients for life. Enceladus is now considered one of the best candidates in the solar system for finding extraterrestrial life.",
-      rhea:"Rhea is Saturn's second largest moon, named after Rhea, the Titan mother of the Olympian gods in Greek mythology — including Zeus, Hera and Poseidon. It is an icy, cratered world, composed mostly of water ice with a rocky core, and has a very thin atmosphere containing oxygen and carbon dioxide — one of only a handful of moons known to have any atmosphere at all. Rhea's surface preserves a record of billions of years of impact history, with bright, wispy streaks of ice across darker terrain.",
-      dione:"Dione is a medium-sized moon of Saturn named after the Titan goddess Dione from Greek mythology, sometimes described as the mother of Aphrodite. It is a world of water ice with a dense rocky core, similar in composition to Rhea. Dione's surface shows dramatic ice cliffs and bright, wispy markings that turned out to be fractures in the ice. It has a very thin atmosphere of oxygen. Cassini spacecraft detected trace signs of oxygen ions around Dione — a reminder that even small, cold moons can be more complex than they first appear.",
-      iapetus:'Iapetus is one of the most visually striking moons in the solar system — it has a two-toned surface, with one hemisphere as dark as coal and the other as bright as snow. Named after the Titan Iapetus from Greek mythology, sometimes associated with mortality and the passage of time, this remarkable division is caused partly by dark dust swept up from space and partly by thermal segregation of ice. Iapetus also has an enormous equatorial ridge, rising 20 km high, which wraps around its middle — a mystery that scientists still debate. Discovered by Giovanni Cassini in 1671.',
-      titania:"Titania is the largest moon of Uranus, named after the queen of the fairies in Shakespeare's A Midsummer Night's Dream — most of Uranus's moons are named after Shakespearean characters. It is a world of ice and rock, with a surface marked by enormous fault valleys stretching up to 1,500 km long, suggesting geological activity in its past. Titania may harbour a liquid water ocean at the boundary between its mantle and core. It was discovered by William Herschel in 1787, the same year he discovered Oberon.",
-      oberon:"Oberon is the second largest moon of Uranus, named after the king of the fairies in Shakespeare's A Midsummer Night's Dream — husband of Titania. It is a heavily cratered, ancient world made of roughly equal parts ice and rock. Its surface shows some of the oldest terrain in the Uranian system, scarred by billions of years of impacts. Oberon has a large mountain on its limb, rising about 6 km high, possibly the central peak of an impact crater. Like Titania, it was discovered by William Herschel in 1787.",
-      miranda:"Miranda is the smallest and innermost of Uranus's five major moons, and it has one of the most bizarre surfaces in the solar system. Named after the daughter of the magician Prospero in Shakespeare's The Tempest, Miranda has an incredibly varied terrain — ancient cratered plains sit next to towering cliffs, deep canyons and strange grooved regions that look like they were assembled from mismatched pieces. Verona Rupes on Miranda is the tallest known cliff in the solar system — dropping about 20 km. This extraordinary landscape may be the result of ancient geological upheaval.",
-      triton:"Triton is Neptune's largest moon and one of the strangest worlds we know. Named after the son of Poseidon (Neptune) in Greek mythology — a merman who could calm or raise the seas with his conch shell — Triton orbits Neptune backwards compared to the planet's rotation, a strong sign that it was captured from the Kuiper Belt billions of years ago rather than forming in place. Despite its distance from the Sun, Triton is geologically active, with geysers of nitrogen gas erupting from its surface. It is one of the coldest worlds in the solar system, at -235°C.",
-    }
+      sun:'The Sun · Our star · 1,392,000 km diameter · 99.8% of solar system mass · Surface temp: 5,500°C',
+      mercury:'Mercury · 1st planet · Smallest planet · No atmosphere · Extreme temperatures: -180°C to 430°C',
+      venus:'Venus · 2nd planet · Hottest planet (465°C) · Thick CO₂ atmosphere · Retrograde rotation',
+      earth:'Earth · 3rd planet · Only known life · 71% water surface · 1 moon',
+      mars:'Mars · 4th planet · The Red Planet · Largest volcano in solar system (Olympus Mons) · 2 moons',
+      asteroidbelt:'Asteroid Belt · Between Mars and Jupiter · Millions of rocky objects · Contains dwarf planet Ceres',
+      ceres:'Ceres · Largest asteroid belt object · Dwarf planet · 945 km diameter · Has water ice',
+      jupiter:'Jupiter · 5th planet · Largest planet · 95 known moons · Great Red Spot storm for 400+ years',
+      saturn:'Saturn · 6th planet · Famous ring system · Least dense planet · 146 known moons',
+      uranus:'Uranus · 7th planet · Rotates on its side · Ice giant · Faint ring system · 28 known moons',
+      neptune:'Neptune · 8th planet · Strongest winds in solar system (2,100 km/h) · 16 known moons',
+      pluto:'Pluto · Dwarf planet · Kuiper Belt object · 5 moons · Heart-shaped nitrogen ice plain',
+      eris:'Eris · Dwarf planet · More massive than Pluto · In scattered disc · 1 moon (Dysnomia)',
+      kuiperbelt:'Kuiper Belt · Beyond Neptune · Icy objects · Source of short-period comets · Contains Pluto',
+      oortscloud:'Oort Cloud · Outermost region · Spherical shell of icy objects · Source of long-period comets',
+      moon:'Moon · Earth\'s satellite · 384,400 km from Earth · Stabilises Earth\'s axial tilt',
+      phobos:'Phobos · Mars moon · Largest of 2 Mars moons · Slowly spiralling toward Mars',
+      deimos:'Deimos · Mars moon · Smaller of 2 Mars moons · Very slow orbit',
+      io:'Io · Jupiter moon · Most volcanic body in solar system · Over 400 active volcanoes',
+      europa:'Europa · Jupiter moon · Likely subsurface ocean · Top candidate for extraterrestrial life',
+      ganymede:'Ganymede · Jupiter moon · Largest moon in solar system · Larger than Mercury',
+      callisto:'Callisto · Jupiter moon · Most heavily cratered object · Ancient surface',
+      titan:'Titan · Saturn moon · Thick nitrogen atmosphere · Lakes of liquid methane',
+      enceladus:'Enceladus · Saturn moon · Water geysers at south pole · Possible life candidate',
+      rhea:'Rhea · Saturn moon · Second largest Saturn moon · Mostly water ice',
+      dione:'Dione · Saturn moon · Ice cliffs and wispy terrain',
+      iapetus:'Iapetus · Saturn moon · Two-tone surface: one side dark, one side bright',
+      titania:'Titania · Uranus moon · Largest Uranus moon · Mix of ice and rock',
+      oberon:'Oberon · Uranus moon · Second largest Uranus moon · Heavily cratered',
+      miranda:'Miranda · Uranus moon · Extreme terrain: cliffs 20 km tall',
+      triton:'Triton · Neptune moon · Largest Neptune moon · Orbits backwards · Geysers of nitrogen',
+    },
+    objNames:{sun:'Sun',mercury:'Mercury',venus:'Venus',earth:'Earth',moon:'Moon',mars:'Mars',phobos:'Phobos',deimos:'Deimos',asteroidbelt:'Asteroid Belt',ceres:'Ceres',jupiter:'Jupiter',io:'Io',europa:'Europa',ganymede:'Ganymede',callisto:'Callisto',saturn:'Saturn',titan:'Titan',enceladus:'Enceladus',rhea:'Rhea',dione:'Dione',iapetus:'Iapetus',uranus:'Uranus',titania:'Titania',oberon:'Oberon',miranda:'Miranda',neptune:'Neptune',triton:'Triton',kuiperbelt:'Kuiper Belt',pluto:'Pluto',eris:'Eris',oortscloud:'Oort Cloud'}
   },
   es:{
     title:'SOLAR SYMPHONY',subtitle:'ESCUCHA · RECUERDA · REPITE',
@@ -363,38 +364,39 @@ const i18n={
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio.',pwaInstall:'INSTALAR',
     lore:'AÑO 2050. Tras el éxito del Proyecto Mnemosine, las señales alienígenas decodificadas han sido rastreadas hasta sus puntos de origen en todo el sistema solar. Se han desplegado sondas detectoras en cada objeto importante — desde el Sol hasta la Nube de Oort. Las frecuencias alienígenas están siendo recibidas. Tu misión: identificar el origen de cada señal y registrarlo correctamente. Estos datos determinarán dónde debe desplegarse el Cañón a continuación. ¿Serás nuestro operador de señales?',
     objectInfo:{
-      sun:'El Sol es la estrella en el centro de nuestro sistema solar: una gigantesca bola de gas tan masiva que todos los planetas, lunas, asteroides y cometas juntos representan menos del 0,2% de su masa total. Su superficie brilla a 5.500°C, y su atmósfera exterior, la corona, alcanza millones de grados. Cada segundo convierte 600 millones de toneladas de hidrógeno en helio, liberando la luz y el calor que hacen posible la vida en la Tierra. Sin el Sol, nuestro planeta sería una roca helada y sin vida a la deriva en la oscuridad.',
-      mercury:'Mercurio lleva el nombre del dios mensajero romano —el más veloz de todos los dioses— y, como él, es el planeta más rápido: da la vuelta al Sol en solo 88 días terrestres. Es el planeta más pequeño del sistema solar, apenas más grande que la Luna de la Tierra, y casi no tiene atmósfera que lo proteja. Las temperaturas oscilan bruscamente: 430°C durante el día y -180°C por la noche. Su superficie está cubierta de cráteres de miles de millones de años de impactos de asteroides.',
-      venus:'Venus lleva el nombre de la diosa romana del amor y la belleza, aunque es uno de los mundos más hostiles del sistema solar. Envuelto en nubes de ácido sulfúrico, atrapa el calor tan eficientemente que su superficie alcanza los 465°C, más caliente que Mercurio a pesar de estar más lejos del Sol. Un día en Venus dura más que todo su año, y gira al revés. Desde la Tierra, Venus es el objeto más brillante del cielo después del Sol y la Luna, llamado a veces la Estrella de la Mañana o la Estrella del Atardecer.',
-      earth:'La Tierra es nuestro extraordinario hogar: el único mundo que conocemos donde existe vida. Se formó hace unos 4.500 millones de años y está cubierta en un 71% por agua líquida, esencial para la vida. Su atmósfera, una mezcla de nitrógeno y oxígeno, actúa como una manta protectora que nos protege de la radiación dañina y mantiene temperaturas estables. Tenemos una luna, que estabiliza nuestra inclinación axial y crea las mareas. La Tierra está en la zona habitable del Sol, ni demasiado caliente ni demasiado fría.',
-      mars:'Marte lleva el nombre del dios romano de la guerra, probablemente por su color rojo intenso, causado por óxido de hierro, es decir, herrumbre, en su superficie. Es el hogar del Monte Olimpo, el volcán más grande de todo el sistema solar, con 27 km de altura, tres veces el Everest. Marte tiene dos pequeñas lunas, Fobos y Deimos (Miedo y Terror en griego, compañeros del dios de la guerra). Los científicos creen que Marte tuvo agua líquida en el pasado. Hoy es frío, polvoriento y con una atmósfera muy tenue.',
-      asteroidbelt:'El Cinturón de Asteroides es una vasta región entre Marte y Júpiter llena de millones de objetos rocosos y metálicos, desde pequeñas piedras hasta el planeta enano Ceres. Son los materiales sobrantes de la formación del sistema solar, que nunca llegaron a formar un planeta porque la enorme gravedad de Júpiter impedía que se agruparan. A pesar de lo que muestran las películas, el cinturón está casi vacío: las sondas espaciales lo cruzan sin dificultad. Es un archivo vivo del sistema solar primitivo, con más de 4.500 millones de años de antigüedad.',
-      ceres:'Ceres es el objeto más grande del cinturón de asteroides y el único planeta enano del sistema solar interior. Fue descubierto en 1801 por el astrónomo italiano Giuseppe Piazzi, quien pensó inicialmente que era un planeta. Lleva el nombre de la diosa romana de la agricultura y las cosechas. Con un diámetro de 945 km, es lo suficientemente grande como para haber adoptado una forma esférica. La sonda Dawn descubrió brillantes manchas blancas en su superficie en 2015, causadas por depósitos de sal reflectante: evidencia de que hay hielo de agua bajo su corteza.',
-      jupiter:'Júpiter lleva el nombre del rey de los dioses romanos, y de hecho domina el sistema solar: es tan masivo que todos los demás planetas cabrían dentro de él con espacio de sobra. Es un gigante gaseoso compuesto casi por completo de hidrógeno y helio, sin superficie sólida. Su rasgo más famoso es la Gran Mancha Roja, una tormenta más grande que la Tierra que lleva activa más de 400 años. Júpiter actúa como guardián cósmico de los planetas interiores, desviando con su poderosa gravedad muchos asteroides y cometas que podrían golpear la Tierra.',
-      saturn:'Saturno lleva el nombre del dios romano de la agricultura y el tiempo, el padre de Júpiter. Es el segundo planeta más grande y se reconoce al instante por su magnífico sistema de anillos, formado por miles de millones de partículas de hielo y roca. Saturno es tan ligero para su tamaño que flotaría en el agua si hubiera un océano suficientemente grande. Es un gigante gaseoso sin superficie sólida, con al menos 146 lunas conocidas, más que cualquier otro planeta. Titán, su luna más grande, tiene una atmósfera densa y lagos de metano líquido.',
-      uranus:'Urano lleva el nombre del antiguo dios griego del cielo, el abuelo de Júpiter. Es un gigante de hielo compuesto principalmente de agua, metano y hielo de amoníaco bajo su atmósfera de hidrógeno y helio. Lo que hace único a Urano es que rota de lado: su eje está inclinado 98°, así que esencialmente rueda alrededor del Sol como una pelota. Esto pudo ser causado por una colisión gigantesca hace miles de millones de años. Su atmósfera de metano le da un hermoso color azul verdoso. Tiene anillos tenues y 28 lunas conocidas.',
-      neptune:'Neptuno lleva el nombre del dios romano del mar, acertado para un mundo con un profundo color azul causado por el metano en su atmósfera. Es el planeta más lejano del Sol y el más ventoso del sistema solar: los vientos alcanzan 2.100 km/h, más rápido que el sonido. Neptuno tarda 165 años terrestres en completar una órbita. Fue descubierto en 1846 usando solo matemáticas, antes de que nadie lo hubiera visto por un telescopio, siendo el único planeta predicho por cálculo. Tiene 16 lunas conocidas.',
-      pluto:'Plutón fue descubierto en 1930 y se consideró el noveno planeta durante 76 años, hasta que fue reclasificado como planeta enano en 2006. Lleva el nombre del dios romano del inframundo, un nombre apropiado para un mundo tan frío, distante y oscuro. Está en el Cinturón de Kuiper y tarda 248 años terrestres en orbitar el Sol. La sonda New Horizons pasó junto a él en 2015 y reveló una impresionante llanura en forma de corazón de hielo de nitrógeno, montañas de hielo y un mundo sorprendentemente complejo y colorido. Plutón tiene cinco lunas.',
-      eris:'Eris es un planeta enano en el disco disperso, aún más lejos del Sol que Plutón. Lleva el nombre de la diosa griega de la discordia y la rivalidad, porque su descubrimiento en 2005 por Mike Brown provocó un gran debate sobre qué cuenta como planeta, llevando finalmente a la reclasificación de Plutón. Eris es ligeramente más pequeño que Plutón en tamaño pero más masivo, cubierto de hielo de metano. Tiene una luna conocida, Disnomia, la diosa de la ilegalidad: hija de Eris.',
-      kuiperbelt:'El Cinturón de Kuiper es un vasto anillo de objetos helados más allá de Neptuno, que se extiende desde unas 30 hasta 50 veces la distancia Tierra-Sol. Lleva el nombre del astrónomo holandés-estadounidense Gerard Kuiper, quien propuso su existencia en los años 50. Es el hogar de miles de mundos helados, incluyendo planetas enanos como Plutón y Eris, y es el origen de los cometas de período corto. Es como un fósil congelado del sistema solar primitivo, conservando condiciones de hace más de 4.500 millones de años.',
-      oortscloud:'La Nube de Oort es la región más distante de nuestro sistema solar: una enorme envoltura esférica de objetos helados que rodea al Sol hasta distancias de casi un año luz. Lleva el nombre del astrónomo holandés Jan Oort, quien propuso su existencia en 1950. Nunca ha sido observada directamente, pero su existencia se deduce de los cometas de largo período que caen hacia el Sol desde todas las direcciones. Estos vagabundos helados pueden tardar millones de años en completar una sola órbita. La Nube de Oort marca el límite más lejano de la influencia gravitatoria del Sol.',
-      moon:'La Luna es el único satélite natural de la Tierra y nuestro vecino más cercano en el espacio. Se formó hace unos 4.500 millones de años, probablemente a partir de los escombros lanzados cuando un cuerpo del tamaño de Marte chocó contra la joven Tierra. La Luna estabiliza la inclinación axial de la Tierra, evitando oscilaciones bruscas del clima, y su gravedad crea las mareas oceánicas. Es el único mundo fuera de la Tierra que los humanos han pisado: doce astronautas lo hicieron durante el programa Apolo entre 1969 y 1972.',
-      phobos:'Fobos es la mayor de las dos pequeñas lunas de Marte, llamada así por Fobos, el dios griego del miedo y el pánico, hijo de Ares (Marte). Es un mundo pequeño e irregular, de solo 27 km de diámetro, cubierto de cráteres. Orbita Marte tan cerca y tan rápido que sale por el oeste y se pone por el este dos veces al día. Las fuerzas de marea lo acercan lentamente a Marte: en unos 50 millones de años, Fobos chocará contra Marte o se fragmentará formando un anillo.',
-      deimos:'Deimos es la menor y más distante de las dos lunas de Marte, llamada así por Deimos, el dios griego del terror, hermano gemelo de Fobos e hijo de Ares (Marte). Es diminuta, solo 15 km de diámetro, con una superficie más suave que Fobos cubierta de regolito fino. Al contrario que Fobos, Deimos se aleja lentamente de Marte. Desde la superficie marciana, Deimos parecería una estrella muy brillante, demasiado pequeña para aparecer como un disco a simple vista.',
-      io:'Ío es el cuerpo con más actividad volcánica de todo el sistema solar, mucho más que la Tierra. Lleva el nombre de una sacerdotisa de Hera en la mitología griega, transformada en una vaca blanca por Zeus. Tiene más de 400 volcanes activos que erupcionan casi constantemente, cubriendo su superficie de azufre y dióxido de azufre, dándole un vívido color amarillo, naranja y rojo. Esta extraordinaria actividad está causada por el calentamiento de marea: la atracción gravitatoria de Júpiter y sus otras grandes lunas flexiona el interior de Ío constantemente. Fue descubierta por Galileo en 1610.',
-      europa:'Europa es uno de los mundos más emocionantes del sistema solar para los científicos que buscan vida más allá de la Tierra. Lleva el nombre de una princesa fenicia amada por Zeus en la mitología griega. Europa está cubierta por una lisa capa de hielo de agua, y bajo ella se esconde un vasto océano de agua salada, mantenido líquido por el calentamiento de marea. Este océano podría existir desde hace miles de millones de años y contener la química y la energía necesarias para la vida microbiana. La misión Europa Clipper de la NASA ya está en camino.',
-      ganymede:'Ganímedes es la luna más grande de todo el sistema solar, más grande incluso que el planeta Mercurio. Lleva el nombre de un joven de la mitología griega a quien Zeus llevó al monte Olimpo para ser el copero de los dioses. Es un mundo de hielo y roca con un núcleo de hierro y su propio campo magnético, siendo la única luna conocida que tiene uno. Este campo magnético crea auroras boreales cerca de sus polos. Fue descubierto por Galileo en 1610 y tiene un océano subsuperficial de agua salada bajo su corteza helada.',
-      callisto:'Calisto es la más exterior de las cuatro grandes lunas galileanas de Júpiter y el cuerpo más craterizado del sistema solar, con una superficie prácticamente sin cambios desde hace cuatro mil millones de años. Lleva el nombre de una ninfa de la mitología griega que fue transformada en osa por la diosa Hera. Calisto es una mezcla de hielo y roca, y los científicos creen que puede albergar un océano subsuperficial. A diferencia de Ío y Europa, Calisto está fuera de los intensos cinturones de radiación de Júpiter, haciéndola un objetivo interesante para futuras exploraciones humanas.',
-      titan:'Titán es la luna más grande de Saturno y uno de los mundos más fascinantes del sistema solar. Lleva el nombre de los Titanes de la mitología griega, los poderosos dioses que precedieron a los olímpicos. Es la única luna con una atmósfera densa, más gruesa que la de la Tierra, compuesta principalmente de nitrógeno. Titán tiene lagos, ríos y lluvia, pero de metano y etano líquido en lugar de agua. Su química puede parecerse a la de la Tierra primitiva. La sonda Huygens aterrizó en Titán en 2005, convirtiéndose en el aterrizaje más distante de la historia.',
-      enceladus:'Encélado es una pequeña luna helada de Saturno que ha asombrado a los científicos con su actividad geológica. Lleva el nombre de uno de los Gigantes de la mitología griega, enterrado bajo un volcán por Atenea. Su región polar sur dispara columnas de vapor de agua y partículas de hielo a cientos de kilómetros al espacio, alimentando el anillo E de Saturno. Estas fuentes termales provienen de un océano subsuperficial de agua líquida, que puede contener los ingredientes químicos para la vida. Encélado es uno de los mejores candidatos del sistema solar para encontrar vida extraterrestre.',
-      rhea:'Rea es la segunda luna más grande de Saturno, llamada así por Rea, la diosa Titán madre de los dioses olímpicos en la mitología griega, incluyendo Zeus, Hera y Poseidón. Es un mundo helado y craterizado, compuesto principalmente de hielo de agua con un núcleo rocoso, y tiene una tenue atmósfera que contiene oxígeno y dióxido de carbono. La superficie de Rea conserva miles de millones de años de historia de impactos, con brillantes marcas vaporosas de hielo sobre un terreno más oscuro.',
-      dione:'Dione es una luna de tamaño mediano de Saturno, llamada así por la diosa Titán Dione de la mitología griega, a veces descrita como la madre de Afrodita. Es un mundo de hielo de agua con un núcleo rocoso denso. La superficie de Dione muestra dramáticos acantilados de hielo y brillantes marcas vaporosas que resultaron ser fracturas en el hielo. Tiene una atmósfera muy tenue de oxígeno. La sonda Cassini detectó indicios de iones de oxígeno alrededor de Dione, recordándonos que incluso las lunas pequeñas y frías pueden ser más complejas de lo que parecen.',
-      iapetus:'Japeto es una de las lunas más visualmente impresionantes del sistema solar, con una superficie bicolor: un hemisferio tan oscuro como el carbón y el otro tan blanco como la nieve. Lleva el nombre del Titán Jápeto de la mitología griega, a veces asociado con la mortalidad y el paso del tiempo. Esta notable división se debe en parte al polvo oscuro del espacio y en parte a la segregación térmica del hielo. Japeto también tiene una enorme cresta ecuatorial de 20 km de altura que rodea su ecuador: un misterio que los científicos aún debaten. Fue descubierta por Giovanni Cassini en 1671.',
-      titania:'Titania es la luna más grande de Urano, llamada así por la reina de las hadas en El sueño de una noche de verano de Shakespeare, pues la mayoría de las lunas de Urano llevan nombres de personajes shakesperianos. Es un mundo de hielo y roca, con una superficie marcada por enormes valles de falla de hasta 1.500 km de largo, que sugieren actividad geológica en el pasado. Titania podría albergar un océano de agua líquida en el límite entre su manto y su núcleo. Fue descubierta por William Herschel en 1787.',
-      oberon:'Oberón es la segunda luna más grande de Urano, llamada así por el rey de las hadas en El sueño de una noche de verano de Shakespeare, esposo de Titania. Es un mundo antiguo y muy craterizado, compuesto de aproximadamente partes iguales de hielo y roca. Su superficie muestra algunas de las áreas más antiguas del sistema uraniano, con miles de millones de años de impactos. Oberón tiene una gran montaña en su borde, de unos 6 km de altura, posiblemente el pico central de un cráter de impacto. Fue descubierta por William Herschel en 1787.',
-      miranda:'Miranda es la más pequeña e interior de las cinco lunas principales de Urano, y tiene una de las superficies más extrañas del sistema solar. Lleva el nombre de la hija del mago Próspero en La Tempestad de Shakespeare. Miranda tiene un terreno increíblemente variado: antiguas llanuras craterizadas junto a acantilados enormes, cañones profundos y extrañas regiones acanaladas que parecen ensambladas de piezas dispares. Verona Rupes en Miranda es el acantilado más alto conocido del sistema solar, con una caída de unos 20 km. Fue descubierta en 1948.',
-      triton:'Tritón es la luna más grande de Neptuno y uno de los mundos más extraños que conocemos. Lleva el nombre del hijo de Poseidón (Neptuno) en la mitología griega, un tritón que podía calmar o agitar los mares con su caracola. Tritón orbita Neptuno hacia atrás respecto a la rotación del planeta, una clara señal de que fue capturada del Cinturón de Kuiper hace miles de millones de años. A pesar de su distancia al Sol, Tritón es geológicamente activo, con géiseres de gas nitrógeno que brotan de su superficie. Es uno de los mundos más fríos del sistema solar, a -235°C.',
-    }
+      sun:'El Sol · Nuestra estrella · 1.392.000 km de diámetro · 99,8% de la masa del sistema solar · Temp. superficie: 5.500°C',
+      mercury:'Mercurio · 1er planeta · El más pequeño · Sin atmósfera · Temperaturas extremas: -180°C a 430°C',
+      venus:'Venus · 2º planeta · El más caliente (465°C) · Atmósfera densa de CO₂ · Rotación retrógrada',
+      earth:'Tierra · 3er planeta · Única vida conocida · 71% de superficie acuática · 1 luna',
+      mars:'Marte · 4º planeta · El Planeta Rojo · Mayor volcán del sistema solar (Olimpo) · 2 lunas',
+      asteroidbelt:'Cinturón de Asteroides · Entre Marte y Júpiter · Millones de objetos rocosos · Contiene a Ceres',
+      ceres:'Ceres · Mayor objeto del cinturón · Planeta enano · 945 km de diámetro · Tiene hielo de agua',
+      jupiter:'Júpiter · 5º planeta · El mayor planeta · 95 lunas conocidas · Gran Mancha Roja: tormenta de 400+ años',
+      saturn:'Saturno · 6º planeta · Famoso sistema de anillos · El menos denso · 146 lunas conocidas',
+      uranus:'Urano · 7º planeta · Rota de lado · Gigante de hielo · Sistema de anillos tenue · 28 lunas',
+      neptune:'Neptuno · 8º planeta · Los vientos más fuertes del sistema solar (2.100 km/h) · 16 lunas',
+      pluto:'Plutón · Planeta enano · Objeto del Cinturón de Kuiper · 5 lunas · Llanura de hielo en forma de corazón',
+      eris:'Eris · Planeta enano · Más masivo que Plutón · En el disco disperso · 1 luna (Disnomia)',
+      kuiperbelt:'Cinturón de Kuiper · Más allá de Neptuno · Objetos helados · Origen de cometas de período corto',
+      oortscloud:'Nube de Oort · Región más exterior · Envoltura esférica de objetos helados · Origen de cometas de largo período',
+      moon:'Luna · Satélite de la Tierra · 384.400 km de la Tierra · Estabiliza la inclinación axial terrestre',
+      phobos:'Fobos · Luna de Marte · La mayor de las 2 lunas · Se acerca lentamente a Marte',
+      deimos:'Deimos · Luna de Marte · La menor de las 2 lunas · Órbita muy lenta',
+      io:'Ío · Luna de Júpiter · El cuerpo más volcánico del sistema solar · Más de 400 volcanes activos',
+      europa:'Europa · Luna de Júpiter · Probable océano subsuperficial · Principal candidata a vida extraterrestre',
+      ganymede:'Ganímedes · Luna de Júpiter · La mayor luna del sistema solar · Más grande que Mercurio',
+      callisto:'Calisto · Luna de Júpiter · El objeto más craterizado · Superficie muy antigua',
+      titan:'Titán · Luna de Saturno · Atmósfera densa de nitrógeno · Lagos de metano líquido',
+      enceladus:'Encélado · Luna de Saturno · Géiseres de agua en el polo sur · Posible candidata a vida',
+      rhea:'Rea · Luna de Saturno · La segunda mayor luna de Saturno · Mayormente hielo de agua',
+      dione:'Dione · Luna de Saturno · Acantilados de hielo y terreno vaporoso',
+      iapetus:'Japeto · Luna de Saturno · Superficie bicolor: un lado oscuro, otro brillante',
+      titania:'Titania · Luna de Urano · La mayor luna de Urano · Mezcla de hielo y roca',
+      oberon:'Oberón · Luna de Urano · La segunda mayor luna de Urano · Muy craterizada',
+      miranda:'Miranda · Luna de Urano · Terreno extremo: acantilados de 20 km de altura',
+      triton:'Tritón · Luna de Neptuno · La mayor luna de Neptuno · Órbita retrógrada · Géiseres de nitrógeno',
+    },
+    objNames:{sun:'Sol',mercury:'Mercurio',venus:'Venus',earth:'Tierra',moon:'Luna',mars:'Marte',phobos:'Fobos',deimos:'Deimos',asteroidbelt:'Cinturón de Asteroides',ceres:'Ceres',jupiter:'Júpiter',io:'Ío',europa:'Europa',ganymede:'Ganímedes',callisto:'Calisto',saturn:'Saturno',titan:'Titán',enceladus:'Encélado',rhea:'Rea',dione:'Dione',iapetus:'Japeto',uranus:'Urano',titania:'Titania',oberon:'Oberón',miranda:'Miranda',neptune:'Neptuno',triton:'Tritón',kuiperbelt:'Cinturón de Kuiper',pluto:'Plutón',eris:'Eris',oortscloud:'Nube de Oort'}
   },
   fr:{
     title:'SOLAR SYMPHONY',subtitle:'ÉCOUTE · MÉMORISE · RÉPÈTE',
@@ -419,39 +421,8 @@ const i18n={
     cookieAccept:'ACCEPTER',cookieReject:'REFUSER',cookiePrivacyLink:'En savoir plus',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
     lore:'ANNÉE 2050. Suite au succès du Projet Mnemosine, les signaux extraterrestres décodés ont été tracés jusqu\'à leurs points d\'origine dans tout le système solaire. Des sondes de détection ont été déployées sur chaque objet majeur — du Soleil jusqu\'au Nuage d\'Oort. Les fréquences extraterrestres sont reçues. Votre mission : identifier l\'origine de chaque signal et l\'enregistrer correctement. Serez-vous notre opérateur de signaux ?',
-    objectInfo:{
-      sun:'Le Soleil · Notre étoile · Diamètre : 1 392 000 km · 99,8 % de la masse du système solaire · Temp. surface : 5 500°C · À 150 millions de km de la Terre',
-      mercury:'Mercure · 1ère planète · La plus petite · Sans atmosphère · Températures : -180°C à 430°C · Une année dure 88 jours terrestres',
-      venus:'Vénus · 2e planète · La plus chaude (465°C) · Atmosphère dense de CO₂ · Rotation rétrograde · Un jour plus long que son année',
-      earth:'Terre · 3e planète · Seule avec de la vie connue · 71 % de surface océanique · 1 lune · Atmosphère protectrice d\'azote et d\'oxygène',
-      mars:'Mars · 4e planète · La Planète Rouge · Plus grand volcan du système solaire (Mont Olympe : 27 km) · 2 lunes · Un jour dure 24h 37min',
-      asteroidbelt:'Ceinture d\'astéroïdes · Entre Mars et Jupiter · Des millions d\'objets rocheux · Contient la planète naine Cérès',
-      ceres:'Cérès · Planète naine · Le plus grand objet de la ceinture d\'astéroïdes · 945 km de diamètre · Contient de la glace d\'eau · Découverte en 1801',
-      jupiter:'Jupiter · 5e planète · La plus grande du système solaire · 95 lunes connues · La Grande Tache Rouge : tempête de plus de 400 ans · Géante gazeuse',
-      saturn:'Saturne · 6e planète · Célèbre pour ses anneaux de glace et de roche · 146 lunes connues · Si dense qu\'elle flotterait sur l\'eau · Géante gazeuse',
-      uranus:'Uranus · 7e planète · Tourne sur le côté (inclinaison 98°) · Géante de glace · 28 lunes connues · Temp. -224°C',
-      neptune:'Neptune · 8e planète · Les vents les plus forts du système solaire (2 100 km/h) · 16 lunes · Géante de glace',
-      pluto:'Pluton · Planète naine · Dans la ceinture de Kuiper · 5 lunes · Plaine de glace d\'azote en forme de cœur · Reclassifiée en 2006',
-      eris:'Éris · Planète naine · Plus massive que Pluton · Dans le disque épars · 1 lune (Dysnomia) · Sa découverte a provoqué la reclassification de Pluton',
-      kuiperbelt:'Ceinture de Kuiper · Au-delà de Neptune · Objets glacés · Source de comètes à courte période · Contient Pluton et Éris',
-      oortscloud:'Nuage d\'Oort · Région la plus extérieure du système solaire · Enveloppe sphérique d\'objets glacés · Source de comètes à longue période',
-      moon:'Lune · Satellite naturel de la Terre · 384 400 km de distance · Stabilise l\'inclinaison axiale terrestre · Provoque les marées · Foulée en 1969',
-      phobos:'Phobos · Lune de Mars · La plus grande de ses 2 lunes · Se rapproche lentement de Mars',
-      deimos:'Deimos · Lune de Mars · La plus petite de ses 2 lunes · Orbite très lente · S\'éloigne lentement de Mars',
-      io:'Io · Lune de Jupiter · Le corps le plus volcanique du système solaire · Plus de 400 volcans actifs',
-      europa:'Europe · Lune de Jupiter · Probable océan sous-glaciaire · Principale candidate à la vie extraterrestre',
-      ganymede:'Ganymède · Lune de Jupiter · La plus grande lune du système solaire · Plus grande que Mercure · Possède son propre champ magnétique',
-      callisto:'Callisto · Lune de Jupiter · L\'objet le plus cratérisé du système solaire · Surface très ancienne',
-      titan:'Titan · Lune de Saturne · Atmosphère dense d\'azote · Lacs et rivières de méthane liquide · Le seul satellite avec une atmosphère épaisse',
-      enceladus:'Encelade · Lune de Saturne · Geysers d\'eau au pôle sud · Possible océan sous-glaciaire · Candidate à la vie microbienne',
-      rhea:'Rhéa · Deuxième plus grande lune de Saturne · Principalement de la glace d\'eau · Légère atmosphère d\'oxygène',
-      dione:'Dioné · Lune de Saturne · Falaises de glace et terrain vaporeux · Traces d\'atmosphère d\'oxygène',
-      iapetus:'Japet · Lune de Saturne · Surface bicolore : un côté sombre, un côté brillant · Mystère encore non résolu',
-      titania:'Titania · Plus grande lune d\'Uranus · Mélange de glace et de roche · Vallées de 1 500 km de long',
-      oberon:'Obéron · Deuxième plus grande lune d\'Uranus · Très cratérisée · Surface ancienne',
-      miranda:'Miranda · Lune d\'Uranus · Terrain extrême : falaises de 20 km de hauteur · Les plus hautes du système solaire',
-      triton:'Triton · Plus grande lune de Neptune · Orbite rétrograde · Geysers d\'azote · Probablement capturée de la ceinture de Kuiper',
-    }
+    objectInfo:{},
+    objNames:{sun:'Soleil',mercury:'Mercure',venus:'Vénus',earth:'Terre',moon:'Lune',mars:'Mars',phobos:'Phobos',deimos:'Deimos',asteroidbelt:"Ceinture d'astéroïdes",ceres:'Cérès',jupiter:'Jupiter',io:'Io',europa:'Europe',ganymede:'Ganymède',callisto:'Callisto',saturn:'Saturne',titan:'Titan',enceladus:'Encelade',rhea:'Rhéa',dione:'Dioné',iapetus:'Japet',uranus:'Uranus',titania:'Titania',oberon:'Obéron',miranda:'Miranda',neptune:'Neptune',triton:'Triton',kuiperbelt:'Ceinture de Kuiper',pluto:'Pluton',eris:'Éris',oortscloud:"Nuage d'Oort"}
   },
   pt:{
     title:'SOLAR SYMPHONY',subtitle:'OUÇA · LEMBRE · REPITA',
@@ -476,39 +447,8 @@ const i18n={
     cookieAccept:'ACEITAR',cookieReject:'REJEITAR',cookiePrivacyLink:'Mais informações',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
     lore:'ANO 2050. Após o sucesso do Projeto Mnemosine, os sinais extraterrestres descodificados foram rastreados até aos seus pontos de origem em todo o sistema solar. Foram implantadas sondas de deteção em cada objeto importante — do Sol até à Nuvem de Oort. As frequências extraterrestres estão a ser recebidas. A sua missão: identificar a origem de cada sinal e registá-lo corretamente. Será o nosso operador de sinais?',
-    objectInfo:{
-      sun:'O Sol · A nossa estrela · Diâmetro: 1.392.000 km · 99,8% da massa do sistema solar · Temp. superfície: 5.500°C · A 150 milhões de km da Terra',
-      mercury:'Mercúrio · 1º planeta · O mais pequeno · Sem atmosfera · Temperaturas: -180°C a 430°C · Um ano dura 88 dias terrestres',
-      venus:'Vénus · 2º planeta · O mais quente (465°C) · Atmosfera densa de CO₂ · Rotação retrógrada · Um dia mais longo que o seu ano',
-      earth:'Terra · 3º planeta · Único com vida conhecida · 71% de superfície oceânica · 1 lua · Atmosfera protetora de azoto e oxigénio',
-      mars:'Marte · 4º planeta · O Planeta Vermelho · Maior vulcão do sistema solar (Monte Olimpo: 27 km) · 2 luas · Um dia dura 24h 37min',
-      asteroidbelt:'Cinturão de Asteroides · Entre Marte e Júpiter · Milhões de objetos rochosos · Contém o planeta anão Ceres',
-      ceres:'Ceres · Planeta anão · O maior objeto do cinturão de asteroides · 945 km de diâmetro · Tem gelo de água · Descoberto em 1801',
-      jupiter:'Júpiter · 5º planeta · O maior do sistema solar · 95 luas conhecidas · A Grande Mancha Vermelha: tempestade há mais de 400 anos · Gigante gasoso',
-      saturn:'Saturno · 6º planeta · Famoso pelos seus anéis de gelo e rocha · 146 luas conhecidas · Tão pouco denso que flutuaria na água · Gigante gasoso',
-      uranus:'Urano · 7º planeta · Roda de lado (inclinação 98°) · Gigante de gelo · 28 luas conhecidas · Temp. -224°C',
-      neptune:'Neptuno · 8º planeta · Os ventos mais fortes do sistema solar (2.100 km/h) · 16 luas · Gigante de gelo',
-      pluto:'Plutão · Planeta anão · No cinturão de Kuiper · 5 luas · Planície de gelo de azoto em forma de coração · Reclassificado em 2006',
-      eris:'Éris · Planeta anão · Mais massivo que Plutão · No disco disperso · 1 lua (Disnomia) · A sua descoberta provocou a reclassificação de Plutão',
-      kuiperbelt:'Cinturão de Kuiper · Para além de Neptuno · Objetos gelados · Origem de cometas de período curto · Contém Plutão e Éris',
-      oortscloud:'Nuvem de Oort · Região mais exterior do sistema solar · Invólucro esférico de objetos gelados · Origem de cometas de longo período',
-      moon:'Lua · Satélite natural da Terra · 384.400 km de distância · Estabiliza a inclinação axial terrestre · Causa as marés · Pisada em 1969',
-      phobos:'Fobos · Lua de Marte · A maior das suas 2 luas · Aproxima-se lentamente de Marte',
-      deimos:'Deimos · Lua de Marte · A menor das suas 2 luas · Órbita muito lenta · Afasta-se lentamente de Marte',
-      io:'Io · Lua de Júpiter · O corpo mais vulcânico do sistema solar · Mais de 400 vulcões ativos',
-      europa:'Europa · Lua de Júpiter · Provável oceano subsuperficial · Principal candidata à vida extraterrestre',
-      ganymede:'Ganimedes · Lua de Júpiter · A maior lua do sistema solar · Maior que Mercúrio · Tem o seu próprio campo magnético',
-      callisto:'Calisto · Lua de Júpiter · O objeto mais craterizado do sistema solar · Superfície muito antiga',
-      titan:'Titã · Lua de Saturno · Atmosfera densa de azoto · Lagos e rios de metano líquido · O único satélite com atmosfera espessa',
-      enceladus:'Encélado · Lua de Saturno · Géiseres de água no polo sul · Possível oceano subsuperficial · Candidata à vida microbiana',
-      rhea:'Réia · Segunda maior lua de Saturno · Maioritariamente gelo de água · Ligeira atmosfera de oxigénio',
-      dione:'Dione · Lua de Saturno · Falésias de gelo e terreno vaporoso · Vestígios de atmosfera de oxigénio',
-      iapetus:'Jápeto · Lua de Saturno · Superfície bicolor: um lado escuro, outro brilhante · Mistério ainda não totalmente resolvido',
-      titania:'Titânia · Maior lua de Urano · Mistura de gelo e rocha · Vales de 1.500 km de comprimento',
-      oberon:'Oberon · Segunda maior lua de Urano · Muito craterizada · Superfície antiga',
-      miranda:'Miranda · Lua de Urano · Terreno extremo: falésias de 20 km de altura · As mais altas do sistema solar',
-      triton:'Tritão · Maior lua de Neptuno · Órbita retrógrada · Géiseres de azoto · Provavelmente capturada do cinturão de Kuiper',
-    }
+    objectInfo:{},
+    objNames:{sun:'Sol',mercury:'Mercúrio',venus:'Vénus',earth:'Terra',moon:'Lua',mars:'Marte',phobos:'Fobos',deimos:'Deimos',asteroidbelt:'Cinturão de Asteroides',ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Calisto',saturn:'Saturno',titan:'Titã',enceladus:'Encélado',rhea:'Réia',dione:'Dione',iapetus:'Jápeto',uranus:'Urano',titania:'Titânia',oberon:'Oberon',miranda:'Miranda',neptune:'Neptuno',triton:'Tritão',kuiperbelt:'Cinturão de Kuiper',pluto:'Plutão',eris:'Éris',oortscloud:'Nuvem de Oort'}
   },
   ca:{
     title:'SOLAR SYMPHONY',subtitle:'ESCOLTA · RECORDA · REPETEIX',
@@ -533,39 +473,8 @@ const i18n={
     cookieAccept:'ACCEPTAR',cookieReject:'REBUTJAR',cookiePrivacyLink:'Més informació',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
     lore:'ANY 2050. Després de l\'èxit del Projecte Mnemosine, els senyals extraterrestres descodificats han estat rastreats fins als seus punts d\'origen a tot el sistema solar. S\'han desplegat sondes detectores a cada objecte important — des del Sol fins al Núvol d\'Oort. Les freqüències extraterrestres s\'estan rebent. La teua missió: identificar l\'origen de cada senyal i registrar-lo correctament. Seràs el nostre operador de senyals?',
-    objectInfo:{
-      sun:'El Sol · La nostra estrella · Diàmetre: 1.392.000 km · 99,8% de la massa del sistema solar · Temp. superfície: 5.500°C · A 150 milions de km de la Terra',
-      mercury:'Mercuri · 1r planeta · El més petit · Sense atmosfera · Temperatures: -180°C a 430°C · Un any dura 88 dies terrestres',
-      venus:'Venus · 2n planeta · El més calent (465°C) · Atmosfera densa de CO₂ · Rotació retrògrada · Un dia més llarg que el seu any',
-      earth:'Terra · 3r planeta · L\'únic amb vida coneguda · 71% de superfície oceànica · 1 lluna · Atmosfera protectora de nitrogen i oxigen',
-      mars:'Mart · 4t planeta · El Planeta Roig · Major volcà del sistema solar (Mont Olimp: 27 km) · 2 llunes · Un dia dura 24h 37min',
-      asteroidbelt:'Cinturó d\'Asteroides · Entre Mart i Júpiter · Milions d\'objectes rocosos · Conté el planeta nan Ceres',
-      ceres:'Ceres · Planeta nan · El major objecte del cinturó d\'asteroides · 945 km de diàmetre · Té gel d\'aigua · Descobert el 1801',
-      jupiter:'Júpiter · 5è planeta · El major del sistema solar · 95 llunes conegudes · La Gran Taca Roja: tempesta de més de 400 anys · Gegant gasós',
-      saturn:'Saturn · 6è planeta · Famós pels seus anells de gel i roca · 146 llunes conegudes · Tan poc dens que flotaria en l\'aigua · Gegant gasós',
-      uranus:'Urà · 7è planeta · Gira de costat (inclinació 98°) · Gegant de gel · 28 llunes conegudes · Temp. -224°C',
-      neptune:'Neptú · 8è planeta · Els vents més forts del sistema solar (2.100 km/h) · 16 llunes · Gegant de gel',
-      pluto:'Plutó · Planeta nan · Al cinturó de Kuiper · 5 llunes · Plana de gel de nitrogen en forma de cor · Reclassificat el 2006',
-      eris:'Eris · Planeta nan · Més massiu que Plutó · Al disc dispers · 1 lluna (Disnòmia) · El seu descobriment va provocar la reclassificació de Plutó',
-      kuiperbelt:'Cinturó de Kuiper · Més enllà de Neptú · Objectes gelats · Origen de cometes de període curt · Conté Plutó i Eris',
-      oortscloud:'Núvol d\'Oort · Regió més exterior del sistema solar · Embolcall esfèric d\'objectes gelats · Origen de cometes de llarg període',
-      moon:'Lluna · Satèl·lit natural de la Terra · 384.400 km de distància · Estabilitza la inclinació axial terrestre · Causa les marees · Trepitjada el 1969',
-      phobos:'Fobos · Lluna de Mart · La major de les seues 2 llunes · S\'aproxima lentament a Mart',
-      deimos:'Deimos · Lluna de Mart · La menor de les seues 2 llunes · Òrbita molt lenta · S\'allunya lentament de Mart',
-      io:'Io · Lluna de Júpiter · El cos més volcànic del sistema solar · Més de 400 volcans actius',
-      europa:'Europa · Lluna de Júpiter · Probable oceà subsuperficial · Principal candidata a la vida extraterrestre',
-      ganymede:'Ganimedes · Lluna de Júpiter · La major lluna del sistema solar · Més gran que Mercuri · Té el seu propi camp magnètic',
-      callisto:'Cal·listo · Lluna de Júpiter · L\'objecte més crateritzat del sistema solar · Superfície molt antiga',
-      titan:'Tità · Lluna de Saturn · Atmosfera densa de nitrogen · Llacs i rius de metà líquid · L\'únic satèl·lit amb atmosfera espessa',
-      enceladus:'Encèlad · Lluna de Saturn · Guèisers d\'aigua al pol sud · Possible oceà subsuperficial · Candidata a la vida microbiana',
-      rhea:'Rea · Segona lluna més gran de Saturn · Majoritàriament gel d\'aigua · Lleugera atmosfera d\'oxigen',
-      dione:'Dione · Lluna de Saturn · Penya-segats de gel i terreny vaporós · Rastres d\'atmosfera d\'oxigen',
-      iapetus:'Jàpet · Lluna de Saturn · Superfície bicolor: un costat fosc, l\'altre brillant · Misteri encara no resolt del tot',
-      titania:'Titània · Major lluna d\'Urà · Barreja de gel i roca · Valls de 1.500 km de llargada',
-      oberon:'Oberó · Segona lluna més gran d\'Urà · Molt crateritzada · Superfície antiga',
-      miranda:'Miranda · Lluna d\'Urà · Terreny extrem: penya-segats de 20 km d\'altura · Els més alts del sistema solar',
-      triton:'Tritó · Major lluna de Neptú · Òrbita retrògrada · Guèisers de nitrogen · Probablement capturada del cinturó de Kuiper',
-    }
+    objectInfo:{},
+    objNames:{sun:'Sol',mercury:'Mercuri',venus:'Venus',earth:'Terra',moon:'Lluna',mars:'Mart',phobos:'Fobos',deimos:'Deimos',asteroidbelt:"Cinturó d'Asteroides",ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Cal·listo',saturn:'Saturn',titan:'Tità',enceladus:'Encèlad',rhea:'Rea',dione:'Dione',iapetus:'Jàpet',uranus:'Urà',titania:'Titània',oberon:'Oberó',miranda:'Miranda',neptune:'Neptú',triton:'Tritó',kuiperbelt:'Cinturó de Kuiper',pluto:'Plutó',eris:'Eris',oortscloud:"Núvol d'Oort"}
   }
 };
 
@@ -589,6 +498,8 @@ function applyLang(lang){
   if(pt)pt.innerHTML='&#x2756; '+(t.pwaTitle||'INSTALL AS APP');
   if(pd)pd.textContent=t.pwaDesc||'';
   if(pi)pi.textContent=t.pwaInstall||'INSTALL';
+  // Refresh canvas labels if game is visible
+  if(typeof bgCtx!=='undefined'&&bgCtx&&(state==='input'||state==='watching'||state==='symphony')){buildBackground();}
   renderHOF();
 }
 document.addEventListener('click',()=>{var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');});
@@ -618,11 +529,11 @@ const ALL_OBJECTS=[
   {id:'callisto',    name:'Callisto',     x:505, y:67, r:14, dr:9,  col:'#887766', freq:370.0,  lv:2, type:'moon'},
   {id:'saturn',      name:'Saturn',       x:578, y:402, r:30, dr:28, col:'#dfc080', freq:392.0,  lv:1, type:'planet'},
   // Saturn moons — arc above Saturn, well spaced
-  {id:'titan',       name:'Titan',        x:473, y:368, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
-  {id:'enceladus',   name:'Enceladus',    x:494, y:331, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
-  {id:'rhea',        name:'Rhea',         x:533, y:302, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
-  {id:'dione',       name:'Dione',        x:586, y:292, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
-  {id:'iapetus',     name:'Iapetus',      x:640, y:311, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
+  {id:'titan',       name:'Titan',        x:505, y:368, r:15, dr:11, col:'#cc9944', freq:415.3,  lv:2, type:'moon'},
+  {id:'enceladus',   name:'Enceladus',    x:524, y:343, r:14, dr:8,  col:'#eeeeff', freq:440.0,  lv:3, type:'moon'},
+  {id:'rhea',        name:'Rhea',         x:553, y:326, r:14, dr:8,  col:'#ccccbb', freq:466.2,  lv:3, type:'moon'},
+  {id:'dione',       name:'Dione',        x:586, y:322, r:14, dr:8,  col:'#bbbbcc', freq:493.9,  lv:3, type:'moon'},
+  {id:'iapetus',     name:'Iapetus',      x:618, y:333, r:14, dr:8,  col:'#886644', freq:523.3,  lv:3, type:'moon'},
   {id:'uranus',      name:'Uranus',       x:692, y:142, r:24, dr:20, col:'#7ad4e8', freq:554.4,  lv:1, type:'planet'},
   // Uranus moons — arc above Uranus
   {id:'titania',     name:'Titania',      x:628, y:102, r:14, dr:8,  col:'#aaccdd', freq:587.3,  lv:3, type:'moon'},
@@ -645,6 +556,12 @@ function getAudio(){
   if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   return audioCtx;
 }
+function getObjName(obj){
+  var t=i18n[currentLang]||i18n.en;
+  var names=t.objNames||i18n.en.objNames;
+  return (names&&names[obj.id])||obj.name;
+}
+
 function playNote(freq,duration=0.6,vol=0.3){
   const ctx=getAudio();
   const osc=ctx.createOscillator();
@@ -707,7 +624,7 @@ function lightenColor(hex){
 function drawLabel(obj,isHL){
   var fs=isHL?11:obj.type==='planet'||obj.type==='star'||obj.type==='belt'||obj.type==='dwarf'?8:7;
   bgCtx.font=fs+'px "Press Start 2P"'; bgCtx.textAlign='center';
-  var tw=bgCtx.measureText(obj.name).width;
+  var tw=bgCtx.measureText(getObjName(obj)).width;
   // Special offsets to avoid overlaps
   var lx=obj.x;
   if(obj.id==='kuiperbelt') lx=obj.x-18;
@@ -728,7 +645,7 @@ function drawLabel(obj,isHL){
     obj.type==='moon'?'rgba(180,200,255,.88)':
     obj.type==='dwarf'?'rgba(255,210,80,.98)':
     'rgba(255,200,100,.92)';
-  bgCtx.fillText(obj.name,lx,ly);
+  bgCtx.fillText(getObjName(obj),lx,ly);
 }
 function drawObjects(activeObjects,hlId){
   // Draw order: belts first (background), then all other objects on top
@@ -920,11 +837,11 @@ function highlightObject(obj,on){
     bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.r+4,0,Math.PI*2);bgCtx.stroke();
     // Name popup
     bgCtx.fillStyle='rgba(0,0,0,.8)';
-    const tw=bgCtx.measureText(obj.name).width+16;
+    const tw=bgCtx.measureText(getObjName(obj)).width+16;
     const ty=obj.y-obj.r-22;
     bgCtx.fillRect(obj.x-tw/2,ty-10,tw,16);
     bgCtx.fillStyle=obj.col;bgCtx.font='6px "Press Start 2P"';
-    bgCtx.textAlign='center';bgCtx.fillText(obj.name,obj.x,ty+2);
+    bgCtx.textAlign='center';bgCtx.fillText(getObjName(obj),obj.x,ty+2);
     bgCtx.restore();
   }
 }
@@ -941,11 +858,10 @@ function onMouseMove(e){
   });
   if(found){
     playNote(found.freq,0.15,0.1);
-    tooltip.textContent=found.name;
+    tooltip.textContent=getObjName(found);
     tooltip.style.display='block';
     tooltip.style.left=(found.x+found.r+4)+'px';
     tooltip.style.top=(found.y-8)+'px';
-    showInfoPanel(found);
   } else {
     tooltip.style.display='none';
   }
@@ -990,7 +906,6 @@ function handleInput(obj){
   } else {
     // Wrong
     lives--;
-    showInfoPanel(obj);
     playNote(150,0.4,0.2); // buzz
     flashObject(obj,'#ff4444');
     document.getElementById('lives-display').textContent='❤'.repeat(lives);
@@ -1059,7 +974,7 @@ function buildObjectCards(){
   let html='<div style="width:100%;max-width:580px;margin-top:8px">';
   html+='<p style="color:#fa0;font-size:.38rem;font-family:\'Press Start 2P\',monospace;margin-bottom:8px;letter-spacing:1px">📡 SIGNAL LOG</p>';
   seenObjects.forEach(obj=>{
-    const desc=info[obj.id]||obj.name;
+    const desc=info[obj.id]||getObjName(obj);
     html+='<div style="background:rgba(255,160,0,.06);border:1px solid rgba(255,160,0,.2);border-radius:4px;padding:6px 10px;margin-bottom:5px;display:flex;gap:8px;align-items:flex-start">';
     html+='<span style="width:10px;height:10px;border-radius:50%;background:'+obj.col+';flex-shrink:0;margin-top:2px;display:inline-block"></span>';
     html+='<span style="color:#cde;font-size:.30rem;font-family:\'Press Start 2P\',monospace;line-height:1.8">'+desc+'</span></div>';
@@ -1156,8 +1071,8 @@ function playSymphonyNote(obj){
   var t=i18n[currentLang]||i18n.en, info=t.objInfo||i18n.en.objInfo;
   var nameEl=document.getElementById('symphony-info-name');
   var descEl=document.getElementById('symphony-info-desc');
-  if(nameEl)nameEl.textContent=obj.name;
-  if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
+  if(nameEl)nameEl.textContent=getObjName(obj);
+  if(descEl)descEl.textContent=(info&&info[obj.id])||getObjName(obj);
 }
 
 function endSymphony(){
@@ -1192,13 +1107,13 @@ function exitSymphony(){
 
 function showInfoPanel(obj){
   var t=i18n[currentLang]||i18n.en;
-  var info=t.objectInfo||i18n.en.objectInfo;
+  var info=t.objInfo||i18n.en.objInfo;
   var panel=document.getElementById('symphony-info');
   var nameEl=document.getElementById('symphony-info-name');
   var descEl=document.getElementById('symphony-info-desc');
   if(panel)panel.style.display='block';
-  if(nameEl)nameEl.textContent=obj.name;
-  if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
+  if(nameEl)nameEl.textContent=getObjName(obj);
+  if(descEl)descEl.textContent=(info&&info[obj.id])||getObjName(obj);
 }
 
 function onStartMission(){
