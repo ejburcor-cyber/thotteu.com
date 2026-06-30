@@ -449,7 +449,7 @@ const i18n={
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
     lore:'ANO 2050. Após o sucesso do Projeto Mnemosine, os sinais extraterrestres descodificados foram rastreados até aos seus pontos de origem em todo o sistema solar. Foram implantadas sondas de deteção em cada objeto importante — do Sol até à Nuvem de Oort. As frequências extraterrestres estão a ser recebidas. A sua missão: identificar a origem de cada sinal e registá-lo corretamente. Será o nosso operador de sinais?',
     objectInfo:{},
-    objNames:{sun:'Sol',mercury:'Mercuri',venus:'Venus',earth:'Terra',moon:'Lluna',mars:'Mart',phobos:'Fobos',deimos:'Deimos',asteroidbelt:"Cinturó d'Asteroides",ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Cal·listo',saturn:'Saturn',titan:'Tità',enceladus:'Encèlad',rhea:'Rea',dione:'Dione',iapetus:'Jàpet',uranus:'Urà',titania:'Titània',oberon:'Oberó',miranda:'Miranda',neptune:'Neptú',triton:'Tritó',kuiperbelt:'Cinturó de Kuiper',pluto:'Plutó',eris:'Eris',oortscloud:"Núvol d'Oort"}
+    objNames:{sun:'Sol',mercury:'Mercúrio',venus:'Vénus',earth:'Terra',moon:'Lua',mars:'Marte',phobos:'Fobos',deimos:'Deimos',asteroidbelt:'Cinturão de Asteroides',ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Calisto',saturn:'Saturno',titan:'Titã',enceladus:'Encélado',rhea:'Réia',dione:'Dione',iapetus:'Jápeto',uranus:'Urano',titania:'Titânia',oberon:'Oberon',miranda:'Miranda',neptune:'Neptuno',triton:'Tritão',kuiperbelt:'Cinturão de Kuiper',pluto:'Plutão',eris:'Éris',oortscloud:'Nuvem de Oort'}
   },
   ca:{
     title:'SOLAR SYMPHONY',subtitle:'ESCOLTA · RECORDA · REPETEIX',
@@ -474,7 +474,8 @@ const i18n={
     cookieAccept:'ACCEPTAR',cookieReject:'REBUTJAR',cookiePrivacyLink:'Més informació',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
     lore:'ANY 2050. Després de l\'èxit del Projecte Mnemosine, els senyals extraterrestres descodificats han estat rastreats fins als seus punts d\'origen a tot el sistema solar. S\'han desplegat sondes detectores a cada objecte important — des del Sol fins al Núvol d\'Oort. Les freqüències extraterrestres s\'estan rebent. La teua missió: identificar l\'origen de cada senyal i registrar-lo correctament. Seràs el nostre operador de senyals?',
-    objectInfo:{}
+    objectInfo:{},
+    objNames:{sun:'Sol',mercury:'Mercuri',venus:'Venus',earth:'Terra',moon:'Lluna',mars:'Mart',phobos:'Fobos',deimos:'Deimos',asteroidbelt:"Cinturó d'Asteroides",ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Cal·listo',saturn:'Saturn',titan:'Tità',enceladus:'Encèlad',rhea:'Rea',dione:'Dione',iapetus:'Jàpet',uranus:'Urà',titania:'Titània',oberon:'Oberó',miranda:'Miranda',neptune:'Neptú',triton:'Tritó',kuiperbelt:'Cinturó de Kuiper',pluto:'Plutó',eris:'Eris',oortscloud:"Núvol d'Oort"}
   }
 };
 
@@ -824,7 +825,7 @@ async function playSequence(){
     await new Promise(res=>{
       // Highlight
       highlightObject(obj,true);
-      playNote(obj.freq,0.6);
+      playNote(obj.freq,1.0);
       addWave(obj);
       if(!seenObjects.find(o=>o.id===obj.id)) seenObjects.push(obj);
       setTimeout(()=>{highlightObject(obj,false);setTimeout(res,200);},700);
@@ -895,7 +896,7 @@ function handleInput(obj){
   playerInput.push(obj);
   if(obj.id===expected.id){
     // Correct
-    playNote(obj.freq,0.4,0.3);
+    playNote(obj.freq,2.0,0.3);
     flashObject(obj,'#44ff88');
     showInfoPanel(obj);
     if(playerInput.length===sequence.length){
@@ -1076,7 +1077,7 @@ function startSymphony(){
 
 function playSymphonyNote(obj){
   _symDisc.add(obj.id); buildBackground(obj.id);
-  playNote(obj.freq,0.8,0.35);
+  playNote(obj.freq,2.0,0.35);
   addWave(obj); if(!_af)startAnim(); setTimeout(stopAnim,1200);
   var t=i18n[currentLang]||i18n.en, info=t.objInfo||i18n.en.objInfo;
   var nameEl=document.getElementById('symphony-info-name');
@@ -1127,8 +1128,17 @@ function showInfoPanel(obj){
 }
 
 function onStartMission(){
-  if(_symphonySelected) startSymphony();
-  else startGame();
+  try {
+    if(typeof _symphonySelected !== 'undefined' && _symphonySelected){
+      startSymphony();
+    } else {
+      startGame();
+    }
+  } catch(e) {
+    console.error('onStartMission error:', e);
+    // Fallback: try startGame directly
+    try { startGame(); } catch(e2) { console.error('startGame error:', e2); }
+  }
 }
 
 function startGame(){
@@ -1218,6 +1228,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   startTypewriter(initial);
   document.getElementById('highscore-display').textContent=highScore;
   renderHOF();
+  // Wire start-btn via addEventListener as backup to onclick attribute
+  var _sb=document.getElementById('start-btn');
+  if(_sb) _sb.addEventListener('click', onStartMission);
+  // Wire level buttons
+  var _be=document.getElementById('btn-easy');if(_be)_be.addEventListener('click',function(){selectLevel(1);});
+  var _bm=document.getElementById('btn-mid');if(_bm)_bm.addEventListener('click',function(){selectLevel(2);});
+  var _bh=document.getElementById('btn-hard');if(_bh)_bh.addEventListener('click',function(){selectLevel(3);});
+  var _bsy=document.getElementById('symphony-btn');if(_bsy)_bsy.addEventListener('click',selectSymphony);
 
   // ── PWA click ──
   const _pb=document.getElementById('ss-pwa-btn');
