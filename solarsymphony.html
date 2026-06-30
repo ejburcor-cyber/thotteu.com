@@ -337,7 +337,8 @@ const i18n={
       oberon:'Oberon · Uranus moon · Second largest Uranus moon · Heavily cratered',
       miranda:'Miranda · Uranus moon · Extreme terrain: cliffs 20 km tall',
       triton:'Triton · Neptune moon · Largest Neptune moon · Orbits backwards · Geysers of nitrogen',
-    }
+    },
+    objNames:{sun:'Sun',mercury:'Mercury',venus:'Venus',earth:'Earth',moon:'Moon',mars:'Mars',phobos:'Phobos',deimos:'Deimos',asteroidbelt:'Asteroid Belt',ceres:'Ceres',jupiter:'Jupiter',io:'Io',europa:'Europa',ganymede:'Ganymede',callisto:'Callisto',saturn:'Saturn',titan:'Titan',enceladus:'Enceladus',rhea:'Rhea',dione:'Dione',iapetus:'Iapetus',uranus:'Uranus',titania:'Titania',oberon:'Oberon',miranda:'Miranda',neptune:'Neptune',triton:'Triton',kuiperbelt:'Kuiper Belt',pluto:'Pluto',eris:'Eris',oortscloud:'Oort Cloud'}
   },
   es:{
     title:'SOLAR SYMPHONY',subtitle:'ESCUCHA · RECUERDA · REPITE',
@@ -394,7 +395,8 @@ const i18n={
       oberon:'Oberón · Luna de Urano · La segunda mayor luna de Urano · Muy craterizada',
       miranda:'Miranda · Luna de Urano · Terreno extremo: acantilados de 20 km de altura',
       triton:'Tritón · Luna de Neptuno · La mayor luna de Neptuno · Órbita retrógrada · Géiseres de nitrógeno',
-    }
+    },
+    objNames:{sun:'Sol',mercury:'Mercurio',venus:'Venus',earth:'Tierra',moon:'Luna',mars:'Marte',phobos:'Fobos',deimos:'Deimos',asteroidbelt:'Cinturón de Asteroides',ceres:'Ceres',jupiter:'Júpiter',io:'Ío',europa:'Europa',ganymede:'Ganímedes',callisto:'Calisto',saturn:'Saturno',titan:'Titán',enceladus:'Encélado',rhea:'Rea',dione:'Dione',iapetus:'Japeto',uranus:'Urano',titania:'Titania',oberon:'Oberón',miranda:'Miranda',neptune:'Neptuno',triton:'Tritón',kuiperbelt:'Cinturón de Kuiper',pluto:'Plutón',eris:'Eris',oortscloud:'Nube de Oort'}
   },
   fr:{
     title:'SOLAR SYMPHONY',subtitle:'ÉCOUTE · MÉMORISE · RÉPÈTE',
@@ -419,7 +421,9 @@ const i18n={
     cookieAccept:'ACCEPTER',cookieReject:'REFUSER',cookiePrivacyLink:'En savoir plus',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
     lore:'ANNÉE 2050. Suite au succès du Projet Mnemosine, les signaux extraterrestres décodés ont été tracés jusqu\'à leurs points d\'origine dans tout le système solaire. Des sondes de détection ont été déployées sur chaque objet majeur — du Soleil jusqu\'au Nuage d\'Oort. Les fréquences extraterrestres sont reçues. Votre mission : identifier l\'origine de chaque signal et l\'enregistrer correctement. Serez-vous notre opérateur de signaux ?',
-    objectInfo:{}
+    objectInfo:{},
+    objNames:{sun:'Sol',mercury:'Mercúrio',venus:'Vénus',earth:'Terra',moon:'Lua',mars:'Marte',phobos:'Fobos',deimos:'Deimos',asteroidbelt:'Cinturão de Asteroides',ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Calisto',saturn:'Saturno',titan:'Titã',enceladus:'Encélado',rhea:'Réia',dione:'Dione',iapetus:'Jápeto',uranus:'Urano',titania:'Titânia',oberon:'Oberon',miranda:'Miranda',neptune:'Neptuno',triton:'Tritão',kuiperbelt:'Cinturão de Kuiper',pluto:'Plutão',eris:'Éris',oortscloud:'Nuvem de Oort'},
+    objNames:{sun:'Soleil',mercury:'Mercure',venus:'Vénus',earth:'Terre',moon:'Lune',mars:'Mars',phobos:'Phobos',deimos:'Deimos',asteroidbelt:"Ceinture d'astéroïdes",ceres:'Cérès',jupiter:'Jupiter',io:'Io',europa:'Europe',ganymede:'Ganymède',callisto:'Callisto',saturn:'Saturne',titan:'Titan',enceladus:'Encelade',rhea:'Rhéa',dione:'Dioné',iapetus:'Japet',uranus:'Uranus',titania:'Titania',oberon:'Obéron',miranda:'Miranda',neptune:'Neptune',triton:'Triton',kuiperbelt:'Ceinture de Kuiper',pluto:'Pluton',eris:'Éris',oortscloud:"Nuage d'Oort"}
   },
   pt:{
     title:'SOLAR SYMPHONY',subtitle:'OUÇA · LEMBRE · REPITA',
@@ -444,7 +448,8 @@ const i18n={
     cookieAccept:'ACEITAR',cookieReject:'REJEITAR',cookiePrivacyLink:'Mais informações',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
     lore:'ANO 2050. Após o sucesso do Projeto Mnemosine, os sinais extraterrestres descodificados foram rastreados até aos seus pontos de origem em todo o sistema solar. Foram implantadas sondas de deteção em cada objeto importante — do Sol até à Nuvem de Oort. As frequências extraterrestres estão a ser recebidas. A sua missão: identificar a origem de cada sinal e registá-lo corretamente. Será o nosso operador de sinais?',
-    objectInfo:{}
+    objectInfo:{},
+    objNames:{sun:'Sol',mercury:'Mercuri',venus:'Venus',earth:'Terra',moon:'Lluna',mars:'Mart',phobos:'Fobos',deimos:'Deimos',asteroidbelt:"Cinturó d'Asteroides",ceres:'Ceres',jupiter:'Júpiter',io:'Io',europa:'Europa',ganymede:'Ganimedes',callisto:'Cal·listo',saturn:'Saturn',titan:'Tità',enceladus:'Encèlad',rhea:'Rea',dione:'Dione',iapetus:'Jàpet',uranus:'Urà',titania:'Titània',oberon:'Oberó',miranda:'Miranda',neptune:'Neptú',triton:'Tritó',kuiperbelt:'Cinturó de Kuiper',pluto:'Plutó',eris:'Eris',oortscloud:"Núvol d'Oort"}
   },
   ca:{
     title:'SOLAR SYMPHONY',subtitle:'ESCOLTA · RECORDA · REPETEIX',
@@ -493,6 +498,7 @@ function applyLang(lang){
   if(pt)pt.innerHTML='&#x2756; '+(t.pwaTitle||'INSTALL AS APP');
   if(pd)pd.textContent=t.pwaDesc||'';
   if(pi)pi.textContent=t.pwaInstall||'INSTALL';
+  if(typeof bgCtx!=='undefined'&&bgCtx&&(state==='input'||state==='watching'||state==='symphony')){buildBackground();}
   renderHOF();
 }
 document.addEventListener('click',()=>{var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');});
@@ -549,6 +555,12 @@ function getAudio(){
   if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   return audioCtx;
 }
+function getObjName(obj){
+  var t=i18n[currentLang]||i18n.en;
+  var names=t.objNames||i18n.en.objNames;
+  return (names&&names[obj.id])||obj.name;
+}
+
 function playNote(freq,duration=0.6,vol=0.3){
   const ctx=getAudio();
   const osc=ctx.createOscillator();
@@ -622,7 +634,7 @@ function lightenColor(hex){
 function drawLabel(obj,isHL){
   var fs=isHL?11:obj.type==='planet'||obj.type==='star'||obj.type==='belt'||obj.type==='dwarf'?8:7;
   bgCtx.font=fs+'px "Press Start 2P"'; bgCtx.textAlign='center';
-  var tw=bgCtx.measureText(obj.name).width;
+  var tw=bgCtx.measureText(getObjName(obj)).width;
   // Special offsets to avoid overlaps
   var lx=obj.x;
   if(obj.id==='kuiperbelt') lx=obj.x-18;
@@ -643,7 +655,7 @@ function drawLabel(obj,isHL){
     obj.type==='moon'?'rgba(180,200,255,.88)':
     obj.type==='dwarf'?'rgba(255,210,80,.98)':
     'rgba(255,200,100,.92)';
-  bgCtx.fillText(obj.name,lx,ly);
+  bgCtx.fillText(getObjName(obj),lx,ly);
 }
 function drawObjects(activeObjects,hlId){
   // Draw order: belts first (background), then all other objects on top
@@ -835,11 +847,11 @@ function highlightObject(obj,on){
     bgCtx.beginPath();bgCtx.arc(obj.x,obj.y,obj.r+4,0,Math.PI*2);bgCtx.stroke();
     // Name popup
     bgCtx.fillStyle='rgba(0,0,0,.8)';
-    const tw=bgCtx.measureText(obj.name).width+16;
+    const tw=bgCtx.measureText(getObjName(obj)).width+16;
     const ty=obj.y-obj.r-22;
     bgCtx.fillRect(obj.x-tw/2,ty-10,tw,16);
     bgCtx.fillStyle=obj.col;bgCtx.font='6px "Press Start 2P"';
-    bgCtx.textAlign='center';bgCtx.fillText(obj.name,obj.x,ty+2);
+    bgCtx.textAlign='center';bgCtx.fillText(getObjName(obj),obj.x,ty+2);
     bgCtx.restore();
   }
 }
@@ -856,7 +868,7 @@ function onMouseMove(e){
   });
   if(found){
     playNote(found.freq,0.15,0.1);
-    tooltip.textContent=found.name;
+    tooltip.textContent=getObjName(found);
     tooltip.style.display='block';
     tooltip.style.left=(found.x+found.r+4)+'px';
     tooltip.style.top=(found.y-8)+'px';
@@ -972,7 +984,7 @@ function buildObjectCards(){
   let html='<div style="width:100%;max-width:580px;margin-top:8px">';
   html+='<p style="color:#fa0;font-size:.38rem;font-family:\'Press Start 2P\',monospace;margin-bottom:8px;letter-spacing:1px">📡 SIGNAL LOG</p>';
   seenObjects.forEach(obj=>{
-    const desc=info[obj.id]||obj.name;
+    const desc=info[obj.id]||getObjName(obj);
     html+='<div style="background:rgba(255,160,0,.06);border:1px solid rgba(255,160,0,.2);border-radius:4px;padding:6px 10px;margin-bottom:5px;display:flex;gap:8px;align-items:flex-start">';
     html+='<span style="width:10px;height:10px;border-radius:50%;background:'+obj.col+';flex-shrink:0;margin-top:2px;display:inline-block"></span>';
     html+='<span style="color:#cde;font-size:.30rem;font-family:\'Press Start 2P\',monospace;line-height:1.8">'+desc+'</span></div>';
@@ -1069,8 +1081,8 @@ function playSymphonyNote(obj){
   var t=i18n[currentLang]||i18n.en, info=t.objInfo||i18n.en.objInfo;
   var nameEl=document.getElementById('symphony-info-name');
   var descEl=document.getElementById('symphony-info-desc');
-  if(nameEl)nameEl.textContent=obj.name;
-  if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
+  if(nameEl)nameEl.textContent=getObjName(obj);
+  if(descEl)descEl.textContent=(info&&info[obj.id])||getObjName(obj);
 }
 
 function endSymphony(){
@@ -1110,8 +1122,8 @@ function showInfoPanel(obj){
   var nameEl=document.getElementById('symphony-info-name');
   var descEl=document.getElementById('symphony-info-desc');
   if(panel)panel.style.display='block';
-  if(nameEl)nameEl.textContent=obj.name;
-  if(descEl)descEl.textContent=(info&&info[obj.id])||obj.name;
+  if(nameEl)nameEl.textContent=getObjName(obj);
+  if(descEl)descEl.textContent=(info&&info[obj.id])||getObjName(obj);
 }
 
 function onStartMission(){
