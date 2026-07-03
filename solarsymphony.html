@@ -203,7 +203,7 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
   </div>
   <div id="game-canvas-wrap" style="display:none">
     <canvas id="canvas-bg" width="900" height="540"></canvas>
-    <canvas id="canvas-fg" width="900" height="540"></canvas>
+    <canvas id="canvas-fg" style="pointer-events:auto" width="900" height="540"></canvas>
     <div class="tooltip-label" id="tooltip"></div>
     <button id="repeat-btn" data-i18n="repeatBtn">↺ REPEAT (-<span id="repeat-cost">10</span>pts)</button>
     <div id="phase-label"></div>
@@ -1158,7 +1158,7 @@ function startSymphony(){
   if(back){back.style.display='block';back.textContent=t.symphonyBack||'← BACK';back.onclick=exitSymphony;}
   var hl=document.getElementById('symphony-hud-label');if(hl){hl.style.display='block';hl.textContent=t.symphonyHud||'SYMPHONY';}
   document.getElementById('lives-display').textContent='';
-  document.getElementById('round-display').textContent='&#9834;';
+  document.getElementById('round-display').innerHTML='&#9834;';
   document.getElementById('score-display').textContent='';
   var info=document.getElementById('symphony-info');if(info)info.style.display='block';
   var infoDesc=document.getElementById('symphony-info-desc');if(infoDesc)infoDesc.textContent=t.symphonyHint||'Click any object to play its note';
@@ -1211,12 +1211,13 @@ function exitSymphony(){
 function showInfoPanel(obj){
   var t=i18n[currentLang]||i18n.en;
   var info=t.objectInfo||i18n.en.objectInfo;
+  var desc=(info&&info[obj.id])||getObjName(obj);
   var panel=document.getElementById('symphony-info');
   var nameEl=document.getElementById('symphony-info-name');
   var descEl=document.getElementById('symphony-info-desc');
-  if(panel)panel.style.display='block';
-  if(nameEl)nameEl.textContent=getObjName(obj);
-  if(descEl)descEl.textContent=(info&&info[obj.id])||getObjName(obj);
+  if(panel){panel.style.display='block';panel.style.visibility='visible';}
+  if(nameEl){nameEl.textContent='';nameEl.textContent=getObjName(obj);}
+  if(descEl){descEl.textContent='';descEl.textContent=desc;}
 }
 
 function onStartMission(){
