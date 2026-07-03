@@ -89,9 +89,9 @@ h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:
 .cookie-btn{font-family:'Press Start 2P',monospace;font-size:.42rem;letter-spacing:1px;padding:9px 16px;cursor:pointer;border:1.5px solid #fa0;background:transparent;color:#fff;transition:all .2s}
 .cookie-btn.accept{background:#fa0;color:#000}
 .cookie-btn.accept:hover{background:#ffd050}
-.symphony-info{width:900px;max-width:100%;background:rgba(0,5,20,.95);border:1px solid rgba(255,160,0,.3);border-top:2px solid #fa0;padding:10px 16px;display:none;margin:0 auto}
-.symphony-info-name{color:#fa0;font-size:.45rem;font-family:'Press Start 2P',monospace;margin-bottom:4px}
-.symphony-info-desc{color:#cde;font-size:.32rem;font-family:'Press Start 2P',monospace;line-height:1.8}
+.symphony-info{width:900px;max-width:100%;background:rgba(0,5,20,.95);border:1px solid rgba(255,160,0,.3);border-top:2px solid #fa0;padding:12px 18px;display:none;margin:0 auto;min-height:52px}
+.symphony-info-name{color:#fa0;font-size:.50rem;font-family:'Press Start 2P',monospace;margin-bottom:6px}
+.symphony-info-desc{color:#cde;font-size:.38rem;font-family:'Press Start 2P',monospace;line-height:2.0}
 #symphony-back{position:absolute;top:6px;left:8px;z-index:15;background:rgba(0,5,20,.85);border:1.5px solid #fa0;color:#fa0;font-family:'Press Start 2P',monospace;font-size:.35rem;padding:5px 10px;cursor:pointer;display:none}
 #symphony-back:hover{background:#fa0;color:#000}
 #symphony-hud-label{font-size:.38rem;color:#fa8;letter-spacing:1px}
@@ -1244,6 +1244,11 @@ function startGame(){
   document.getElementById('lives-display').textContent='❤❤';
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
+  // Show info panel
+  var _sgip=document.getElementById('symphony-info');if(_sgip)_sgip.style.display='block';
+  var _sginame=document.getElementById('symphony-info-name');if(_sginame)_sginame.textContent='';
+  var _sgidesc=document.getElementById('symphony-info-desc');
+  if(_sgidesc){var _sgt=i18n[currentLang]||i18n.en;_sgidesc.textContent=_sgt.symphonyHint||'Click any object to hear its note';}
   // Init canvas (now visible)
   bgCanvas=document.getElementById('canvas-bg');
   fgCanvas=document.getElementById('canvas-fg');
