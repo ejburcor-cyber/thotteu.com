@@ -1116,6 +1116,8 @@ function showResult(isWin){
 // ── SYMPHONY MODE ────────────────────────────────────────────────────────
 // ── SYMPHONY MODE ─────────────────────────────────────────────────────────
 var _symDisc=new Set(), _symTime=270, _symInt=null;
+var _af=null;
+var waves=[]; // animation frame handle
 
 function _symHOF(){try{return JSON.parse(localStorage.getItem('ss_sym_hof')||'[]');}catch(e){return[];}}
 function _symHOFsave(h){localStorage.setItem('ss_sym_hof',JSON.stringify(h));}
@@ -1174,7 +1176,9 @@ function startSymphony(){
 function playSymphonyNote(obj){
   _symDisc.add(obj.id); buildBackground(obj.id);
   playNote(obj.freq,2.0,0.35);
-  addWave(obj); if(!_af)startAnim(); setTimeout(stopAnim,1200);
+  if(typeof addWave==='function')addWave(obj);
+  if(typeof startAnim==='function'&&!_af)startAnim();
+  setTimeout(function(){if(typeof stopAnim==='function')stopAnim();},1200);
   // Direct DOM write — no dependencies
   try {
     var lang=currentLang||'en';
@@ -1258,11 +1262,11 @@ function startGame(){
   getAudio(); // init AudioContext on user gesture
   maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
-  document.getElementById('repeat-cost').textContent=repeatCost;
+  var _rc=document.getElementById('repeat-cost');if(_rc)_rc.textContent=repeatCost;
   score=0; currentRound=0; seenObjects=[];
-  document.getElementById('score-display').textContent=0;
-  document.getElementById('round-display').textContent='1/'+maxRounds;
-  document.getElementById('lives-display').textContent='❤❤';
+  var _sd=document.getElementById('score-display');if(_sd)_sd.textContent=0;
+  var _rd=document.getElementById('round-display');if(_rd)_rd.textContent='1/'+maxRounds;
+  var _ld=document.getElementById('lives-display');if(_ld)_ld.textContent='❤❤';
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
   // Init canvas (now visible)
@@ -1315,7 +1319,7 @@ function cookieConsent(accepted){
   document.getElementById('cookie-banner').classList.remove('show');
   if(accepted){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}
 }
-if(!localStorage.getItem('thotteu_cookies')) document.getElementById('cookie-banner').classList.add('show');
+if(!localStorage.getItem('thotteu_cookies')){var _cb=document.getElementById('cookie-banner');if(_cb)_cb.classList.add('show');}
 else if(localStorage.getItem('thotteu_cookies')==='accepted'){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}
 
 // ── PWA ───────────────────────────────────────────────────────────────────
