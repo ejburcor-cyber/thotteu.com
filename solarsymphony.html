@@ -1175,7 +1175,21 @@ function playSymphonyNote(obj){
   _symDisc.add(obj.id); buildBackground(obj.id);
   playNote(obj.freq,2.0,0.35);
   addWave(obj); if(!_af)startAnim(); setTimeout(stopAnim,1200);
-  showInfoPanel(obj);
+  // Direct DOM write — no dependencies
+  try {
+    var lang=currentLang||'en';
+    var t=i18n[lang]||i18n.en;
+    var oi=t.objectInfo||i18n.en.objectInfo||{};
+    var nm=t.objNames||i18n.en.objNames||{};
+    var nameStr=nm[obj.id]||obj.name;
+    var descStr=oi[obj.id]||nameStr;
+    var p=document.getElementById('symphony-info');
+    var n=document.getElementById('symphony-info-name');
+    var d=document.getElementById('symphony-info-desc');
+    if(p)p.style.display='block';
+    if(n)n.textContent=nameStr;
+    if(d)d.textContent=descStr;
+  } catch(e){ console.error('symphony note panel:',e); }
 }
 
 function endSymphony(){
@@ -1209,15 +1223,21 @@ function exitSymphony(){
 }
 
 function showInfoPanel(obj){
-  var t=i18n[currentLang]||i18n.en;
-  var info=t.objectInfo||i18n.en.objectInfo;
-  var desc=(info&&info[obj.id])||getObjName(obj);
-  var panel=document.getElementById('symphony-info');
-  var nameEl=document.getElementById('symphony-info-name');
-  var descEl=document.getElementById('symphony-info-desc');
-  if(panel){panel.style.display='block';panel.style.visibility='visible';}
-  if(nameEl){nameEl.textContent='';nameEl.textContent=getObjName(obj);}
-  if(descEl){descEl.textContent='';descEl.textContent=desc;}
+  try {
+    var lang=currentLang||'en';
+    var t=(typeof i18n!=='undefined'&&i18n[lang])||i18n.en;
+    var info=(t&&t.objectInfo)||(i18n.en&&i18n.en.objectInfo)||{};
+    var name=(t&&t.objNames&&t.objNames[obj.id])||obj.name||obj.id;
+    var desc=info[obj.id]||name;
+    var panel=document.getElementById('symphony-info');
+    var nameEl=document.getElementById('symphony-info-name');
+    var descEl=document.getElementById('symphony-info-desc');
+    if(panel){panel.style.cssText+='display:block!important;visibility:visible!important;';}
+    if(nameEl)nameEl.textContent=name;
+    if(descEl)descEl.textContent=desc;
+  } catch(err){
+    console.error('showInfoPanel error:',err,obj);
+  }
 }
 
 function onStartMission(){
