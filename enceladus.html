@@ -314,6 +314,8 @@ h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow
 </div>
 
 <script>
+var GENERAL_IMG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==';
+
 // ═══════════════════════════════════════════════════════════════════
 // i18n
 // ═══════════════════════════════════════════════════════════════════
@@ -658,8 +660,8 @@ function drawCannon(){
 // ═══════════════════════════════════════════════════════════════════
 // OBJECTS — UFOs and rocks
 // ═══════════════════════════════════════════════════════════════════
-var UFO_R=12; // visual radius
-var ROCK_R=9;
+var UFO_R=16; // visual radius
+var ROCK_R=12;
 
 function placeObjects(){
   objects=[];
@@ -713,14 +715,21 @@ function isFullyInBeam(obj){
 }
 
 function drawObjects(){
-  // Draw found UFOs with green ring (always visible)
+  // Draw found UFOs always visible with green ring + faint silhouette
   objects.forEach(function(obj){
     if(obj.found&&obj.isUfo){
       bgX.save();
-      bgX.strokeStyle='#00cc44';bgX.lineWidth=2;bgX.globalAlpha=0.9;
+      // Faint UFO body
+      bgX.globalAlpha=0.35;
+      drawUfo(bgX,obj.x,obj.y,obj.colIdx,obj.r);
+      // Green ring
+      bgX.globalAlpha=0.95;
+      bgX.strokeStyle='#00ee55';bgX.lineWidth=2.5;
+      bgX.shadowColor='#00ee55';bgX.shadowBlur=8;
       bgX.beginPath();bgX.arc(obj.x,obj.y,obj.r+5,0,Math.PI*2);bgX.stroke();
-      // Small checkmark dot
-      bgX.fillStyle='#00cc44';bgX.globalAlpha=0.7;
+      bgX.shadowBlur=0;
+      // Centre dot
+      bgX.fillStyle='#00ee55';bgX.globalAlpha=0.85;
       bgX.beginPath();bgX.arc(obj.x,obj.y,3,0,Math.PI*2);bgX.fill();
       bgX.restore();
     }
@@ -988,14 +997,21 @@ function onCanvasClick(e){
   var cfg=LEVEL_CFG[diffLevel];
   var mult=cfg.mult;
   var hit=false;
-  // Draw found UFOs with green ring (always visible)
+  // Draw found UFOs always visible with green ring + faint silhouette
   objects.forEach(function(obj){
     if(obj.found&&obj.isUfo){
       bgX.save();
-      bgX.strokeStyle='#00cc44';bgX.lineWidth=2;bgX.globalAlpha=0.9;
+      // Faint UFO body
+      bgX.globalAlpha=0.35;
+      drawUfo(bgX,obj.x,obj.y,obj.colIdx,obj.r);
+      // Green ring
+      bgX.globalAlpha=0.95;
+      bgX.strokeStyle='#00ee55';bgX.lineWidth=2.5;
+      bgX.shadowColor='#00ee55';bgX.shadowBlur=8;
       bgX.beginPath();bgX.arc(obj.x,obj.y,obj.r+5,0,Math.PI*2);bgX.stroke();
-      // Small checkmark dot
-      bgX.fillStyle='#00cc44';bgX.globalAlpha=0.7;
+      bgX.shadowBlur=0;
+      // Centre dot
+      bgX.fillStyle='#00ee55';bgX.globalAlpha=0.85;
       bgX.beginPath();bgX.arc(obj.x,obj.y,3,0,Math.PI*2);bgX.fill();
       bgX.restore();
     }
@@ -1050,6 +1066,7 @@ function endGame(isWin){
   state='result';
   if(timerInt){clearInterval(timerInt);timerInt=null;}
   stopWind();
+  stopWind();
   lastResultWin=isWin;
   if(isWin){
     // Bonus for time remaining
@@ -1094,6 +1111,7 @@ function showResult(isWin){
     '<p style="color:#f84;font-size:.4rem">'+t('best')+': '+highScore+'</p>'+
     '<p style="color:#0055cc;font-size:.38rem">&#128760; '+found+'/'+total+' UFOs &nbsp; &#8987; '+elapsed+'s</p>'+
     '<div class="general-briefing" style="margin-top:8px">'+
+    '<img src="'+GENERAL_IMG+'" alt="General" style="width:54px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(160,232,255,.4))"/>'+
     '<div><span class="general-briefing-label">'+t('generalLabel')+'</span>'+
     '<div class="general-briefing-text">'+comment+'</div></div></div>'+
     (isWin?'<div style="background:rgba(0,80,180,.08);border:1px solid rgba(0,100,200,.2);border-radius:4px;padding:10px 16px;width:100%;max-width:680px;font-size:.32rem;color:#003366;font-family:\'Press Start 2P\',monospace;line-height:2;margin-top:6px">'+t('conclusionText')+'</div>':'')+
