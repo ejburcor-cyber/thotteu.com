@@ -606,6 +606,7 @@ function applyLang(lang){
   if(pd)pd.textContent=t.pwaDesc||'';
   if(pi)pi.textContent=t.pwaInstall||'INSTALL';
   if(typeof bgCtx!=='undefined'&&bgCtx&&(state==='input'||state==='watching'||state==='symphony')){buildBackground();}
+  if(state==='result'&&lastResultIsWin!==null){showResult(lastResultIsWin);}
   renderHOF();
 }
 document.addEventListener('click',()=>{var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');});
@@ -841,6 +842,7 @@ let streak=0;      // consecutive correct rounds
 let failCount=0;   // total fails this game
 let roundPoints=10; // points for next round
 let gameStartTime=0; // timestamp when game started
+let lastResultIsWin=null; // remember last result for lang refresh
 let maxRounds=4;
 let score=0;
 let highScore=parseInt(localStorage.getItem('ss_hs')||'0');
@@ -1151,6 +1153,7 @@ function buildObjectCards(){
 const GENERAL_IMG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9OLGdAAAAHlBMVEUAKDwAKDwAKDwAAAAAKDwAKDwAKDwAKDwAAAAAAAA8nrQ0AAAACHRSTlOfbv4ANM4QTGSGcHsAAAUVSURBVHja7VlNaxtHGH5mVopNoMlu24PrUmcIBHooZYrOBUHPDSK/IPQX+Sf0FwRdehf9OJZuIadS3HVyKrWtURyKHGl3etiRtLPzzocEuXXB2PvxzPsxz7xfZiM416sPADTflAhf2Wn/yW/HRwDAqk+WYSjvA+di8+df4zCUWQoP/rFeFulSuY3EIhlaX/deNuNEhXvaRlXuSCWQmCdBH5LvrxOgdUW/v45DH/s+eBuDai/tVioCVX6bfKsaqA5t4KM8BPUJZQUAXASgXqEaRQUw5Yf6LVX4SniW5lFLsQDw1gcNsFy3RF7lNP3ZTUBm0VJKf0hKbSJBCI0AoxUOxi9lzL0loQLRa4w1BdVxJF5autVkRPRctejq9kYZaJmCve0qp7SBihSotQtPINIVBkSHOOvqdwA8yUsAFKa7G9nsI9XixAAlwJGHITkBZlcQAMcsDF18tFFy3fMZjzm4+XN+BgCojnbcYmMA2ekyaubfyz9OAHZv57KF+vc+OEvx0ZmdQCQYB3iT5uBFPKt7TVYHQy3mtKzneSrWEctnqdCBdfcU4CIVurLuftrDVkAe6ibX2D2g5eFQ/A99z1BxODR/D5RoDrc12y+IA+BPLrbZN5Yo+81KfnLXrql8UVUbcfr+5snx4hgA3+ox8EkbejzKgVE2ktlr1L6SrZYYjUZU3aRbCMu1B8seVb0e4uFlbmvBk2Oh872OEbDys8kTkpWm33NfqUG4OMDhzBO66whUusb0ScQCJ0eG/Vt7oFOfsWKrje5DZcxY4DnpLm7tjKTzaulRuOzYWe0TvLgvaMXh3Io8PF4M+BYkvqkOj8NjL56Hw7RhxJjiP086mubxLAR1SJF1H09C0F9p5zZ2/JdJUnV8tw3ms2cphU9pQVdmgRfPKr+fBqTUo41NL4YVIU4RBRu3jnEN4NOzp533M8tkSUH5LoTwHypHKt9WhmEi1qLxcGTth24SpVvWCzeT2tBzMu50pE9TTk5pO2bgMsSGTrzHtabY1NGMldGqSXmkNoEArhyS824EqAKxWDvbYyk8doySjnrdJ+e0qbJfoRntvncWa/pcKT3nTpBu4ikzAk3SP9yjZe6+iu2WR9q7SY/GPGSefUJnPRrzSFKvHFcwCjoN18+6sinXpcQkrR+UW+g0uQcc2qTgwVxlP1vbjzaDlImTjbw9h+7ZOgtmYVvjbZRUTlDzXmvZ3Yn9GrNWr9zJdFmcuWauOzU32xqsKWMztQ0rYMZy62CD9Nq+/dL8vtkpvOqf9M11R+vPlMVpstj+jtjai1blzhi9Tm0fH7cM7UiVSQOg3DBRd6WmzYCGyFo333SknpPBrK/LemIMYx2p5HEdOLr8aPx1ycN8JPZbjwGAMclDzQa95kuzSdkplgBweUyeuWw4PXHEHi8xOAK4EThAJhOa7I1Pv20VmrVMbMrkszcZzlpo28XkWXrrWq6NG1pps3d0/JyEKtM80KyIQDbJTo1n2b074qMFPid0Vma4ELmmwVJ65CXUEPg6CH1QFDkdhNfAmyA0jwRPP7SaAmAy0Lh6oc8zoBonTaf60PIdkJMfDWX744UyDj0EHhBeKuGbLBg3CaWugF/o5JoFoUpDUMtnqpMrqFnHHADmFIl5O22aHdD6fhH2cui/DZEsz3VRFGBF8bEMp/+Qwo5iV5Gjs5te9tVrROr00rlGSIVmPSFbLeTeUreVwNm+0F2G+3lf6G04AdhQy6aBiM6v8B9t71Z6Vue83gAAAABJRU5ErkJggg==';
 
 function showResult(isWin){
+  lastResultIsWin=isWin; // save for lang change refresh
   if(isWin){recordHOF(score);if(score>highScore){highScore=score;localStorage.setItem('ss_hs',highScore);document.getElementById('highscore-display').textContent=highScore;}}
   const t=i18n[currentLang]||i18n.en;
   const comment=getComment(isWin);
@@ -1323,7 +1326,7 @@ function onStartMission(){
 
 function startGame(){
   getAudio(); // init AudioContext on user gesture
-  maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
+  maxRounds={1:4,2:6,3:10}[diffLevel]||4; // easy:4 mid:6 hard:10
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   var _rc=document.getElementById('repeat-cost');if(_rc)_rc.textContent=repeatCost;
   score=0; currentRound=0; seenObjects=[]; streak=0; failCount=0; roundPoints=10; gameStartTime=Date.now();
