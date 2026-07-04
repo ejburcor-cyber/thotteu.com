@@ -50,9 +50,9 @@ h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow
 #start-btn:hover{background:#c8f4ff}
 .score-final{color:#ff0;font-size:.7rem}
 /* ── CANVAS WRAP ── */
-#game-canvas-wrap{position:relative;width:900px;height:540px;display:none;cursor:none;overflow:hidden}
-#canvas-bg{position:absolute;top:0;left:0;display:block;border:2px solid #fa0}
-#canvas-fg{position:absolute;top:0;left:0;display:block;pointer-events:none}
+#game-canvas-wrap{position:relative;width:900px;height:540px;display:none;cursor:none!important;overflow:hidden}
+#canvas-bg{position:absolute;top:0;left:0;display:block;border:2px solid #fa0;cursor:none!important}
+#canvas-fg{position:absolute;top:0;left:0;display:block;pointer-events:auto;cursor:none!important}
 /* ── COLOUR WHEEL HUD ── */
 #colour-wheel-wrap{position:absolute;bottom:12px;right:12px;z-index:20;pointer-events:none}
 /* ── TIMER BAR ── */
@@ -440,7 +440,7 @@ var state='idle'; // idle|playing|result
 var score=0, highScore=0;
 var mouseX=450, mouseY=270;
 var colourIdx=0; // current colour wheel index
-var BEAM_RADIUS=80;
+var BEAM_RADIUS=55;
 var objects=[]; // {x,y,colIdx,isUfo,found,r}
 var timeLeft=120, timerInt=null;
 var missPenalty=0;
@@ -658,8 +658,8 @@ function drawCannon(){
 // ═══════════════════════════════════════════════════════════════════
 // OBJECTS — UFOs and rocks
 // ═══════════════════════════════════════════════════════════════════
-var UFO_R=18; // visual radius
-var ROCK_R=14;
+var UFO_R=12; // visual radius
+var ROCK_R=9;
 
 function placeObjects(){
   objects=[];
@@ -908,6 +908,7 @@ function startGame(){
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
   fgC.addEventListener('wheel',onWheel,{passive:false});
+  document.getElementById('game-canvas-wrap').addEventListener('wheel',onWheel,{passive:false});
   document.getElementById('phase-label').textContent='';
 }
 
@@ -1085,6 +1086,7 @@ function restartGame(){
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
   fgC.addEventListener('wheel',onWheel,{passive:false});
+  document.getElementById('game-canvas-wrap').addEventListener('wheel',onWheel,{passive:false});
   startGame();
 }
 
