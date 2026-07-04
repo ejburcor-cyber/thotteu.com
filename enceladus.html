@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{'analytics_storage':'denied','ad_storage':'denied','ad_user_data':'denied','ad_personalization':'denied'});
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chromatic Enceladus — Find the UFOs in the Ice | Thotteu</title>
+<meta name="description" content="Chromatic Enceladus: use your chromatic cannon to find UFOs hidden in the ice of Enceladus. Free educational arcade game about light and colour.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<link rel="manifest" href="/manifest-enceladus.json">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;padding-top:6px;min-height:100vh;font-family:"Press Start 2P",monospace;user-select:none}
+.back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:7px 12px;font-family:"Press Start 2P",monospace;font-size:.45rem;color:#fca;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50}
+.back-btn:hover{border-color:#fff;color:#fff}
+.title-block{position:relative;width:900px;max-width:100%;margin:0 auto;text-align:center}
+h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,220,255,.6)}
+.subtitle{color:#aef;font-size:.42rem;letter-spacing:2px;margin-bottom:5px}
+.lang-selector{position:absolute;top:4px;right:8px}
+.lang-btn-toggle{background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:"Press Start 2P",monospace;font-size:.5rem;color:#fca;display:flex;align-items:center;gap:6px}
+.lang-dropdown{display:none;position:absolute;left:50%;transform:translateX(-50%);top:calc(100%+6px);background:#0d1020;border:1.5px solid #fa0;border-radius:6px;overflow:hidden;z-index:100;min-width:160px}
+.lang-dropdown.open{display:block}
+.lang-option{padding:8px 14px;cursor:pointer;font-family:"Press Start 2P",monospace;font-size:.45rem;color:#8aa}
+.lang-option:hover,.lang-option.active{background:rgba(255,160,0,.15);color:#fca}
+/* ── BANNER ── */
+#header-banner{width:900px;max-width:100%;height:90px;display:block;margin-bottom:4px}
+/* ── GAME WRAP ── */
+#game-wrap{width:900px;max-width:100%}
+/* ── HUD ── */
+#hud{background:#0d1020;border:2px solid #fa0;border-bottom:none;padding:6px 14px;display:flex;align-items:center;justify-content:space-between;width:100%;font-size:.42rem;color:#fa0;letter-spacing:1px}
+/* ── OVERLAY ── */
+#overlay{width:900px;max-width:100%;background:rgba(0,0,15,.97);border:2px solid #fa0;border-top:none;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 24px 22px}
+#overlay h2{color:#fff;font-size:.9rem;text-align:center;line-height:1.8}
+#lore-box{color:#aef;font-size:.4rem;line-height:2;text-align:center;width:100%;max-width:680px;border:1px solid rgba(100,200,255,.25);padding:10px 16px;background:rgba(0,20,40,.6)}
+#lore-cursor{display:inline-block;width:7px;height:.7em;background:#aef;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+/* ── CONTROLS INFO ── */
+.controls-box{background:rgba(0,20,40,.6);border:1px solid rgba(100,200,255,.2);padding:10px 16px;width:100%;max-width:600px;font-size:.38rem;color:#aef;line-height:2.2}
+.controls-box span{color:#fa0;font-size:.4rem}
+/* ── LEVEL BUTTONS ── */
+.level-btn{border:2px solid #a0e8ff;color:#a0e8ff;background:transparent;font-family:"Press Start 2P",monospace;font-size:.38rem;padding:8px 14px;cursor:pointer;letter-spacing:1px;min-width:110px;transition:all .15s}
+.level-btn.active,.level-btn:hover{background:#a0e8ff;color:#000}
+#start-btn{background:#a0e8ff;color:#000;border:none;font-family:"Press Start 2P",monospace;font-size:.52rem;padding:12px 28px;cursor:pointer;margin-top:4px;letter-spacing:1px;transition:background .15s}
+#start-btn:hover{background:#c8f4ff}
+.score-final{color:#ff0;font-size:.7rem}
+/* ── CANVAS WRAP ── */
+#game-canvas-wrap{position:relative;width:900px;height:540px;display:none;cursor:none;overflow:hidden}
+#canvas-bg{position:absolute;top:0;left:0;display:block;border:2px solid #fa0}
+#canvas-fg{position:absolute;top:0;left:0;display:block;pointer-events:none}
+/* ── COLOUR WHEEL HUD ── */
+#colour-wheel-wrap{position:absolute;bottom:12px;right:12px;z-index:20;pointer-events:none}
+/* ── TIMER BAR ── */
+#timer-bar-wrap{position:absolute;top:0;left:0;right:0;height:5px;z-index:20;pointer-events:none}
+#timer-bar{height:100%;background:#fa0;transition:width .1s linear;width:100%}
+/* ── PHASE LABEL ── */
+#phase-label{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#fa0;font-family:"Press Start 2P",monospace;font-size:.42rem;z-index:20;pointer-events:none;white-space:nowrap;background:rgba(0,0,15,.85);padding:4px 10px;border-radius:3px}
+/* ── UFO COUNT ── */
+#ufo-count{position:absolute;top:12px;left:12px;color:#aef;font-family:"Press Start 2P",monospace;font-size:.38rem;z-index:20;pointer-events:none;background:rgba(0,0,15,.85);padding:4px 8px;border-radius:3px}
+/* ── GENERAL BRIEFING ── */
+.general-briefing{display:flex;align-items:flex-start;gap:14px;background:rgba(100,200,255,.06);border:1px solid rgba(100,200,255,.3);border-radius:4px;padding:10px 14px;width:100%;max-width:680px;text-align:left}
+.general-briefing-text{font-size:.38rem;line-height:1.9;color:#cde;font-family:"Press Start 2P",monospace}
+.general-briefing-label{color:#fa0;font-size:.32rem;letter-spacing:1px;margin-bottom:4px;display:block}
+/* ── SIGNAL LOG ── */
+.signal-log-item{background:rgba(0,80,180,.06);border:1px solid rgba(0,100,200,.2);border-radius:4px;padding:6px 10px;margin-bottom:4px;font-size:.28rem;color:#003366;font-family:"Press Start 2P",monospace;line-height:1.8;display:flex;align-items:center;gap:8px}
+/* ── HOF ── */
+#hof-standalone{width:900px;max-width:100%;margin:10px auto 0;border:1px solid rgba(255,160,0,.25);background:rgba(0,5,20,.7);padding:10px 16px}
+/* ── SHARE/PWA ── */
+.share-block{width:900px;max-width:100%;margin:10px auto 0;background:rgba(0,5,20,.7);border:1px solid rgba(255,160,0,.25);border-radius:6px;padding:12px 16px}
+.share-block-title{color:#a0e8ff;font-family:"Press Start 2P",monospace;font-size:.48rem;letter-spacing:1px;margin-bottom:8px}
+.share-url-row{display:flex;flex-wrap:wrap;gap:6px}
+.share-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid rgba(160,232,255,.4);color:#a0e8ff;font-family:"Press Start 2P",monospace;font-size:.4rem;padding:7px 12px;border-radius:4px;cursor:pointer}
+.share-btn:hover{background:rgba(160,232,255,.12)}
+.pwa-block{width:900px;max-width:100%;margin:10px auto 0;background:rgba(0,5,20,.7);border:1px solid rgba(255,160,0,.25);border-radius:6px;padding:12px 16px}
+.pwa-block-title{color:#a0e8ff;font-family:"Press Start 2P",monospace;font-size:.48rem;margin-bottom:6px}
+.pwa-block-desc{color:rgba(160,232,255,.7);font-size:.4rem;line-height:2;margin-bottom:8px;font-family:"Press Start 2P",monospace}
+.pwa-install-btn{display:inline-flex;align-items:center;gap:6px;background:#a0e8ff;color:#000;border:none;font-family:"Press Start 2P",monospace;font-size:.45rem;padding:10px 18px;cursor:pointer;margin-bottom:6px}
+.ad-slot{width:100%;max-width:900px;margin:10px auto 0;text-align:center}
+.ad-slot-label{color:rgba(255,160,0,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px;font-family:"Press Start 2P",monospace}
+.ad-placeholder{background:rgba(0,5,20,.7);border:1px dashed rgba(255,160,0,.25);display:flex;align-items:center;justify-content:center;color:rgba(255,160,0,.25);font-size:.38rem;font-family:"Press Start 2P",monospace}
+/* ── COOKIE ── */
+#cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#0d1020;border-top:2px solid #7df;padding:14px 18px;display:none}
+#cookie-banner.show{display:block}
+.cookie-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.cookie-text{flex:1;min-width:220px;font-size:.4rem;line-height:1.9;color:#8aa}
+.cookie-btns{display:flex;gap:10px}
+.cookie-btn{font-family:"Press Start 2P",monospace;font-size:.4rem;padding:9px 16px;cursor:pointer;border:1.5px solid #7df;background:transparent;color:#fff}
+.cookie-btn.accept{background:#7df;color:#000}
+</style>
+</head>
+<body>
+<a href="/" class="back-btn" id="back-btn-el">&#8592; THOTTEU</a>
+
+<!-- HEADER BANNER SVG -->
+<svg id="header-banner" viewBox="0 0 900 90" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050518"/>
+      <stop offset="55%" stop-color="#0d1a36"/>
+      <stop offset="100%" stop-color="#c8e8ff"/>
+    </linearGradient>
+    <radialGradient id="saturnG" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f0e0a0"/>
+      <stop offset="45%" stop-color="#d4a840"/>
+      <stop offset="100%" stop-color="#8a6020"/>
+    </radialGradient>
+    <radialGradient id="titanG" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="100%" stop-color="#a06020"/>
+    </radialGradient>
+    <radialGradient id="rheaG" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#d0c8c0"/>
+      <stop offset="100%" stop-color="#807870"/>
+    </radialGradient>
+    <radialGradient id="dioneG" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#c8c8d8"/>
+      <stop offset="100%" stop-color="#7878a0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="90" fill="url(#skyG)"/>
+
+  <!-- Stars — many, varied sizes -->
+  <circle cx="18"  cy="8"  r="1.2" fill="#fff" opacity=".9"/>
+  <circle cx="42"  cy="22" r=".6"  fill="#fff" opacity=".5"/>
+  <circle cx="68"  cy="5"  r=".9"  fill="#fff" opacity=".7"/>
+  <circle cx="95"  cy="18" r=".5"  fill="#fff" opacity=".4"/>
+  <circle cx="118" cy="10" r="1.1" fill="#fff" opacity=".8"/>
+  <circle cx="145" cy="28" r=".6"  fill="#fff" opacity=".5"/>
+  <circle cx="170" cy="6"  r=".8"  fill="#fff" opacity=".6"/>
+  <circle cx="198" cy="20" r=".5"  fill="#fff" opacity=".4"/>
+  <circle cx="225" cy="12" r="1.0" fill="#fff" opacity=".7"/>
+  <circle cx="255" cy="4"  r=".7"  fill="#fff" opacity=".6"/>
+  <circle cx="280" cy="24" r=".5"  fill="#fff" opacity=".4"/>
+  <circle cx="305" cy="14" r=".9"  fill="#fff" opacity=".7"/>
+  <circle cx="335" cy="8"  r=".6"  fill="#fff" opacity=".5"/>
+  <circle cx="358" cy="26" r=".8"  fill="#fff" opacity=".6"/>
+  <circle cx="385" cy="11" r="1.1" fill="#fff" opacity=".8"/>
+  <circle cx="412" cy="20" r=".5"  fill="#fff" opacity=".4"/>
+  <circle cx="440" cy="6"  r=".7"  fill="#fff" opacity=".6"/>
+  <circle cx="465" cy="16" r=".9"  fill="#fff" opacity=".7"/>
+  <circle cx="490" cy="28" r=".5"  fill="#fff" opacity=".4"/>
+  <circle cx="515" cy="8"  r=".8"  fill="#fff" opacity=".6"/>
+  <circle cx="542" cy="22" r=".6"  fill="#fff" opacity=".5"/>
+  <circle cx="568" cy="5"  r="1.0" fill="#fff" opacity=".8"/>
+  <circle cx="595" cy="18" r=".5"  fill="#fff" opacity=".4"/>
+  <!-- Twinkling stars (slightly larger/brighter) -->
+  <circle cx="82"  cy="14" r="1.5" fill="#fff" opacity=".95"/>
+  <circle cx="320" cy="10" r="1.4" fill="#eef" opacity=".9"/>
+  <circle cx="525" cy="14" r="1.3" fill="#fff" opacity=".85"/>
+
+  <!-- Saturn — big, close, dominant right side -->
+  <ellipse cx="790" cy="36" rx="78" ry="34" fill="url(#saturnG)" opacity=".92"/>
+  <!-- Saturn bands -->
+  <ellipse cx="790" cy="30" rx="70" ry="9" fill="none" stroke="rgba(180,120,30,.35)" stroke-width="3"/>
+  <ellipse cx="790" cy="38" rx="74" ry="10" fill="none" stroke="rgba(160,100,20,.3)" stroke-width="2"/>
+  <ellipse cx="790" cy="45" rx="68" ry="8" fill="none" stroke="rgba(200,150,50,.25)" stroke-width="2"/>
+  <!-- Saturn rings — large, tilted -->
+  <ellipse cx="790" cy="36" rx="115" ry="14" fill="none" stroke="rgba(220,180,80,.65)" stroke-width="5"/>
+  <ellipse cx="790" cy="36" rx="128" ry="16" fill="none" stroke="rgba(200,160,60,.45)" stroke-width="3.5"/>
+  <ellipse cx="790" cy="36" rx="140" ry="18" fill="none" stroke="rgba(180,140,50,.3)" stroke-width="2.5"/>
+  <!-- Ring shadow on Saturn -->
+  <ellipse cx="790" cy="36" rx="115" ry="6" fill="rgba(80,50,10,.25)"/>
+
+  <!-- Titan — large moon, warm amber -->
+  <circle cx="670" cy="20" r="11" fill="url(#titanG)" opacity=".9"/>
+  <text x="670" y="36" font-family="sans-serif" font-size="5.5" fill="rgba(230,180,80,.7)" text-anchor="middle">Titan</text>
+
+  <!-- Rhea — medium, grey -->
+  <circle cx="635" cy="48" r="6" fill="url(#rheaG)" opacity=".85"/>
+  <text x="635" y="59" font-family="sans-serif" font-size="4.5" fill="rgba(200,190,180,.65)" text-anchor="middle">Rhea</text>
+
+  <!-- Dione — smaller, bluish grey -->
+  <circle cx="700" cy="55" r="5" fill="url(#dioneG)" opacity=".8"/>
+  <text x="700" y="65" font-family="sans-serif" font-size="4" fill="rgba(180,180,210,.6)" text-anchor="middle">Dione</text>
+
+  <!-- Enceladus ice surface -->
+  <rect x="0" y="68" width="900" height="22" fill="#d8f0ff"/>
+  <path d="M0 68 Q50 62 100 68 Q160 74 220 66 Q290 60 360 68 Q430 74 500 66 Q570 60 640 68 Q710 74 780 66 Q840 60 900 68 L900 90 L0 90Z" fill="#c0e4ff" opacity=".7"/>
+  <path d="M0 72 Q80 68 150 72 Q230 76 310 70 Q390 65 470 72 Q550 78 630 70 Q720 64 800 72 Q860 76 900 72 L900 90 L0 90Z" fill="#eaf6ff" opacity=".6"/>
+  <!-- Ice cracks -->
+  <path d="M80 90 Q92 78 100 68"  stroke="rgba(120,180,240,.45)" stroke-width="1" fill="none"/>
+  <path d="M260 90 Q272 77 282 67" stroke="rgba(120,180,240,.38)" stroke-width=".8" fill="none"/>
+  <path d="M480 90 Q490 78 498 69" stroke="rgba(120,180,240,.42)" stroke-width="1" fill="none"/>
+  <path d="M700 90 Q710 76 718 68" stroke="rgba(120,180,240,.4)" stroke-width=".9" fill="none"/>
+  <!-- Geysers -->
+  <ellipse cx="185" cy="66" rx="2.5" ry="16" fill="rgba(180,230,255,.28)" opacity=".8"/>
+  <ellipse cx="510" cy="65" rx="2" ry="12" fill="rgba(180,230,255,.25)" opacity=".7"/>
+  <ellipse cx="830" cy="67" rx="2" ry="10" fill="rgba(180,230,255,.22)" opacity=".6"/>
+  <!-- UFO on surface -->
+  <ellipse cx="380" cy="74" rx="20" ry="6.5" fill="#ccdde8" opacity=".85"/>
+  <ellipse cx="380" cy="70" rx="11" ry="5.5" fill="#aabdd0" opacity=".9"/>
+  <circle cx="380" cy="68" r="4.5" fill="rgba(80,180,255,.85)"/>
+  <!-- Small UFO -->
+  <ellipse cx="560" cy="76" rx="13" ry="4.5" fill="#c8d8e8" opacity=".75"/>
+  <ellipse cx="560" cy="74" rx="7.5" ry="3.5" fill="#9ab0c8" opacity=".85"/>
+  <circle cx="560" cy="72" r="3" fill="rgba(100,200,255,.7)"/>
+  <!-- Chromatic cannon -->
+  <rect x="20" y="50" width="7" height="22" rx="2" fill="#556677" opacity=".9"/>
+  <polygon points="27,50 42,46 42,72 27,72" fill="#667788" opacity=".85"/>
+  <circle cx="20" cy="61" r="4" fill="#445566" opacity=".8"/>
+  <!-- Prism -->
+  <polygon points="42,50 58,46 58,74 42,74" fill="rgba(200,235,255,.75)" stroke="rgba(150,210,255,.7)" stroke-width="1"/>
+  <!-- Colour rays -->
+  <line x1="58" y1="48" x2="80" y2="40" stroke="#ff3300" stroke-width="1.8" opacity=".75"/>
+  <line x1="58" y1="53" x2="82" y2="49" stroke="#ff8800" stroke-width="1.8" opacity=".7"/>
+  <line x1="58" y1="58" x2="82" y2="58" stroke="#ffee00" stroke-width="1.8" opacity=".7"/>
+  <line x1="58" y1="63" x2="82" y2="67" stroke="#00cc44" stroke-width="1.8" opacity=".7"/>
+  <line x1="58" y1="67" x2="80" y2="74" stroke="#2244ff" stroke-width="1.8" opacity=".7"/>
+  <!-- Subtle title -->
+  <text x="370" y="52" font-family="serif" font-size="6.5" fill="rgba(160,220,255,.4)" text-anchor="middle" letter-spacing="5">CHROMATIC ENCELADUS</text>
+</svg>
+
+<div class="title-block">
+  <h1>&#128267; <span id="t-title">CHROMATIC ENCELADUS</span> &#128267;</h1>
+  <p class="subtitle" id="t-subtitle">FIND THE UFOS IN THE ICE</p>
+  <div class="lang-selector">
+    <button class="lang-btn-toggle" id="lang-btn">
+      <span id="lang-current">EN</span> &#9662;
+    </button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <div class="lang-option active" data-lang="en">EN &mdash; English</div>
+      <div class="lang-option" data-lang="es">ES &mdash; Espa&ntilde;ol</div>
+      <div class="lang-option" data-lang="fr">FR &mdash; Fran&ccedil;ais</div>
+      <div class="lang-option" data-lang="pt">PT &mdash; Portugu&ecirc;s</div>
+      <div class="lang-option" data-lang="ca">CA &mdash; Catal&agrave;-Valenci&agrave;</div>
+    </div>
+  </div>
+</div>
+
+<div id="game-wrap">
+  <div id="hud">
+    <div>&#128267; <span id="t-score">SCORE</span>: <span id="score-display">0</span>&nbsp;<span style="color:#336;font-size:.35rem"><span id="t-best">BEST</span>: <span id="highscore-display">0</span></span></div>
+    <div id="ufo-hud">&#128760; <span id="ufo-display">0</span>/<span id="ufo-total">0</span></div>
+    <div>&#9201; <span id="timer-display">120</span>s</div>
+  </div>
+
+  <div id="overlay">
+    <div id="lore-box"><span id="lore-text"></span><span id="lore-cursor"></span></div>
+    <div class="controls-box">
+      <p id="t-controls">
+        <span>&#128257; MOUSE WHEEL</span> &mdash; change light colour &nbsp;|&nbsp;
+        <span>&#128367; CLICK</span> &mdash; capture UFO (must be fully inside beam)
+      </p>
+    </div>
+    <p style="color:#a0e8ff;font-size:.4rem;letter-spacing:1px;margin-top:4px" id="t-diffLabel">SELECT DIFFICULTY</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
+      <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)"><span id="t-diffEasy">&#11088; EASY</span></button>
+      <button class="level-btn" id="btn-mid" onclick="selectLevel(2)"><span id="t-diffMid">&#11088;&#11088; MEDIUM</span></button>
+      <button class="level-btn" id="btn-hard" onclick="selectLevel(3)"><span id="t-diffHard">&#11088;&#11088;&#11088; HARD</span></button>
+    </div>
+    <button id="start-btn" onclick="onStartMission()">START MISSION</button>
+  </div>
+
+  <div id="game-canvas-wrap">
+    <canvas id="canvas-bg" width="900" height="540"></canvas>
+    <canvas id="canvas-fg" width="900" height="540"></canvas>
+    <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+    <div id="phase-label"></div>
+    <div id="ufo-count">&#128760; 0/0</div>
+    <div id="colour-wheel-wrap"></div>
+  </div>
+</div>
+
+<div class="ad-slot">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <div class="ad-placeholder" style="width:900px;height:90px;max-width:100%;margin:0 auto">900 x 90</div>
+</div>
+<div id="hof-standalone"></div>
+<div class="share-block">
+  <div class="share-block-title" id="enc-share-title">&#128228; Share Thotteu &middot; Chromatic Enceladus</div>
+  <p id="enc-share-desc" style="font-family:'Press Start 2P',monospace;font-size:.35rem;color:rgba(160,232,255,.7);margin-bottom:10px;line-height:1.7">Share with anyone who might enjoy it.</p>
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="flex-shrink:0;padding:5px;background:#fff;border:2px solid rgba(160,232,255,.6);border-radius:4px">
+      <div id="enc-qr-loading" style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:rgba(255,160,0,.5)">...</div>
+      <img id="enc-qr-preview" src="" alt="QR" width="90" height="90" style="display:none;width:90px;height:90px">
+    </div>
+    <div style="flex:1;min-width:160px">
+      <div style="font-family:monospace;font-size:.7rem;color:#a0e8ff;margin-bottom:8px">thotteu.com/enceladus</div>
+      <div class="share-url-row">
+        <button class="share-btn" id="enc-btn-wa" style="border-color:rgba(37,211,102,.5);color:#0a6">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.07-1.35C8.44 21.52 10.17 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+          WHATSAPP
+        </button>
+        <button class="share-btn" id="enc-btn-mail">&#9993; MAIL</button>
+        <button class="share-btn" id="enc-btn-copy">&#128279; <span id="enc-copy-txt">COPY</span></button>
+        <button class="share-btn" id="enc-btn-qr">&#11015; QR</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pwa-block">
+  <div class="pwa-block-title" id="enc-pwa-title">&#10070; INSTALL AS APP</div>
+  <p class="pwa-block-desc" id="enc-pwa-desc">Play offline from your home screen.</p>
+  <button class="pwa-install-btn" id="enc-pwa-btn" style="display:none">&#10070; INSTALL</button>
+</div>
+<div class="ad-slot" style="margin-bottom:30px">
+  <div class="ad-slot-label">ADVERTISEMENT</div>
+  <div class="ad-placeholder" style="width:900px;height:90px;max-width:100%;margin:0 auto">900 x 90</div>
+</div>
+
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p class="cookie-text" id="t-cookieText">We use analytics cookies. They only activate with your consent.</p>
+    <div class="cookie-btns">
+      <button class="cookie-btn" id="cookie-reject-btn">REJECT</button>
+      <button class="cookie-btn accept" id="cookie-accept-btn">ACCEPT</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// i18n
+// ═══════════════════════════════════════════════════════════════════
+var I={
+  en:{
+    title:'CHROMATIC ENCELADUS',subtitle:'FIND THE UFOS IN THE ICE',
+    backBtn:'\u2190 THOTTEU',startBtn:'START MISSION',score:'SCORE',best:'BEST',
+    diffLabel:'SELECT DIFFICULTY',diffEasy:'\u2b50 EASY',diffMid:'\u2b50\u2b50 MEDIUM',diffHard:'\u2b50\u2b50\u2b50 HARD',
+    win:'MISSION COMPLETE!',lose:'TIME IS UP!',scoreLabel:'SCORE',tryAgain:'TRY AGAIN',
+    hofTitle:'HALL OF FAME',hofEmpty:'No records yet.',
+    generalLabel:'GENERAL ASSESSMENT',
+    generalHigh:'Outstanding work, operator! All UFO signals captured. The fleet was refuelling on molecular hydrogen H2 — Enceladus is the best place in the solar system for it. We now have time to prepare.',
+    generalWithFails:'Good work. Most signals captured despite some missed shots. Enceladus confirmed as UFO refuelling station — preparation under way.',
+    generalLow:'Partial capture. Some UFOs remain undetected. Their H2 refuelling operation continues — we must act faster next time.',
+    generalFail:'Time expired. The UFO fleet completed refuelling undetected. We must improve our chromatic scanning speed.',
+    conclusionText:'Analysis confirmed: the alien fleet is using Enceladus to harvest molecular hydrogen H2 — the best source in the entire solar system. Their refuelling complete, they will move soon. This gives us a critical window to prepare our defences.',
+    controls:'\u{1F6CB} MOUSE WHEEL — change light colour | \u{1F4F7} CLICK — capture UFO (must be fully inside beam)',
+    cookieText:'We use analytics cookies. They only activate with your consent.',
+    cookieAccept:'ACCEPT',cookieReject:'REJECT',
+    pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline from your home screen.',pwaInstall:'INSTALL',
+    shareTitle:'Share Thotteu \u00b7 Chromatic Enceladus',
+    lore:'YEAR 2051. Following Project Heimdall, alien fleets have been observed converging on Enceladus — Saturn\'s icy moon. Their purpose was unknown. A chromatic cannon network has been deployed across the ice surface. White light, when passed through a prism, reveals what lies beneath. The UFOs are camouflaged in the ice, each resonating at a specific colour frequency. You are our chromatic operator. Scan the surface, tune your beam, and capture every signal before time runs out.',
+  },
+  es:{
+    title:'CHROMATIC ENCELADUS',subtitle:'ENCUENTRA LOS UFOS EN EL HIELO',
+    backBtn:'\u2190 THOTTEU',startBtn:'INICIAR MISI\u00d3N',score:'PUNTOS',best:'MEJOR',
+    diffLabel:'SELECCIONA DIFICULTAD',diffEasy:'\u2b50 F\u00c1CIL',diffMid:'\u2b50\u2b50 MEDIO',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
+    win:'\u00a1MISI\u00d3N COMPLETADA!',lose:'\u00a1TIEMPO AGOTADO!',scoreLabel:'PUNTOS',tryAgain:'REINTENTAR',
+    hofTitle:'SAL\u00d3N DE LA FAMA',hofEmpty:'Sin r\u00e9cords a\u00fan.',
+    generalLabel:'EVALUACI\u00d3N DEL GENERAL',
+    generalHigh:'\u00a1Trabajo excepcional, operador! Todas las se\u00f1ales UFO capturadas. La flota repostaba hidr\u00f3geno molecular H2 — Enc\u00e9lado es el mejor lugar del sistema solar para ello. Ahora tenemos tiempo para prepararnos.',
+    generalWithFails:'Buen trabajo. La mayor\u00eda de se\u00f1ales capturadas a pesar de algunos disparos fallidos. Enc\u00e9lado confirmado como estaci\u00f3n de repostaje UFO.',
+    generalLow:'Captura parcial. Algunos UFOs siguen sin detectar. Su operaci\u00f3n de repostaje de H2 contin\u00faa — debemos actuar m\u00e1s r\u00e1pido.',
+    generalFail:'Tiempo agotado. La flota alien\u00edgena complet\u00f3 el repostaje sin ser detectada. Debemos mejorar nuestra velocidad de escaneo crom\u00e1tico.',
+    conclusionText:'An\u00e1lisis confirmado: la flota alienígena usa Enc\u00e9lado para extraer hidr\u00f3geno molecular H2 — la mejor fuente de todo el sistema solar. El repostaje completado, se mover\u00e1n pronto. Tenemos una ventana cr\u00edtica para preparar nuestras defensas.',
+    controls:'\u{1F6CB} RUEDA DEL RAT\u00d3N — cambiar color | \u{1F4F7} CLIC — capturar UFO (debe estar completamente dentro del haz)',
+    cookieText:'Usamos cookies anal\u00edticas. Solo se activan con tu consentimiento.',
+    cookieAccept:'ACEPTAR',cookieReject:'RECHAZAR',
+    pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexi\u00f3n.',pwaInstall:'INSTALAR',
+    shareTitle:'Comparte Thotteu \u00b7 Chromatic Enceladus',
+    lore:'A\u00d1O 2051. Tras el Proyecto Heimdall, se ha observado que flotas alienígenas convergen en Enc\u00e9lado, la luna helada de Saturno. Su prop\u00f3sito era desconocido. Se ha desplegado una red de ca\u00f1ones crom\u00e1ticos por la superficie de hielo. La luz blanca, al pasar por un prisma, revela lo que hay debajo. Los UFOs est\u00e1n camuflados en el hielo, cada uno resonando a una frecuencia de color espec\u00edfica. Eres nuestro operador crom\u00e1tico. Escanea la superficie, sintoniza tu haz y captura cada se\u00f1al antes de que se acabe el tiempo.',
+  },
+  fr:{
+    title:'CHROMATIC ENCELADUS',subtitle:'TROUVEZ LES OVNIS DANS LA GLACE',
+    backBtn:'\u2190 THOTTEU',startBtn:'LANCER LA MISSION',score:'POINTS',best:'MEILLEUR',
+    diffLabel:'CHOISIR DIFFICULT\u00c9',diffEasy:'\u2b50 FACILE',diffMid:'\u2b50\u2b50 MOYEN',diffHard:'\u2b50\u2b50\u2b50 DIFFICILE',
+    win:'MISSION ACCOMPLIE!',lose:'TEMPS EXPIR\u00c9!',scoreLabel:'POINTS',tryAgain:'R\u00c9ESSAYER',
+    hofTitle:'PALMAR\u00c8S',hofEmpty:'Pas encore de records.',
+    generalLabel:'\u00c9VALUATION DU G\u00c9N\u00c9RAL',
+    generalHigh:'Travail remarquable, op\u00e9rateur ! Tous les signaux OVNI captur\u00e9s. La flotte faisait le plein d\'hydrog\u00e8ne mol\u00e9culaire H2 — Encelade est le meilleur endroit du syst\u00e8me solaire pour cela. Nous avons maintenant le temps de nous pr\u00e9parer.',
+    generalWithFails:'Bon travail. La plupart des signaux captur\u00e9s malgr\u00e9 quelques tirs manqu\u00e9s. Encelade confirm\u00e9 comme station de ravitaillement OVNI.',
+    generalLow:'Capture partielle. Certains OVNIS restent non d\u00e9tect\u00e9s. Leur op\u00e9ration de ravitaillement H2 continue.',
+    generalFail:'Temps expir\u00e9. La flotte extraterrestre a termin\u00e9 son ravitaillement sans \u00eatre d\u00e9tect\u00e9e.',
+    conclusionText:'Analyse confirm\u00e9e : la flotte alien utilisait Encelade pour r\u00e9colter de l\'hydrog\u00e8ne mol\u00e9culaire H2. Nous avons une fen\u00eatre critique pour pr\u00e9parer nos d\u00e9fenses.',
+    controls:'MOLETTE — changer la couleur | CLIC — capturer OVNI (doit \u00eatre compl\u00e8tement dans le faisceau)',
+    cookieText:'Nous utilisons des cookies analytiques.',
+    cookieAccept:'ACCEPTER',cookieReject:'REFUSER',
+    pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne.',pwaInstall:'INSTALLER',
+    shareTitle:'Partage Thotteu \u00b7 Chromatic Enceladus',
+    lore:'ANN\u00c9E 2051. Suite au Projet Heimdall, des flottes extraterrestres ont \u00e9t\u00e9 observ\u00e9es convergeant vers Encelade. Un r\u00e9seau de canons chromatiques a \u00e9t\u00e9 d\u00e9ploy\u00e9. La lumi\u00e8re blanche, pass\u00e9e \u00e0 travers un prisme, r\u00e9v\u00e8le ce qui se trouve en dessous. Les OVNIS sont camoufl\u00e9s dans la glace. Vous \u00eates notre op\u00e9rateur chromatique.',
+  },
+  pt:{
+    title:'CHROMATIC ENCELADUS',subtitle:'ENCONTRE OS UFOS NO GELO',
+    backBtn:'\u2190 THOTTEU',startBtn:'INICIAR MISS\u00c3O',score:'PONTOS',best:'MELHOR',
+    diffLabel:'SELECIONAR DIFICULDADE',diffEasy:'\u2b50 F\u00c1CIL',diffMid:'\u2b50\u2b50 M\u00c9DIO',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
+    win:'MISS\u00c3O CONCLU\u00cdDA!',lose:'TEMPO ESGOTADO!',scoreLabel:'PONTOS',tryAgain:'TENTAR NOVAMENTE',
+    hofTitle:'SAL\u00c3O DA FAMA',hofEmpty:'Sem recordes ainda.',
+    generalLabel:'AVALIA\u00c7\u00c3O DO GENERAL',
+    generalHigh:'Trabalho excecional, operador! Todos os sinais UFO capturados. A frota reabastecia hidrog\u00e9nio molecular H2. Temos agora tempo para nos prepararmos.',
+    generalWithFails:'Bom trabalho. A maioria dos sinais capturados apesar de alguns disparos falhados.',
+    generalLow:'Captura parcial. Alguns UFOs permanecem por detetar.',
+    generalFail:'Tempo esgotado. A frota alien\u00edgena completou o reabastecimento sem ser detetada.',
+    conclusionText:'An\u00e1lise confirmada: a frota alien\u00edgena usava Enc\u00e9lado para colher hidrog\u00e9nio molecular H2. Temos uma janela cr\u00edtica para preparar as nossas defesas.',
+    controls:'RODA DO RAT\u00c3O — mudar cor | CLIQUE — capturar UFO',
+    cookieText:'Usamos cookies anal\u00edticos.',
+    cookieAccept:'ACEITAR',cookieReject:'REJEITAR',
+    pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline.',pwaInstall:'INSTALAR',
+    shareTitle:'Compartilhe Thotteu \u00b7 Chromatic Enceladus',
+    lore:'ANO 2051. Ap\u00f3s o Projeto Heimdall, flotas extraterrestres foram observadas a convergir para Enc\u00e9lado. Uma rede de ca\u00f1\u00f5es crom\u00e1ticos foi implantada. A luz branca, ao passar por um prisma, revela o que est\u00e1 por baixo. \u00c9 o nosso operador crom\u00e1tico.',
+  },
+  ca:{
+    title:'CHROMATIC ENCELADUS',subtitle:'TROBA ELS UFOS AL GEL',
+    backBtn:'\u2190 THOTTEU',startBtn:'INICIAR MISSI\u00d3',score:'PUNTS',best:'MILLOR',
+    diffLabel:'SELECCIONA DIFICULTAT',diffEasy:'\u2b50 F\u00c0CIL',diffMid:'\u2b50\u2b50 MITJ\u00c0',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
+    win:'MISSI\u00d3 COMPLETADA!',lose:'TEMPS ESGOTAT!',scoreLabel:'PUNTS',tryAgain:'TORNAR-HO A INTENTAR',
+    hofTitle:'SAL\u00d3 DE LA FAMA',hofEmpty:'Sense r\u00e8cords encara.',
+    generalLabel:'AVALUACI\u00d3 DEL GENERAL',
+    generalHigh:'Treball excepcional, operador! Tots els senyals UFO capturats. La flota repostava hidrogen molecular H2. Ara tenim temps per a preparar-nos.',
+    generalWithFails:'Bon treball. La majoria de senyals capturats malgrat alguns trets fallats.',
+    generalLow:'Captura parcial. Alguns UFOs resten sense detectar.',
+    generalFail:'Temps esgotat. La flota extraterrestre va completar el repostatge sense ser detectada.',
+    conclusionText:'An\u00e0lisi confirmada: la flota alienigena usava Enc\u00e8lad per a obtindre hidrogen molecular H2. Tenim una finestra cr\u00edtica per a preparar les nostres defenses.',
+    controls:'RODA DEL RATOL\u00ed — canviar color | CLIC — capturar UFO',
+    cookieText:'Usem galetes anal\u00edtiques.',
+    cookieAccept:'ACCEPTAR',cookieReject:'REBUTJAR',
+    pwaTitle:'INSTAL\u00b7LAR COM A APP',pwaDesc:'Juga sense connexi\u00f3.',pwaInstall:'INSTAL\u00b7LAR',
+    shareTitle:'Comparteix Thotteu \u00b7 Chromatic Enceladus',
+    lore:'ANY 2051. Despr\u00e9s del Projecte Heimdall, flotes extraterrestres han sigut observades convergint a Enc\u00e8lad. Una xarxa de canons crom\u00e0tics ha sigut desplegada. La llum blanca, en passar per un prisma, revela el que hi ha davall. Ets el nostre operador crom\u00e0tic.',
+  },
+};
+
+function t(k){ return (I[currentLang]||I.en)[k]||(I.en[k]||k); }
+
+// ═══════════════════════════════════════════════════════════════════
+// COLOURS
+// ═══════════════════════════════════════════════════════════════════
+var COLOURS=[
+  {name:'Red',    hex:'#ff2200',r:255,g:34, b:0},
+  {name:'Orange', hex:'#ff8800',r:255,g:136,b:0},
+  {name:'Yellow', hex:'#ffee00',r:255,g:238,b:0},
+  {name:'Green',  hex:'#00cc44',r:0,  g:204,b:68},
+  {name:'Cyan',   hex:'#00ccee',r:0,  g:204,b:238},
+  {name:'Blue',   hex:'#2244ff',r:34, g:68, b:255},
+  {name:'Violet', hex:'#9900cc',r:153,g:0,  b:204},
+];
+var NUM_COLOURS=COLOURS.length;
+
+// ═══════════════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════════════
+var currentLang='en';
+var diffLevel=1;
+var state='idle'; // idle|playing|result
+var score=0, highScore=0;
+var mouseX=450, mouseY=270;
+var colourIdx=0; // current colour wheel index
+var BEAM_RADIUS=80;
+var objects=[]; // {x,y,colIdx,isUfo,found,r}
+var timeLeft=120, timerInt=null;
+var missPenalty=0;
+var gameStartTime=0;
+var lastResultWin=false;
+
+// Level config
+var LEVEL_CFG={
+  1:{ufos:15,rocks:15,time:120,mult:1},
+  2:{ufos:25,rocks:25,time:100,mult:2},
+  3:{ufos:40,rocks:40,time:80, mult:3},
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// CANVAS
+// ═══════════════════════════════════════════════════════════════════
+var W=900,H=540;
+var bgC,fgC,bgX,fgX;
+
+function initCanvas(){
+  bgC=document.getElementById('canvas-bg');
+  fgC=document.getElementById('canvas-fg');
+  bgX=bgC.getContext('2d');
+  fgX=fgC.getContext('2d');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════════════════════════════
+var _actx=null;
+var windNode=null, windGain=null;
+
+function getAudio(){
+  if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();
+  return _actx;
+}
+
+function startWind(){
+  var ctx=getAudio();
+  // White noise buffer
+  var bufLen=ctx.sampleRate*2;
+  var buf=ctx.createBuffer(1,bufLen,ctx.sampleRate);
+  var data=buf.getChannelData(0);
+  for(var i=0;i<bufLen;i++) data[i]=Math.random()*2-1;
+  windNode=ctx.createBufferSource();
+  windNode.buffer=buf;
+  windNode.loop=true;
+  // Bandpass filter to make it windy
+  var filter=ctx.createBiquadFilter();
+  filter.type='bandpass';
+  filter.frequency.value=400;
+  filter.Q.value=0.5;
+  windGain=ctx.createGain();
+  windGain.gain.value=0.12;
+  windNode.connect(filter);
+  filter.connect(windGain);
+  windGain.connect(ctx.destination);
+  windNode.start();
+}
+
+function stopWind(){
+  if(windNode){try{windNode.stop();}catch(e){}windNode=null;}
+}
+
+function playColourChange(){
+  var ctx=getAudio();
+  var osc=ctx.createOscillator();
+  var g=ctx.createGain();
+  osc.connect(g);g.connect(ctx.destination);
+  osc.type='square';
+  var freq=300+colourIdx*80;
+  osc.frequency.value=freq;
+  g.gain.setValueAtTime(0.08,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+  osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.1);
+}
+
+function playCaptureOk(){
+  var ctx=getAudio();
+  [0,0.08,0.16].forEach(function(dt,i){
+    var osc=ctx.createOscillator();
+    var g=ctx.createGain();
+    osc.connect(g);g.connect(ctx.destination);
+    osc.type='sine';
+    osc.frequency.value=[440,554,660][i];
+    g.gain.setValueAtTime(0.15,ctx.currentTime+dt);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dt+0.15);
+    osc.start(ctx.currentTime+dt);osc.stop(ctx.currentTime+dt+0.2);
+  });
+}
+
+function playCaptureError(){
+  var ctx=getAudio();
+  var osc=ctx.createOscillator();
+  var g=ctx.createGain();
+  osc.connect(g);g.connect(ctx.destination);
+  osc.type='sawtooth';osc.frequency.value=120;
+  g.gain.setValueAtTime(0.12,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.2);
+  osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.25);
+}
+
+function playExplosion(){
+  var ctx=getAudio();
+  var bufLen=ctx.sampleRate*1.5;
+  var buf=ctx.createBuffer(1,bufLen,ctx.sampleRate);
+  var data=buf.getChannelData(0);
+  for(var i=0;i<bufLen;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufLen,0.5);
+  var src=ctx.createBufferSource();
+  src.buffer=buf;
+  var g=ctx.createGain();
+  g.gain.value=0.6;
+  src.connect(g);g.connect(ctx.destination);
+  src.start();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BACKGROUND — icy Enceladus surface
+// ═══════════════════════════════════════════════════════════════════
+var iceCracks=[];
+var iceShards=[];
+
+function generateIce(){
+  iceCracks=[];
+  iceShards=[];
+  // Random cracks
+  for(var i=0;i<40;i++){
+    var x=Math.random()*W;
+    var y=Math.random()*H;
+    var len=30+Math.random()*120;
+    var ang=Math.random()*Math.PI;
+    iceCracks.push({x:x,y:y,len:len,ang:ang,w:0.5+Math.random()*1.5,a:0.15+Math.random()*0.35});
+  }
+  // Subtle ice shards/patches
+  for(var j=0;j<60;j++){
+    iceShards.push({
+      x:Math.random()*W,y:Math.random()*H,
+      rx:20+Math.random()*60,ry:10+Math.random()*30,
+      ang:Math.random()*Math.PI,
+      a:0.03+Math.random()*0.08
+    });
+  }
+}
+
+function drawBackground(){
+  // Pure white ice
+  bgX.fillStyle='#f0f8ff';
+  bgX.fillRect(0,0,W,H);
+  // Subtle blue-white gradient overlay
+  var grad=bgX.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,'rgba(220,240,255,0.4)');
+  grad.addColorStop(1,'rgba(200,230,255,0.2)');
+  bgX.fillStyle=grad;
+  bgX.fillRect(0,0,W,H);
+  // Ice shards
+  iceShards.forEach(function(s){
+    bgX.save();
+    bgX.translate(s.x,s.y);bgX.rotate(s.ang);
+    bgX.fillStyle='rgba(180,220,255,'+s.a+')';
+    bgX.beginPath();bgX.ellipse(0,0,s.rx,s.ry,0,0,Math.PI*2);bgX.fill();
+    bgX.restore();
+  });
+  // Cracks
+  iceCracks.forEach(function(cr){
+    bgX.save();
+    bgX.strokeStyle='rgba(160,200,240,'+cr.a+')';
+    bgX.lineWidth=cr.w;
+    bgX.beginPath();
+    bgX.moveTo(cr.x,cr.y);
+    bgX.lineTo(cr.x+Math.cos(cr.ang)*cr.len,cr.y+Math.sin(cr.ang)*cr.len);
+    bgX.stroke();
+    bgX.restore();
+  });
+  // Draw cannon + prism on left side
+  drawCannon();
+}
+
+function drawCannon(){
+  var cx=30,cy=H/2;
+  bgX.save();
+  // Cannon body
+  bgX.fillStyle='#445566';
+  bgX.fillRect(10,cy-20,30,40);
+  bgX.fillStyle='#334455';
+  bgX.fillRect(8,cy-25,36,8);bgX.fillRect(8,cy+17,36,8);
+  // Barrel
+  bgX.fillStyle='#556677';
+  bgX.fillRect(40,cy-8,25,16);
+  // Prism
+  bgX.save();
+  bgX.translate(68,cy);
+  bgX.beginPath();bgX.moveTo(0,-18);bgX.lineTo(16,0);bgX.lineTo(0,18);bgX.closePath();
+  bgX.fillStyle='rgba(200,230,255,0.85)';bgX.fill();
+  bgX.strokeStyle='rgba(100,180,255,0.8)';bgX.lineWidth=1.5;bgX.stroke();
+  bgX.restore();
+  // Colour rays from prism
+  var rays=[
+    {col:'rgba(255,34,0,0.6)',   dy:-90,dx:160},
+    {col:'rgba(255,136,0,0.6)',  dy:-55,dx:160},
+    {col:'rgba(255,238,0,0.6)', dy:-20,dx:160},
+    {col:'rgba(0,204,68,0.6)',   dy:15, dx:160},
+    {col:'rgba(0,204,238,0.6)', dy:48, dx:160},
+    {col:'rgba(34,68,255,0.6)',  dy:78, dx:160},
+    {col:'rgba(153,0,204,0.6)',  dy:105,dx:160},
+  ];
+  rays.forEach(function(ray){
+    bgX.save();
+    bgX.strokeStyle=ray.col;bgX.lineWidth=2;bgX.globalAlpha=0.7;
+    bgX.beginPath();bgX.moveTo(84,cy);bgX.lineTo(84+ray.dx,cy+ray.dy);bgX.stroke();
+    bgX.restore();
+  });
+  bgX.restore();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OBJECTS — UFOs and rocks
+// ═══════════════════════════════════════════════════════════════════
+var UFO_R=18; // visual radius
+var ROCK_R=14;
+
+function placeObjects(){
+  objects=[];
+  var cfg=LEVEL_CFG[diffLevel];
+  var total=cfg.ufos+cfg.rocks;
+  var placed=0;
+  var attempts=0;
+  var margin=30;
+  var cannonExclude=120; // don't place too close to cannon
+  while(placed<total&&attempts<10000){
+    attempts++;
+    var x=margin+Math.random()*(W-margin*2);
+    var y=margin+Math.random()*(H-margin*2);
+    // Avoid cannon area
+    if(x<cannonExclude){continue;}
+    // Avoid overlap
+    var ok=true;
+    for(var i=0;i<objects.length;i++){
+      var dx=objects[i].x-x,dy=objects[i].y-y;
+      if(Math.sqrt(dx*dx+dy*dy)<55){ok=false;break;}
+    }
+    if(!ok) continue;
+    var isUfo=placed<cfg.ufos;
+    var colIdx=Math.floor(Math.random()*NUM_COLOURS);
+    objects.push({x:x,y:y,colIdx:colIdx,isUfo:isUfo,found:false,r:isUfo?UFO_R:ROCK_R});
+    placed++;
+  }
+  // Shuffle
+  for(var i=objects.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=objects[i];objects[i]=objects[j];objects[j]=tmp;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════════════════════
+function getColourVisibility(objColIdx){
+  // How visible is obj with current beam colour?
+  // Exact match = 1.0, adjacent = 0.3, further = 0
+  var diff=Math.abs(objColIdx-colourIdx);
+  diff=Math.min(diff,NUM_COLOURS-diff); // wrap around
+  if(diff===0) return 1.0;
+  if(diff===1) return 0.28;
+  return 0;
+}
+
+function isFullyInBeam(obj){
+  var dx=obj.x-mouseX, dy=obj.y-mouseY;
+  return Math.sqrt(dx*dx+dy*dy)+obj.r<=BEAM_RADIUS;
+}
+
+function drawObjects(){
+  objects.forEach(function(obj){
+    if(obj.found) return;
+    var vis=getColourVisibility(obj.colIdx);
+    if(vis<=0) return;
+    // Check if within beam range (with some extra margin for partial vis)
+    var dx=obj.x-mouseX,dy=obj.y-mouseY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    var beamEdge=BEAM_RADIUS+obj.r*2;
+    if(dist>beamEdge) return;
+    // Fade at edge of beam
+    var edgeFade=Math.max(0,1-(dist-BEAM_RADIUS+obj.r*2)/(obj.r*2));
+    var alpha=vis*edgeFade;
+    bgX.save();
+    bgX.globalAlpha=alpha;
+    if(obj.isUfo){
+      drawUfo(bgX,obj.x,obj.y,obj.colIdx,obj.r);
+    } else {
+      drawRock(bgX,obj.x,obj.y,obj.r);
+    }
+    bgX.globalAlpha=1;
+    bgX.restore();
+  });
+}
+
+function drawUfo(ctx,x,y,ci,r){
+  var col=COLOURS[ci];
+  // Body
+  ctx.fillStyle=col.hex;
+  ctx.beginPath();ctx.ellipse(x,y,r,r*0.5,0,0,Math.PI*2);ctx.fill();
+  // Dome
+  ctx.fillStyle='rgba('+col.r+','+col.g+','+col.b+',0.7)';
+  ctx.beginPath();ctx.ellipse(x,y-r*0.2,r*0.55,r*0.45,0,0,Math.PI*2);ctx.fill();
+  // Glow
+  ctx.strokeStyle=col.hex;
+  ctx.lineWidth=2;ctx.globalAlpha*=0.5;
+  ctx.beginPath();ctx.ellipse(x,y,r+4,r*0.6,0,0,Math.PI*2);ctx.stroke();
+  ctx.globalAlpha=1;
+  // Windows
+  [-0.5,0,0.5].forEach(function(ox){
+    ctx.fillStyle='rgba(255,255,255,0.8)';
+    ctx.beginPath();ctx.arc(x+ox*r*0.45,y,r*0.12,0,Math.PI*2);ctx.fill();
+  });
+}
+
+function drawRock(ctx,x,y,r){
+  ctx.fillStyle='rgba(160,160,170,0.85)';
+  ctx.beginPath();
+  // Irregular rock shape
+  ctx.save();ctx.translate(x,y);
+  ctx.beginPath();
+  for(var i=0;i<8;i++){
+    var ang=i/8*Math.PI*2;
+    var rad=r*(0.7+Math.sin(i*2.3)*0.3);
+    if(i===0) ctx.moveTo(Math.cos(ang)*rad,Math.sin(ang)*rad);
+    else ctx.lineTo(Math.cos(ang)*rad,Math.sin(ang)*rad);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle='rgba(100,100,120,0.5)';ctx.lineWidth=1;ctx.stroke();
+  ctx.restore();
+}
+
+function drawBeam(){
+  fgX.clearRect(0,0,W,H);
+  var col=COLOURS[colourIdx];
+  // Spotlight cone from cannon
+  fgX.save();
+  // White light circle at cursor
+  var radialW=fgX.createRadialGradient(mouseX,mouseY,0,mouseX,mouseY,BEAM_RADIUS);
+  radialW.addColorStop(0,'rgba(255,255,255,0.95)');
+  radialW.addColorStop(0.5,'rgba(255,255,255,0.6)');
+  radialW.addColorStop(1,'rgba(255,255,255,0)');
+  fgX.fillStyle=radialW;
+  fgX.beginPath();fgX.arc(mouseX,mouseY,BEAM_RADIUS,0,Math.PI*2);fgX.fill();
+
+  // Colour tint
+  var radialC=fgX.createRadialGradient(mouseX,mouseY,0,mouseX,mouseY,BEAM_RADIUS);
+  radialC.addColorStop(0,'rgba('+col.r+','+col.g+','+col.b+',0.45)');
+  radialC.addColorStop(0.6,'rgba('+col.r+','+col.g+','+col.b+',0.2)');
+  radialC.addColorStop(1,'rgba('+col.r+','+col.g+','+col.b+',0)');
+  fgX.fillStyle=radialC;
+  fgX.beginPath();fgX.arc(mouseX,mouseY,BEAM_RADIUS,0,Math.PI*2);fgX.fill();
+
+  // Beam line from cannon to cursor
+  var grd=fgX.createLinearGradient(90,H/2,mouseX,mouseY);
+  grd.addColorStop(0,'rgba('+col.r+','+col.g+','+col.b+',0.0)');
+  grd.addColorStop(1,'rgba('+col.r+','+col.g+','+col.b+',0.15)');
+  fgX.strokeStyle=grd;
+  fgX.lineWidth=BEAM_RADIUS*0.4;
+  fgX.lineCap='round';
+  fgX.beginPath();fgX.moveTo(90,H/2);fgX.lineTo(mouseX,mouseY);fgX.stroke();
+
+  // Cursor crosshair
+  fgX.strokeStyle='rgba('+col.r+','+col.g+','+col.b+',0.8)';
+  fgX.lineWidth=1.5;
+  fgX.setLineDash([4,4]);
+  fgX.beginPath();fgX.arc(mouseX,mouseY,BEAM_RADIUS,0,Math.PI*2);fgX.stroke();
+  fgX.setLineDash([]);
+  fgX.strokeStyle='rgba('+col.r+','+col.g+','+col.b+',0.9)';
+  fgX.lineWidth=1;
+  fgX.beginPath();fgX.moveTo(mouseX-12,mouseY);fgX.lineTo(mouseX+12,mouseY);fgX.stroke();
+  fgX.beginPath();fgX.moveTo(mouseX,mouseY-12);fgX.lineTo(mouseX,mouseY+12);fgX.stroke();
+  fgX.restore();
+
+  // Draw colour wheel indicator
+  drawColourWheel();
+}
+
+function drawColourWheel(){
+  var cx=W-50,cy=H-50,r=30;
+  fgX.save();
+  // Wheel segments
+  COLOURS.forEach(function(c,i){
+    var startAng=i/NUM_COLOURS*Math.PI*2-Math.PI/2;
+    var endAng=(i+1)/NUM_COLOURS*Math.PI*2-Math.PI/2;
+    fgX.beginPath();fgX.moveTo(cx,cy);
+    fgX.arc(cx,cy,r,startAng,endAng);
+    fgX.closePath();
+    fgX.fillStyle=i===colourIdx?c.hex:'rgba('+c.r+','+c.g+','+c.b+',0.4)';
+    fgX.fill();
+    fgX.strokeStyle='rgba(255,255,255,0.3)';fgX.lineWidth=0.5;fgX.stroke();
+  });
+  // Active indicator
+  var activeAng=(colourIdx+0.5)/NUM_COLOURS*Math.PI*2-Math.PI/2;
+  fgX.strokeStyle='#fff';fgX.lineWidth=2;
+  fgX.beginPath();fgX.moveTo(cx,cy);
+  fgX.lineTo(cx+Math.cos(activeAng)*r,cy+Math.sin(activeAng)*r);
+  fgX.stroke();
+  // Centre
+  fgX.fillStyle='rgba(0,0,0,0.5)';
+  fgX.beginPath();fgX.arc(cx,cy,8,0,Math.PI*2);fgX.fill();
+  // Colour name
+  fgX.fillStyle='rgba(0,0,0,0.7)';
+  fgX.fillRect(cx-32,cy+r+4,64,14);
+  fgX.fillStyle='#fff';fgX.font='5px "Press Start 2P"';fgX.textAlign='center';
+  fgX.fillText(COLOURS[colourIdx].name.toUpperCase(),cx,cy+r+13);
+  fgX.restore();
+}
+
+function render(){
+  drawBackground();
+  drawObjects();
+  drawBeam();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ANIMATION LOOP
+// ═══════════════════════════════════════════════════════════════════
+var _raf=null;
+function startAnim(){
+  if(_raf) return;
+  (function loop(){_raf=requestAnimationFrame(loop);render();})();
+}
+function stopAnim(){if(_raf){cancelAnimationFrame(_raf);_raf=null;}}
+
+// ═══════════════════════════════════════════════════════════════════
+// GAME LOGIC
+// ═══════════════════════════════════════════════════════════════════
+function selectLevel(n){
+  diffLevel=n;
+  ['btn-easy','btn-mid','btn-hard'].forEach(function(id,i){
+    var b=document.getElementById(id);
+    if(b) b.classList.toggle('active',i+1===n);
+  });
+}
+
+function onStartMission(){
+  getAudio();
+  startGame();
+}
+
+function startGame(){
+  score=0;missPenalty=0;colourIdx=0;
+  document.getElementById('score-display').textContent=0;
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('game-canvas-wrap').style.display='block';
+  // Init canvas
+  bgC=document.getElementById('canvas-bg');
+  fgC=document.getElementById('canvas-fg');
+  bgX=bgC.getContext('2d');
+  fgX=fgC.getContext('2d');
+  generateIce();
+  placeObjects();
+  state='playing';
+  gameStartTime=Date.now();
+  timeLeft=LEVEL_CFG[diffLevel].time;
+  updateHUD();
+  updateUfoCount();
+  startAnim();
+  startWind();
+  startTimer();
+  // Wire events
+  fgC.addEventListener('mousemove',onMouseMove);
+  fgC.addEventListener('click',onCanvasClick);
+  fgC.addEventListener('wheel',onWheel,{passive:false});
+  document.getElementById('phase-label').textContent='';
+}
+
+function startTimer(){
+  if(timerInt) clearInterval(timerInt);
+  timerInt=setInterval(function(){
+    if(state!=='playing'){clearInterval(timerInt);return;}
+    timeLeft=Math.max(0,timeLeft-1);
+    updateTimerDisplay();
+    if(timeLeft<=0){clearInterval(timerInt);endGame(false);}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  var el=document.getElementById('timer-display');
+  if(el){el.textContent=timeLeft;el.style.color=timeLeft<=20?'#f44':'#fa0';}
+  var bar=document.getElementById('timer-bar');
+  if(bar){
+    var pct=timeLeft/LEVEL_CFG[diffLevel].time*100;
+    bar.style.width=pct+'%';
+    bar.style.background=timeLeft<=20?'#cc0000':'#fa0';
+  }
+}
+
+function updateHUD(){
+  var sd=document.getElementById('score-display');
+  if(sd) sd.textContent=score;
+}
+
+function updateUfoCount(){
+  var cfg=LEVEL_CFG[diffLevel];
+  var found=objects.filter(function(o){return o.isUfo&&o.found;}).length;
+  var total=cfg.ufos;
+  var el=document.getElementById('ufo-count');
+  if(el) el.textContent='\u{1F6F8} '+found+'/'+total;
+  var el2=document.getElementById('ufo-display');var el3=document.getElementById('ufo-total');
+  if(el2) el2.textContent=found;
+  if(el3) el3.textContent=total;
+}
+
+function onMouseMove(e){
+  if(state!=='playing') return;
+  var rect=fgC.getBoundingClientRect();
+  mouseX=e.clientX-rect.left;
+  mouseY=e.clientY-rect.top;
+}
+
+function onWheel(e){
+  if(state!=='playing') return;
+  e.preventDefault();
+  var dir=e.deltaY>0?1:-1;
+  colourIdx=(colourIdx+dir+NUM_COLOURS)%NUM_COLOURS;
+  playColourChange();
+}
+
+function onCanvasClick(e){
+  if(state!=='playing') return;
+  var rect=fgC.getBoundingClientRect();
+  var cx=e.clientX-rect.left,cy=e.clientY-rect.top;
+  mouseX=cx;mouseY=cy;
+  var cfg=LEVEL_CFG[diffLevel];
+  var mult=cfg.mult;
+  var hit=false;
+  objects.forEach(function(obj){
+    if(obj.found) return;
+    if(!isFullyInBeam(obj)) return;
+    var vis=getColourVisibility(obj.colIdx);
+    if(vis<1.0) return; // must be exact colour
+    if(obj.isUfo){
+      obj.found=true;
+      score+=5*mult;
+      updateHUD();updateUfoCount();
+      playCaptureOk();
+      // Flash found
+      var ph=document.getElementById('phase-label');
+      if(ph){ph.textContent='+'+5*mult+' pts \u2713';ph.style.color='#006600';
+        setTimeout(function(){if(ph)ph.textContent='';},700);}
+      hit=true;
+      // Check win
+      var allFound=objects.filter(function(o){return o.isUfo;}).every(function(o){return o.found;});
+      if(allFound) setTimeout(function(){endGame(true);},400);
+    } else {
+      // Rock — penalty
+      obj.found=true; // mark so it disappears
+      score=Math.max(0,score-1*mult);
+      missPenalty++;
+      updateHUD();
+      playCaptureError();
+      var ph=document.getElementById('phase-label');
+      if(ph){ph.textContent='-'+1*mult+' \u26aa ROCK';ph.style.color='#880000';
+        setTimeout(function(){if(ph)ph.textContent='';},600);}
+      hit=true;
+    }
+  });
+  if(!hit){
+    // Miss penalty
+    score=Math.max(0,score-1);
+    missPenalty++;
+    updateHUD();
+    playCaptureError();
+    var ph=document.getElementById('phase-label');
+    if(ph){ph.textContent='-1 MISS';ph.style.color='#880000';
+      setTimeout(function(){if(ph)ph.textContent='';},500);}
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// END GAME
+// ═══════════════════════════════════════════════════════════════════
+function endGame(isWin){
+  state='result';
+  if(timerInt){clearInterval(timerInt);timerInt=null;}
+  stopWind();
+  lastResultWin=isWin;
+  if(isWin){
+    // Bonus for time remaining
+    var cfg=LEVEL_CFG[diffLevel];
+    var bonus=timeLeft*5*cfg.mult;
+    score+=bonus;
+    updateHUD();
+  }
+  // Flash explosion effect
+  var flashCount=0;
+  var flashInt=setInterval(function(){
+    fgX.fillStyle='rgba(255,255,255,'+(0.8-flashCount*0.13)+')';
+    fgX.fillRect(0,0,W,H);
+    flashCount++;
+    if(flashCount>=6){clearInterval(flashInt);showResult(isWin);}
+  },80);
+  if(isWin) playExplosion();
+  if(score>highScore){highScore=score;localStorage.setItem('enc_hs',highScore);}
+  recordHOF(score);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RESULT
+// ═══════════════════════════════════════════════════════════════════
+function showResult(isWin){
+  stopAnim();
+  var canvasWrap=document.getElementById('game-canvas-wrap');
+  canvasWrap.style.display='none';
+  var ov=document.getElementById('overlay');
+  ov.style.display='flex';
+  ov.style.width='900px';
+  ov.style.maxWidth='100%';
+  ov.style.background='rgba(0,0,15,0.97)';
+  var td=t(isWin?'win':'lose');
+  var comment=getComment(isWin);
+  var found=objects.filter(function(o){return o.isUfo&&o.found;}).length;
+  var total=LEVEL_CFG[diffLevel].ufos;
+  var elapsed=Math.round((Date.now()-gameStartTime)/1000);
+  ov.innerHTML=
+    '<h2 style="color:'+(isWin?'#004400':'#660000')+'">'+td+'</h2>'+
+    '<p class="score-final">'+t('scoreLabel')+': '+score+'</p>'+
+    '<p style="color:#f84;font-size:.4rem">'+t('best')+': '+highScore+'</p>'+
+    '<p style="color:#0055cc;font-size:.38rem">&#128760; '+found+'/'+total+' UFOs &nbsp; &#8987; '+elapsed+'s</p>'+
+    '<div class="general-briefing" style="margin-top:8px">'+
+    '<div><span class="general-briefing-label">'+t('generalLabel')+'</span>'+
+    '<div class="general-briefing-text">'+comment+'</div></div></div>'+
+    (isWin?'<div style="background:rgba(0,80,180,.08);border:1px solid rgba(0,100,200,.2);border-radius:4px;padding:10px 16px;width:100%;max-width:680px;font-size:.32rem;color:#003366;font-family:\'Press Start 2P\',monospace;line-height:2;margin-top:6px">'+t('conclusionText')+'</div>':'')+
+    '<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;justify-content:center">'+
+    '<button onclick="restartGame()" style="background:#0055cc;color:#fff;border:none;font-family:\'Press Start 2P\',monospace;font-size:.42rem;padding:10px 18px;cursor:pointer">'+t('tryAgain')+'</button>'+
+    '<button onclick="location.reload()" style="background:transparent;color:#0055cc;border:2px solid #0055cc;font-family:\'Press Start 2P\',monospace;font-size:.42rem;padding:10px 18px;cursor:pointer">&#8592; MENU</button>'+
+    '</div>'+
+    buildHOFHtml(loadHOF());
+}
+
+function restartGame(){
+  // Remove canvas event listeners by replacing canvas
+  var old=document.getElementById('canvas-fg');
+  var newC=old.cloneNode(true);
+  old.parentNode.replaceChild(newC,old);
+  fgC=newC;
+  fgX=fgC.getContext('2d');
+  fgC.addEventListener('mousemove',onMouseMove);
+  fgC.addEventListener('click',onCanvasClick);
+  fgC.addEventListener('wheel',onWheel,{passive:false});
+  startGame();
+}
+
+function getComment(isWin){
+  if(!isWin) return t('generalFail');
+  var found=objects.filter(function(o){return o.isUfo&&o.found;}).length;
+  var total=LEVEL_CFG[diffLevel].ufos;
+  if(found===total&&missPenalty===0) return t('generalHigh');
+  if(found===total) return t('generalWithFails');
+  if(found>=total*0.6) return t('generalLow');
+  return t('generalFail');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HOF
+// ═══════════════════════════════════════════════════════════════════
+function loadHOF(){try{return JSON.parse(localStorage.getItem('enc_hof')||'[]');}catch(e){return[];}}
+function saveHOF(h){localStorage.setItem('enc_hof',JSON.stringify(h));}
+function recordHOF(pts){
+  var h=loadHOF();
+  var elapsed=Math.round((Date.now()-gameStartTime)/1000);
+  var found=objects.filter(function(o){return o.isUfo&&o.found;}).length;
+  h.push({score:pts,found:found,total:LEVEL_CFG[diffLevel].ufos,level:diffLevel,misses:missPenalty,time:elapsed,date:new Date().toLocaleDateString()});
+  h.sort(function(a,b){
+    if(b.score!==a.score) return b.score-a.score;
+    if((a.misses||0)!==(b.misses||0)) return (a.misses||0)-(b.misses||0);
+    return (a.time||999)-(b.time||999);
+  });
+  h.splice(5);saveHOF(h);
+}
+function buildHOFHtml(h){
+  if(!h.length) return '<p style="color:#a0e8ff;font-size:.32rem;font-family:\'Press Start 2P\',monospace;padding:8px">'+t('hofEmpty')+'</p>';
+  var html='<div style="width:100%;max-width:680px;margin-top:10px"><p style="color:#a0e8ff;font-size:.35rem;font-family:\'Press Start 2P\',monospace;margin-bottom:6px">&#10022; '+t('hofTitle')+'</p>';
+  h.forEach(function(e,i){
+    var col=i===0?'#ff0':'#fca';
+    var lv=e.level===1?'E':e.level===2?'M':'H';
+    var mins=e.time?Math.floor(e.time/60):'?';
+    var secs=e.time?String(e.time%60).padStart(2,'0'):'??';
+    html+='<div style="display:grid;grid-template-columns:1rem 3rem 1.5rem 1fr 2rem 3.5rem;gap:4px;align-items:center;color:'+col+';font-size:.28rem;font-family:\'Press Start 2P\',monospace;padding:3px 0;border-bottom:1px solid rgba(0,100,200,.15)">'
+      +'<span>'+(i+1)+'.</span>'
+      +'<span>'+(e.score||0)+'pts</span>'
+      +'<span style="color:#888">['+lv+']</span>'
+      +'<span style="color:#888;font-size:.25rem">'+e.date+'</span>'
+      +'<span style="color:'+(e.misses===0?'#004400':'#880000')+'">'+( e.misses||0)+'&#10060;</span>'
+      +'<span style="color:#336">&#128336;'+mins+'m'+secs+'s</span>'
+      +'</div>';
+  });
+  html+='</div>';
+  return html;
+}
+function renderHOF(){var el=document.getElementById('hof-standalone');if(el)el.innerHTML=buildHOFHtml(loadHOF());}
+
+// ═══════════════════════════════════════════════════════════════════
+// LANG
+// ═══════════════════════════════════════════════════════════════════
+var _tw=0;
+function startTypewriter(lang){
+  var el=document.getElementById('lore-text');
+  if(!el) return;
+  var tok=++_tw;el.textContent='';var i=0;
+  var lore=(I[lang]||I.en).lore;
+  (function type(){if(tok!==_tw)return;if(i<lore.length){el.textContent+=lore[i++];setTimeout(type,14);}})();
+}
+
+function applyLang(lang){
+  currentLang=lang;
+  localStorage.setItem('thotteu_lang',lang);
+  var items={
+    'lang-current':lang.toUpperCase(),
+    't-title':t('title'),'t-subtitle':t('subtitle'),
+    't-score':t('score'),'t-best':t('best'),
+    't-diffLabel':t('diffLabel'),
+    't-diffEasy':t('diffEasy'),'t-diffMid':t('diffMid'),'t-diffHard':t('diffHard'),
+    'back-btn-el':t('backBtn'),
+  };
+  Object.keys(items).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=items[id];});
+  var sb=document.getElementById('start-btn');if(sb)sb.textContent=t('startBtn');
+  document.querySelectorAll('.lang-option').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});
+  if(state==='result'&&lastResultWin!==null) showResult(lastResultWin);
+  renderHOF();
+}
+function setLang(lang){
+  applyLang(lang);startTypewriter(lang);
+  var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GA4 / COOKIE / PWA
+// ═══════════════════════════════════════════════════════════════════
+var GA_ID='G-0CCWBZ6VKX';
+function loadGA(){if(window._gaLoaded)return;window._gaLoaded=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;document.head.appendChild(s);gtag('js',new Date());gtag('config',GA_ID);}
+function cookieConsent(ok){localStorage.setItem('thotteu_cookies',ok?'accepted':'rejected');var b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');if(ok){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}}
+
+var _dp=null;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_dp=e;var b=document.getElementById('enc-pwa-btn');if(b)b.style.display='inline-flex';});
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',function(){
+  highScore=parseInt(localStorage.getItem('enc_hs')||'0');
+  document.getElementById('highscore-display').textContent=highScore;
+  // Lang
+  var saved=localStorage.getItem('thotteu_lang');
+  var bl=(navigator.language||'en').slice(0,2).toLowerCase();
+  var initial=saved||((['en','es','fr','pt','ca'].indexOf(bl)>=0)?bl:'en');
+  applyLang(initial);
+  startTypewriter(initial);
+  // Lang dropdown
+  document.getElementById('lang-btn').addEventListener('click',function(e){
+    e.stopPropagation();
+    var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.toggle('open');
+  });
+  document.querySelectorAll('.lang-option').forEach(function(o){
+    o.addEventListener('click',function(){setLang(o.dataset.lang);});
+  });
+  document.addEventListener('click',function(){
+    var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');
+  });
+  // Start btn
+  var sb=document.getElementById('start-btn');if(sb)sb.addEventListener('click',onStartMission);
+  // Level btns
+  document.getElementById('btn-easy').addEventListener('click',function(){selectLevel(1);});
+  document.getElementById('btn-mid').addEventListener('click',function(){selectLevel(2);});
+  document.getElementById('btn-hard').addEventListener('click',function(){selectLevel(3);});
+  // Cookie
+  document.getElementById('cookie-accept-btn').addEventListener('click',function(){cookieConsent(true);});
+  document.getElementById('cookie-reject-btn').addEventListener('click',function(){cookieConsent(false);});
+  var cc=localStorage.getItem('thotteu_cookies');
+  if(!cc){var b=document.getElementById('cookie-banner');if(b)b.classList.add('show');}
+  else if(cc==='accepted'){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}
+  // Share
+  var SHARE_URL='https://thotteu.com/enceladus';
+  var _qrBlob=null;
+  document.getElementById('enc-btn-wa').addEventListener('click',function(){window.open('https://wa.me/?text='+encodeURIComponent('\u{1F4A1} Chromatic Enceladus on Thotteu!\n'+SHARE_URL),'_blank');});
+  document.getElementById('enc-btn-mail').addEventListener('click',function(){window.open('mailto:?subject='+encodeURIComponent('Chromatic Enceladus')+'&body='+encodeURIComponent('Check out this game:\n'+SHARE_URL));});
+  document.getElementById('enc-btn-copy').addEventListener('click',function(){
+    var el=document.getElementById('enc-copy-txt');
+    navigator.clipboard.writeText(SHARE_URL).then(function(){if(el)el.textContent='\u2713';setTimeout(function(){if(el)el.textContent='COPY';},1800);}).catch(function(){});
+  });
+  document.getElementById('enc-btn-qr').addEventListener('click',function(){if(_qrBlob){var url=URL.createObjectURL(_qrBlob);var a=document.createElement('a');a.href=url;a.download='qr-enceladus.png';a.click();URL.revokeObjectURL(url);}});
+  // PWA
+  document.getElementById('enc-pwa-btn').addEventListener('click',function(){if(!_dp)return;_dp.prompt();_dp.userChoice.then(function(r){if(r.outcome==='accepted')document.getElementById('enc-pwa-btn').style.display='none';_dp=null;});});
+  // QR
+  var qrDiv=document.createElement('div');qrDiv.style.display='none';document.body.appendChild(qrDiv);
+  try{new QRCode(qrDiv,{text:SHARE_URL,width:220,height:220,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+    setTimeout(function(){var cv=qrDiv.querySelector('canvas');if(cv){cv.toBlob(function(b){_qrBlob=b;var prev=document.getElementById('enc-qr-preview');var load=document.getElementById('enc-qr-loading');if(prev){prev.src=cv.toDataURL();prev.style.display='block';}if(load)load.style.display='none';},'image/png');}document.body.removeChild(qrDiv);},120);}
+  catch(err){document.body.removeChild(qrDiv);}
+  renderHOF();
+});
+</script>
+</body>
+</html>
