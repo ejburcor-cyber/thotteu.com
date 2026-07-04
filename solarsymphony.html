@@ -301,6 +301,8 @@ const i18n={
     generalMid:'Communication pattern partially decoded. Good work — keep training your signal identification skills.',
     generalLow:'Signal identification incomplete. The alien frequencies were complex — study the solar system and try again.',
     generalFail:'Two errors detected. The transmission was lost. Regroup and retry.',
+    generalWithFails:'Communication pattern registered — but with interference. Some signals were misidentified. Stay sharp, operator.',
+    generalWeak:'Pattern registered, but we nearly lost it. We cannot afford to waste resources like this — stay focused next time!',
     cookieText:'We use analytics cookies. They only activate with your consent.',
     cookieAccept:'ACCEPT',cookieReject:'REJECT',cookiePrivacyLink:'Learn more',
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline, from your home screen.',pwaInstall:'INSTALL',
@@ -359,6 +361,8 @@ const i18n={
     generalMid:'Patrón de comunicación parcialmente decodificado. Buen trabajo — sigue entrenando tus habilidades de identificación de señales.',
     generalLow:'Identificación de señales incompleta. Las frecuencias alienígenas eran complejas — estudia el sistema solar e inténtalo de nuevo.',
     generalFail:'Dos errores detectados. La transmisión se perdió. Reagrúpate e inténtalo.',
+    generalWithFails:'Patrón de comunicación registrado — pero con interferencias. Algunas señales fueron mal identificadas. Mantente alerta, operador.',
+    generalWeak:'Patrón registrado, pero por poco lo perdemos. No podemos derrochar recursos así — ¡estate más atento la próxima vez!',
     cookieText:'Usamos cookies analíticas. Solo se activan con tu consentimiento.',
     cookieAccept:'ACEPTAR',cookieReject:'RECHAZAR',cookiePrivacyLink:'Más información',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio.',pwaInstall:'INSTALAR',
@@ -417,6 +421,8 @@ const i18n={
     generalMid:'Schéma de communication partiellement décodé. Bon travail — continuez à entraîner vos compétences d\'identification des signaux.',
     generalLow:'Identification des signaux incomplète. Les fréquences extraterrestres étaient complexes — étudiez le système solaire et réessayez.',
     generalFail:'Deux erreurs détectées. La transmission a été perdue. Regroupez-vous.',
+    generalWithFails:"Schéma de communication enregistré — mais avec des interférences. Certains signaux ont été mal identifiés. Restez vigilant, opérateur.",
+    generalWeak:"Schéma enregistré, mais de justesse. Nous ne pouvons pas gaspiller des ressources ainsi — soyez plus attentif la prochaine fois !",
     cookieText:'Nous utilisons des cookies analytiques. Ils ne s\'activent qu\'avec votre consentement.',
     cookieAccept:'ACCEPTER',cookieReject:'REFUSER',cookiePrivacyLink:'En savoir plus',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne depuis votre écran d\'accueil.',pwaInstall:'INSTALLER',
@@ -476,6 +482,8 @@ const i18n={
     generalMid:'Padrão de comunicação parcialmente descodificado. Bom trabalho — continue a treinar as suas competências de identificação de sinais.',
     generalLow:'Identificação de sinais incompleta. As frequências alienígenas eram complexas — estude o sistema solar e tente novamente.',
     generalFail:'Dois erros detetados. A transmissão foi perdida. Reagrupe-se.',
+    generalWithFails:'Padrão de comunicação registado — mas com interferências. Alguns sinais foram mal identificados. Fique atento, operador.',
+    generalWeak:'Padrão registado, mas por pouco não o perdemos. Não podemos desperdiçar recursos assim — fique mais atento na próxima vez!',
     cookieText:'Usamos cookies analíticos. Só se ativam com o seu consentimento.',
     cookieAccept:'ACEITAR',cookieReject:'REJEITAR',cookiePrivacyLink:'Mais informações',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline a partir do seu ecrã inicial.',pwaInstall:'INSTALAR',
@@ -534,6 +542,8 @@ const i18n={
     generalMid:'Patró de comunicació parcialment descodificat. Bon treball — continua entrenant les teues habilitats d\'identificació de senyals.',
     generalLow:'Identificació de senyals incompleta. Les freqüències extraterrestres eren complexes — estudia el sistema solar i torna-ho a intentar.',
     generalFail:'Dos errors detectats. La transmissió s\'ha perdut. Reagrupa\'t.',
+    generalWithFails:"Patró de comunicació registrat — però amb interferències. Alguns senyals van ser mal identificats. Estigues alerta, operador.",
+    generalWeak:"Patró registrat, però per poc no el perdem. No podem malgastar recursos així — estigues més atent la pròxima vegada!",
     cookieText:'Usem galetes analítiques. Només s\'activen amb el teu consentiment.',
     cookieAccept:'ACCEPTAR',cookieReject:'REBUTJAR',cookiePrivacyLink:'Més informació',
     pwaTitle:'INSTAL·LAR COM A APP',pwaDesc:'Juga sense connexió des de la pantalla d\'inici.',pwaInstall:'INSTAL·LAR',
@@ -827,6 +837,9 @@ let activeObjects=[];
 let sequence=[];
 let playerInput=[];
 let currentRound=0;
+let streak=0;      // consecutive correct rounds
+let failCount=0;   // total fails this game
+let roundPoints=10; // points for next round
 let maxRounds=4;
 let score=0;
 let highScore=parseInt(localStorage.getItem('ss_hs')||'0');
@@ -995,14 +1008,16 @@ function handleInput(obj){
     flashObject(obj,'#44ff88');
     showInfoPanel(obj);
     if(playerInput.length===sequence.length){
-      // Round complete
-      score+=10;
+      // Round complete — apply streak multiplier
+      score+=roundPoints;
+      streak++;
+      failCount=0; // reset fail count on successful round
+      roundPoints=Math.min(160, roundPoints*2); // double for next round, cap at 160
       document.getElementById('score-display').textContent=score;
       document.getElementById('repeat-btn').style.display='none';
       document.getElementById('phase-label').textContent='';
       currentRound++;
       if(currentRound>=maxRounds){
-        // Win
         state='result';
         setTimeout(()=>showResult(true),600);
       } else {
@@ -1010,16 +1025,23 @@ function handleInput(obj){
       }
     }
   } else {
-    // Wrong
+    // Wrong — penalise and break streak
+    failCount++;
+    streak=0;
+    var penalty=failCount===1?10:failCount===2?5:failCount===3?3:1;
+    score=Math.max(0,score-penalty);
+    roundPoints=10; // reset multiplier on fail
     lives--;
-    playNote(150,0.4,0.2); // buzz
+    buildBackground(obj.id);
+    showInfoPanel(obj);
+    playNote(150,0.4,0.2);
     flashObject(obj,'#ff4444');
+    document.getElementById('score-display').textContent=score;
     document.getElementById('lives-display').textContent='❤'.repeat(lives);
     if(lives<=0){
       state='result';
       setTimeout(()=>showResult(false),800);
     } else {
-      // Second chance: replay sequence
       setTimeout(()=>playSequence(),1000);
     }
   }
@@ -1044,10 +1066,12 @@ document.getElementById('repeat-btn').addEventListener('click',()=>{
 
 // ── NEXT ROUND ────────────────────────────────────────────────────────────
 function nextRound(){
-  // Add one more random object to sequence
   const pool=activeObjects.filter(o=>!sequence.find(s=>s.id===o.id)||true);
   sequence.push(pool[Math.floor(Math.random()*pool.length)]);
   document.getElementById('round-display').textContent=currentRound+1+'/'+maxRounds;
+  // Flash next round points
+  var pl=document.getElementById('phase-label');
+  if(pl){pl.textContent='+'+roundPoints+' pts next';setTimeout(function(){if(pl.textContent.startsWith('+'))pl.textContent='';},900);}
   playSequence();
 }
 
@@ -1068,6 +1092,14 @@ function renderHOF(){const el=document.getElementById('hof-standalone');if(el)el
 function getComment(isWin){
   const t=i18n[currentLang]||i18n.en;
   if(!isWin) return t.generalFail;
+  // Won but check score and whether there were any fails
+  if(score<20) return t.generalWeak||t.generalLow;
+  if(failCount>0){
+    // Had mistakes — less optimistic
+    if(score>=maxRounds*10*0.8) return t.generalWithFails||t.generalMid;
+    return t.generalMid;
+  }
+  // Perfect or near-perfect run
   if(score>=maxRounds*10*0.8) return t.generalHigh;
   if(score>=maxRounds*10*0.5) return t.generalMid;
   return t.generalLow;
@@ -1267,7 +1299,7 @@ function startGame(){
   maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   var _rc=document.getElementById('repeat-cost');if(_rc)_rc.textContent=repeatCost;
-  score=0; currentRound=0; seenObjects=[];
+  score=0; currentRound=0; seenObjects=[]; streak=0; failCount=0; roundPoints=10;
   var _sd=document.getElementById('score-display');if(_sd)_sd.textContent=0;
   var _rd=document.getElementById('round-display');if(_rd)_rd.textContent='1/'+maxRounds;
   var _ld=document.getElementById('lives-display');if(_ld)_ld.textContent='❤❤';
