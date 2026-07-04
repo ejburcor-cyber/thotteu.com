@@ -840,6 +840,7 @@ let currentRound=0;
 let streak=0;      // consecutive correct rounds
 let failCount=0;   // total fails this game
 let roundPoints=10; // points for next round
+let gameStartTime=0; // timestamp when game started
 let maxRounds=4;
 let score=0;
 let highScore=parseInt(localStorage.getItem('ss_hs')||'0');
@@ -1078,12 +1079,38 @@ function nextRound(){
 // ── HOF ───────────────────────────────────────────────────────────────────
 function loadHOF(){try{return JSON.parse(localStorage.getItem('ss_hof')||'[]');}catch(e){return[];}}
 function saveHOF(h){localStorage.setItem('ss_hof',JSON.stringify(h));}
-function recordHOF(pts){const h=loadHOF();h.push({score:pts,date:new Date().toLocaleDateString()});h.sort((a,b)=>b.score-a.score);h.splice(5);saveHOF(h);}
+function recordHOF(pts){
+  const h=loadHOF();
+  const elapsed=Math.round((Date.now()-gameStartTime)/1000);
+  h.push({score:pts,fails:failCount,time:elapsed,date:new Date().toLocaleDateString()});
+  h.sort(function(a,b){
+    if(b.score!==a.score) return b.score-a.score;      // higher score first
+    var af=a.fails||0, bf=b.fails||0;
+    if(af!==bf) return af-bf;                          // fewer fails first
+    var at=a.time||999, bt=b.time||999;
+    return at-bt;                                      // less time first
+  });
+  h.splice(5);
+  saveHOF(h);
+}
 function buildHOFHtml(h){
   const t=i18n[currentLang]||i18n.en;
   if(!h.length) return '<p style="color:#fa0;font-size:.35rem;font-family:\'Press Start 2P\',monospace;padding:6px">'+t.hofEmpty+'</p>';
-  let html='<p style="color:#fa0;font-size:.38rem;font-family:\'Press Start 2P\',monospace;margin-bottom:6px;letter-spacing:1px">✦ '+t.hofTitle+'</p>';
-  h.forEach((e,i)=>{html+='<div style="display:flex;justify-content:space-between;color:'+(i===0?'#ff0':'#fca')+';font-size:.35rem;font-family:\'Press Start 2P\',monospace;padding:3px 0;border-bottom:1px solid rgba(255,160,0,.1)"><span>'+( i+1)+'. '+e.score+' pts</span><span style="color:#6a8">'+e.date+'</span></div>';});
+  let html='<p style="color:#fa0;font-size:.38rem;font-family:\'Press Start 2P\',monospace;margin-bottom:6px;letter-spacing:1px">&#10022; '+t.hofTitle+'</p>';
+  h.forEach(function(e,i){
+    var fails=e.fails!==undefined?e.fails:'?';
+    var mins=e.time!==undefined?Math.floor(e.time/60):'?';
+    var secs=e.time!==undefined?String(e.time%60).padStart(2,'0'):'??';
+    var timeStr=e.time!==undefined?mins+'m'+secs+'s':'--';
+    var col=i===0?'#ff0':'#fca';
+    html+='<div style="display:grid;grid-template-columns:1.2rem 3rem 1fr 2.5rem 2.5rem;gap:4px;align-items:center;color:'+col+';font-size:.32rem;font-family:\'Press Start 2P\',monospace;padding:4px 0;border-bottom:1px solid rgba(255,160,0,.1)">'
+      +'<span>'+(i+1)+'.</span>'
+      +'<span style="color:'+(i===0?'#ff0':'#fca')+'">'+e.score+'pts</span>'
+      +'<span style="color:#888;font-size:.28rem">'+e.date+'</span>'
+      +'<span style="color:'+(fails===0?'#4f8':'#f84')+'">'+fails+' &#10060;</span>'
+      +'<span style="color:#8af">&#128336;'+timeStr+'</span>'
+      +'</div>';
+  });
   return html;
 }
 function renderHOF(){const el=document.getElementById('hof-standalone');if(el)el.innerHTML=buildHOFHtml(loadHOF());}
@@ -1299,7 +1326,7 @@ function startGame(){
   maxRounds={1:4,2:6,3:7}[diffLevel]||4; // easy:4 mid:6 hard:7
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   var _rc=document.getElementById('repeat-cost');if(_rc)_rc.textContent=repeatCost;
-  score=0; currentRound=0; seenObjects=[]; streak=0; failCount=0; roundPoints=10;
+  score=0; currentRound=0; seenObjects=[]; streak=0; failCount=0; roundPoints=10; gameStartTime=Date.now();
   var _sd=document.getElementById('score-display');if(_sd)_sd.textContent=0;
   var _rd=document.getElementById('round-display');if(_rd)_rd.textContent='1/'+maxRounds;
   var _ld=document.getElementById('lives-display');if(_ld)_ld.textContent='❤❤';
