@@ -713,6 +713,18 @@ function isFullyInBeam(obj){
 }
 
 function drawObjects(){
+  // Draw found UFOs with green ring (always visible)
+  objects.forEach(function(obj){
+    if(obj.found&&obj.isUfo){
+      bgX.save();
+      bgX.strokeStyle='#00cc44';bgX.lineWidth=2;bgX.globalAlpha=0.9;
+      bgX.beginPath();bgX.arc(obj.x,obj.y,obj.r+5,0,Math.PI*2);bgX.stroke();
+      // Small checkmark dot
+      bgX.fillStyle='#00cc44';bgX.globalAlpha=0.7;
+      bgX.beginPath();bgX.arc(obj.x,obj.y,3,0,Math.PI*2);bgX.fill();
+      bgX.restore();
+    }
+  });
   objects.forEach(function(obj){
     if(obj.found) return;
     var vis=getColourVisibility(obj.colIdx);
@@ -907,9 +919,12 @@ function startGame(){
   // Wire events
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
-  fgC.addEventListener('wheel',onWheel,{passive:false});
-  // Prevent page scroll on wheel over canvas wrap without double-firing colour change
-  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){e.preventDefault();},{passive:false});
+  // Single wheel listener on wrap — prevents scroll and changes colour once
+  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    onWheel(e);
+  },{passive:false});
   document.getElementById('phase-label').textContent='';
 }
 
@@ -973,6 +988,18 @@ function onCanvasClick(e){
   var cfg=LEVEL_CFG[diffLevel];
   var mult=cfg.mult;
   var hit=false;
+  // Draw found UFOs with green ring (always visible)
+  objects.forEach(function(obj){
+    if(obj.found&&obj.isUfo){
+      bgX.save();
+      bgX.strokeStyle='#00cc44';bgX.lineWidth=2;bgX.globalAlpha=0.9;
+      bgX.beginPath();bgX.arc(obj.x,obj.y,obj.r+5,0,Math.PI*2);bgX.stroke();
+      // Small checkmark dot
+      bgX.fillStyle='#00cc44';bgX.globalAlpha=0.7;
+      bgX.beginPath();bgX.arc(obj.x,obj.y,3,0,Math.PI*2);bgX.fill();
+      bgX.restore();
+    }
+  });
   objects.forEach(function(obj){
     if(obj.found) return;
     if(!isFullyInBeam(obj)) return;
@@ -1086,9 +1113,12 @@ function restartGame(){
   fgX=fgC.getContext('2d');
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
-  fgC.addEventListener('wheel',onWheel,{passive:false});
-  // Prevent page scroll on wheel over canvas wrap without double-firing colour change
-  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){e.preventDefault();},{passive:false});
+  // Single wheel listener on wrap — prevents scroll and changes colour once
+  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    onWheel(e);
+  },{passive:false});
   startGame();
 }
 
