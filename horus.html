@@ -788,7 +788,7 @@ h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 
 </div>
 <div id="cookie-banner">
   <div class="cookie-inner">
-    <p class="cookie-text" id="t-cookie">We use analytics cookies. They only activate with your consent.</p>
+    <p class="cookie-text"><span id="t-cookie">We use analytics cookies. They only activate with your consent.</span> <a href="/privacy.html" id="cookie-privacy-link" style="color:#fca">Learn more</a>.</p>
     <div class="cookie-btns">
       <button class="cookie-btn" id="cookie-reject-btn">REJECT</button>
       <button class="cookie-btn accept" id="cookie-accept-btn">ACCEPT</button>
@@ -6342,6 +6342,43 @@ var gameStartTime=0;
 var currentTarget=null;
 var usedIds=[];
 var lastResultWin=false;
+
+// ── COUNTRY FLAGS (didactic touch: show a small flag next to any country reference) ──
+var COUNTRY_ISO={
+  'Afghanistan':'AF','Algeria':'DZ','Angola':'AO','Antarctica':'AQ','Argentina':'AR',
+  'Armenia':'AM','Australia':'AU','Austria':'AT','Azerbaijan':'AZ','Bangladesh':'BD',
+  'Belgium':'BE','Bolivia':'BO','Brazil':'BR','Bulgaria':'BG','Cameroon':'CM',
+  'Canada':'CA','Chad':'TD','Chile':'CL','China':'CN','Colombia':'CO',
+  'Croatia':'HR','Cuba':'CU','Czech Republic':'CZ','DR Congo':'CD','Denmark':'DK',
+  'Ecuador':'EC','Egypt':'EG','Ethiopia':'ET','Finland':'FI','France':'FR',
+  'Georgia':'GE','Germany':'DE','Ghana':'GH','Greece':'GR','Hungary':'HU',
+  'Iceland':'IS','India':'IN','Indonesia':'ID','Iran':'IR','Iraq':'IQ',
+  'Ireland':'IE','Italy':'IT','Japan':'JP','Jordan':'JO','Kazakhstan':'KZ',
+  'Kenya':'KE','Lebanon':'LB','Libya':'LY','Madagascar':'MG','Mali':'ML',
+  'Mauritania':'MR','Mexico':'MX','Mongolia':'MN','Morocco':'MA','Mozambique':'MZ',
+  'Myanmar':'MM','Namibia':'NA','Nepal':'NP','Netherlands':'NL','New Zealand':'NZ',
+  'Niger':'NE','Nigeria':'NG','Norway':'NO','Oman':'OM','Pakistan':'PK',
+  'Paraguay':'PY','Peru':'PE','Philippines':'PH','Poland':'PL','Portugal':'PT',
+  'Romania':'RO','Russia':'RU','Saudi Arabia':'SA','Senegal':'SN','Serbia':'RS',
+  'Singapore':'SG','South Africa':'ZA','South Korea':'KR','Spain':'ES','Sudan':'SD',
+  'Sweden':'SE','Switzerland':'CH','Syria':'SY','Tanzania':'TZ','Thailand':'TH',
+  'Tunisia':'TN','Turkey':'TR','UK':'GB','USA':'US','Ukraine':'UA',
+  'United Kingdom':'GB','United States':'US','Uruguay':'UY','Uzbekistan':'UZ','Venezuela':'VE',
+  'Vietnam':'VN','Zambia':'ZM','Zimbabwe':'ZW'
+};
+function isoToFlagEmoji(iso2){
+  if(!iso2||iso2.length!==2) return '';
+  var A=0x1F1E6;
+  return String.fromCodePoint(A+(iso2.toUpperCase().charCodeAt(0)-65), A+(iso2.toUpperCase().charCodeAt(1)-65));
+}
+function countryFlag(name){
+  if(!name) return '';
+  if(name.indexOf('/')>=0){
+    return name.split('/').map(function(n){return countryFlag(n.trim());}).join('');
+  }
+  var iso=COUNTRY_ISO[name.trim()];
+  return iso?isoToFlagEmoji(iso):'';
+}
 // Zoom & pan
 var zoomLevel=1; // 1=world, 2=region, 3=detail
 var viewX=0, viewY=0; // SVG viewBox offset
@@ -6535,6 +6572,7 @@ function startGame(){
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
   state='playing';
+  gtag('event','game_start',{'game_name':'horus'});
   gameStartTime=Date.now();
   timeLeft=180;
   updateTimerDisplay();
@@ -6598,7 +6636,8 @@ function nextTarget(){
   currentTarget=pool[Math.floor(Math.random()*pool.length)];
   usedIds.push(currentTarget.id);
   // Show in intel panel
-  document.getElementById('intel-target').textContent=currentTarget.name;
+  var targetFlag=currentTarget.type==='country'?countryFlag(currentTarget.name):'';
+  document.getElementById('intel-target').textContent=currentTarget.name+(targetFlag?(' '+targetFlag):'');
   var td=document.getElementById('intel-type');
   var types=(I18N[currentLang]||I18N.en).types||{};
   if(td) td.textContent=types[currentTarget.type]||currentTarget.type;
@@ -6613,7 +6652,8 @@ function nextTarget(){
     if(hkb){
       hkb.style.display=diffLevel===1?'inline-block':'none';
       var hintTxt=currentTarget.country||currentTarget.cont;
-      if(hkb){hkb.textContent=(tl.hintCountry||'COUNTRY')+': '+hintTxt;hkb.classList.remove('active');}
+      var hintFlag=currentTarget.country?countryFlag(currentTarget.country):'';
+      if(hkb){hkb.textContent=(tl.hintCountry||'COUNTRY')+': '+hintTxt+(hintFlag?(' '+hintFlag):'');hkb.classList.remove('active');}
     }
   }else{
     if(hp) hp.style.display='none';
@@ -6737,6 +6777,7 @@ function endGame(){
   stopHeliAnim();
   if(timerInt){clearInterval(timerInt);timerInt=null;}
   lastResultWin=foundCount>0;
+  gtag('event','game_over',{'game_name':'horus','result':lastResultWin?'win':'lose','score':score});
   if(score>highScore){highScore=score;localStorage.setItem('horus_hs',highScore);}
   recordHOF(score);
   showResult();
@@ -6842,14 +6883,14 @@ function applyLang(lang){
   document.querySelectorAll('.lang-option').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});
   renderHOF();
 }
-function setLang(lang){applyLang(lang);startTypewriter(lang);var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');}
+function setLang(lang){applyLang(lang);startTypewriter(lang);gtag('event','language_change',{'language':lang});if(window.ThotteuFooter)window.ThotteuFooter.render(lang);var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');}
 
 // ═══════════════════════════════════════════════════
 // GA4 / COOKIE / PWA / SHARE
 // ═══════════════════════════════════════════════════
 var GA_ID='G-0CCWBZ6VKX';
 function loadGA(){if(window._gaLoaded)return;window._gaLoaded=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;document.head.appendChild(s);gtag('js',new Date());gtag('config',GA_ID);}
-function cookieConsent(ok){localStorage.setItem('thotteu_cookies',ok?'accepted':'rejected');var b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');if(ok){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}}
+function cookieConsent(ok){localStorage.setItem('thotteu_cookies',ok?'accepted':'rejected');var b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');if(ok){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}gtag('event','cookie_consent',{'consent_result':ok?'accepted':'rejected'});}
 var _dp=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_dp=e;var b=document.getElementById('pwa-btn');if(b)b.style.display='inline-flex';});
 
@@ -6897,5 +6938,7 @@ document.addEventListener('DOMContentLoaded',function(){
   renderHOF();
 });
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>
