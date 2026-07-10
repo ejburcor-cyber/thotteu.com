@@ -49,8 +49,8 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #lore-box{color:#4df;font-size:.42rem;line-height:1.9;text-align:center;max-width:620px;min-height:6.5rem;letter-spacing:.5px;border:1px solid rgba(68,170,255,.3);padding:10px 16px;background:rgba(0,10,30,.6)}
 #lore-cursor{display:inline-block;width:7px;height:.7em;background:#4df;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-#start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
-#start-btn:hover{background:#7cf}
+#start-btn,#start-btn-retry{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+#start-btn:hover,#start-btn-retry:hover{background:#7cf}
 #level-select{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px}
 .level-btn{border:2px solid #4af;color:#4af;background:transparent;font-family:'Press Start 2P',monospace;font-size:.42rem;padding:9px 14px;cursor:pointer;letter-spacing:1px;transition:all .2s}
 .level-btn:hover,.level-btn.selected{background:#4af;color:#000}
@@ -485,6 +485,8 @@ function applyLang(lang){
 
 function setLang(lang){
   applyLang(lang);
+  gtag('event','language_change',{'language':lang});
+  if(window.ThotteuFooter)window.ThotteuFooter.render(lang);
   var dd = document.getElementById('lang-dropdown');
   if(dd) dd.classList.remove('open');
 }
@@ -802,6 +804,7 @@ function startGame(){
   $('overlay').style.display='none';
   $('surrender-btn').style.display='none';
   state='playing';
+  gtag('event','game_start',{'game_name':'mnemosine'});
   score=0; attempts=0; pairsFound=0; elapsed=0;
   firstPick=null; secondPick=null; lockInput=false; finaleActive=false; surrenderShown=false;
   lastPenaltyMinute = 0;
@@ -872,6 +875,7 @@ function computeGeneralComment(t){
 }
 
 function finishGame(won){
+  gtag('event','game_over',{'game_name':'mnemosine','result':won?'win':'lose','score':score});
   if(score>highScore){ highScore=score; localStorage.setItem('mnemosine_hs', highScore); }
   recordHOF(score, pairsFound, attempts, elapsed);
 
@@ -893,7 +897,7 @@ function finishGame(won){
           <div class="general-briefing-text">${generalComment}</div>
         </div>
       </div>
-      <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
+      <button id="start-btn-retry" onclick="startGame()">${t.tryAgain}</button>
       `;
     renderHOF();
   }, 900);
@@ -931,6 +935,7 @@ function finishGame(won){
       gtag('consent', 'update', { 'analytics_storage': 'granted' });
       loadGA();
     }
+    gtag('event', 'cookie_consent', { 'consent_result': accepted ? 'accepted' : 'rejected' });
   }
 
   (function initCookieBanner() {
@@ -1114,5 +1119,7 @@ window.addEventListener('load', ()=>{
   };}
 })();
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>

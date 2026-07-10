@@ -1,0 +1,13 @@
+# ads.txt — thotteu.com
+#
+# IMPORTANT: this is a placeholder. Replace PUB-ID-PENDIENTE below with your
+# real Google AdSense Publisher ID before this file goes live (you'll find
+# it in your AdSense account under Account > Settings > Account information,
+# formatted as "pub-XXXXXXXXXXXXXXXX"). The same ID must also replace the
+# placeholder "ca-pub-XXXXXXXXXXXXXXXX" currently commented out in
+# mathcannon.html.
+#
+# This file MUST be served at the domain root: https://thotteu.com/ads.txt
+# (not inside a subfolder), or AdSense will not recognize it.
+
+google.com, pub-PUB-ID-PENDIENTE, DIRECT, f08c47fec0942fa0

@@ -739,6 +739,7 @@
   <footer class="layer">
     <a href="#" class="logo">Thott<span>eu</span></a>
     <p data-i18n="footer.tag">© 2026 Thotteu · Universo en construcción</p>
+    <div id="thotteu-footer" data-hide-copy="1"></div>
   </footer>
 
   <!-- LANGUAGE SYSTEM -->
@@ -1082,6 +1083,8 @@
 
     function setLang(lang) {
       applyLang(lang);
+      gtag('event', 'language_change', { 'language': lang });
+      if (window.ThotteuFooter) window.ThotteuFooter.render(lang);
       var dd = document.getElementById('lang-dropdown');
       if (dd) dd.classList.remove('open');
     }
@@ -1205,6 +1208,7 @@
         gtag('consent', 'update', { 'analytics_storage': 'granted' });
         loadGA();
       }
+      gtag('event', 'cookie_consent', { 'consent_result': accepted ? 'accepted' : 'rejected' });
     }
 
     (function initCookieBanner() {
@@ -1223,6 +1227,7 @@
       }
     })();
   </script>
+  <script src="/assets/thotteu-footer.js"></script>
 
 </body>
 </html>

@@ -1156,6 +1156,7 @@ const GENERAL_IMG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD
 
 function showResult(isWin){
   lastResultIsWin=isWin; // save for lang change refresh
+  gtag('event','game_over',{'game_name':'solarsymphony','result':isWin?'win':'lose','score':score});
   if(isWin){recordHOF(score);if(score>highScore){highScore=score;localStorage.setItem('ss_hs',highScore);document.getElementById('highscore-display').textContent=highScore;}}
   const t=i18n[currentLang]||i18n.en;
   const comment=getComment(isWin);
@@ -1328,6 +1329,7 @@ function onStartMission(){
 
 function startGame(){
   getAudio(); // init AudioContext on user gesture
+  gtag('event','game_start',{'game_name':'solarsymphony'});
   maxRounds={1:4,2:6,3:10}[diffLevel]||4; // easy:4 mid:6 hard:10
   repeatCost={1:10,2:15,3:20}[diffLevel]||10;
   var _rc=document.getElementById('repeat-cost');if(_rc)_rc.textContent=repeatCost;
@@ -1372,7 +1374,7 @@ function startTypewriter(lang){
 const _origApplyLang=applyLang;
 // override applyLang to also restart typewriter
 window._ssApplyLang=function(lang){_origApplyLang(lang);startTypewriter(lang);};
-function setLang(lang){window._ssApplyLang(lang);var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');}
+function setLang(lang){window._ssApplyLang(lang);gtag('event','language_change',{'language':lang});if(window.ThotteuFooter)window.ThotteuFooter.render(lang);var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');}
 
 // ── COOKIE + GA4 ──────────────────────────────────────────────────────────
 var GA_ID='G-0CCWBZ6VKX';
@@ -1386,6 +1388,7 @@ function cookieConsent(accepted){
   localStorage.setItem('thotteu_cookies',accepted?'accepted':'rejected');
   document.getElementById('cookie-banner').classList.remove('show');
   if(accepted){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}
+  gtag('event','cookie_consent',{'consent_result':accepted?'accepted':'rejected'});
 }
 if(!localStorage.getItem('thotteu_cookies')){var _cb=document.getElementById('cookie-banner');if(_cb)_cb.classList.add('show');}
 else if(localStorage.getItem('thotteu_cookies')==='accepted'){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}
@@ -1457,5 +1460,7 @@ const SHARE_URL='https://thotteu.com/solarsymphony';let _qrBlob=null;
   })();
 });
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>

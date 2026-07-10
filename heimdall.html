@@ -49,8 +49,8 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #lore-box{color:#4df;font-size:.42rem;line-height:1.9;text-align:center;max-width:620px;min-height:6.5rem;letter-spacing:.5px;border:1px solid rgba(68,170,255,.3);padding:10px 16px;background:rgba(0,10,30,.6)}
 #lore-cursor{display:inline-block;width:7px;height:.7em;background:#4df;margin-left:2px;vertical-align:middle;animation:blink .6s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-#start-btn{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
-#start-btn:hover{background:#7cf}
+#start-btn,#start-btn-retry{background:#4af;color:#000;border:none;font-family:'Press Start 2P',monospace;font-size:.55rem;padding:12px 24px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+#start-btn:hover,#start-btn-retry:hover{background:#7cf}
 .subtitle{color:#4df;font-size:.45rem;letter-spacing:2px;margin-bottom:6px;text-align:center}
 #combo-tip{color:#4df;font-size:.36rem;letter-spacing:.5px;text-align:center;margin-top:8px;opacity:.7}
 #header-banner{width:700px;max-width:100%;height:80px;display:block;margin-bottom:4px}
@@ -512,6 +512,8 @@ function applyLang(lang){
 
 function setLang(lang){
   applyLang(lang);
+  gtag('event','language_change',{'language':lang});
+  if(window.ThotteuFooter)window.ThotteuFooter.render(lang);
   var dd = document.getElementById('lang-dropdown');
   if(dd) dd.classList.remove('open');
 }
@@ -970,6 +972,7 @@ function startGame(){
   $('overlay').style.display='none';
   $('finale-warning').style.display='none';
   state='playing';
+  gtag('event','game_start',{'game_name':'heimdall'});
   score=0; captures=0; discoveredTypes=new Set();
   elapsed=0; detectionActive=false;
   objects=[]; particles=[]; spawnAccum=0;
@@ -989,6 +992,7 @@ function endGame(){
   cancelAnimationFrame(gameLoopId);
   playSound('alarm');
   setTimeout(()=>playSound('destroyed'), 300);
+  gtag('event','game_over',{'game_name':'heimdall','result':'destroyed','score':score});
 
   if(score>highScore){ highScore=score; localStorage.setItem('heimdall_hs', highScore); }
   recordHOF(score, captures, discoveredTypes.size);
@@ -1014,7 +1018,7 @@ function endGame(){
           <div class="general-briefing-text">${generalComment}</div>
         </div>
       </div>
-      <button id="start-btn" onclick="startGame()">${t.tryAgain}</button>
+      <button id="start-btn-retry" onclick="startGame()">${t.tryAgain}</button>
       `;
     renderHOF();
   }, 900);
@@ -1155,6 +1159,7 @@ window.addEventListener('load', ()=>{
       gtag('consent', 'update', { 'analytics_storage': 'granted' });
       loadGA();
     }
+    gtag('event', 'cookie_consent', { 'consent_result': accepted ? 'accepted' : 'rejected' });
   }
 
   (function initCookieBanner() {
@@ -1293,5 +1298,7 @@ window.addEventListener('load', ()=>{
   wireShare();
 })();
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>

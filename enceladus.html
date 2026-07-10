@@ -305,7 +305,7 @@ h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow
 
 <div id="cookie-banner">
   <div class="cookie-inner">
-    <p class="cookie-text" id="t-cookieText">We use analytics cookies. They only activate with your consent.</p>
+    <p class="cookie-text"><span id="t-cookieText">We use analytics cookies. They only activate with your consent.</span> <a href="/privacy.html" id="cookie-privacy-link" style="color:#fca">Learn more</a>.</p>
     <div class="cookie-btns">
       <button class="cookie-btn" id="cookie-reject-btn">REJECT</button>
       <button class="cookie-btn accept" id="cookie-accept-btn">ACCEPT</button>
@@ -918,6 +918,7 @@ function startGame(){
   generateIce();
   placeObjects();
   state='playing';
+  gtag('event','game_start',{'game_name':'enceladus'});
   gameStartTime=Date.now();
   timeLeft=LEVEL_CFG[diffLevel].time;
   updateHUD();
@@ -1068,6 +1069,7 @@ function endGame(isWin){
   stopWind();
   stopWind();
   lastResultWin=isWin;
+  gtag('event','game_over',{'game_name':'enceladus','result':isWin?'win':'lose','score':score});
   if(isWin){
     // Bonus for time remaining
     var cfg=LEVEL_CFG[diffLevel];
@@ -1220,6 +1222,8 @@ function applyLang(lang){
 }
 function setLang(lang){
   applyLang(lang);startTypewriter(lang);
+  gtag('event','language_change',{'language':lang});
+  if(window.ThotteuFooter)window.ThotteuFooter.render(lang);
   var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');
 }
 
@@ -1228,7 +1232,7 @@ function setLang(lang){
 // ═══════════════════════════════════════════════════════════════════
 var GA_ID='G-0CCWBZ6VKX';
 function loadGA(){if(window._gaLoaded)return;window._gaLoaded=true;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;document.head.appendChild(s);gtag('js',new Date());gtag('config',GA_ID);}
-function cookieConsent(ok){localStorage.setItem('thotteu_cookies',ok?'accepted':'rejected');var b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');if(ok){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}}
+function cookieConsent(ok){localStorage.setItem('thotteu_cookies',ok?'accepted':'rejected');var b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');if(ok){gtag('consent','update',{'analytics_storage':'granted'});loadGA();}gtag('event','cookie_consent',{'consent_result':ok?'accepted':'rejected'});}
 
 var _dp=null;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();_dp=e;var b=document.getElementById('enc-pwa-btn');if(b)b.style.display='inline-flex';});
@@ -1288,5 +1292,7 @@ document.addEventListener('DOMContentLoaded',function(){
   renderHOF();
 });
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>

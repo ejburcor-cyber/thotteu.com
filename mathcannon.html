@@ -619,6 +619,8 @@ function applyLang(lang){
 
 function setLang(lang){
   applyLang(lang);
+  gtag('event','language_change',{'language':lang});
+  if(window.ThotteuFooter)window.ThotteuFooter.render(lang);
   var dd = document.getElementById('lang-dropdown');
   if(dd) dd.classList.remove('open');
 }
@@ -721,6 +723,7 @@ function startGame(){
   $('math-area').style.display='flex';
   document.body.setAttribute('tabindex','-1'); document.body.focus();
 
+  gtag('event','game_start',{'game_name':'mathcannon'});
   state='playing'; score=0; lives=3; difficulty=1; aliensDestroyed=0; opCount=0; missileCount=0;
   streak=0; screenFlash=0; cannonShake=0; spawnAccum=0; answerStr=''; attemptsLeft=3;
   recentOps=[]; aliens=[]; bullets=[]; missiles=[]; particles=[]; explosions=[];
@@ -1426,6 +1429,7 @@ function endGame(){
   const t = i18n[currentLang] || i18n.en;
   // Save highscore
   const isNewRecord = score > highScore;
+  gtag('event','game_over',{'game_name':'mathcannon','result':'over','score':score,'game_mode':gameMode});
   if(isNewRecord){ highScore=score; localStorage.setItem('mathcannon_hs',highScore); }
   recordHOF(score, gameMode, difficulty, correctOps, survivalTime);
   document.title=`Math Cannon | SCORE: ${score}`;
@@ -1448,8 +1452,8 @@ function endGame(){
         <div class="general-briefing-text">${generalComment}</div>
       </div>
     </div>
-    <div id="mode-select" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px">
-      <div id="mode-row-levels" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <div id="mode-select-result" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px">
+      <div id="mode-row-levels-result" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
         <button class="mode-btn infantil${gameMode==='infantil'?' selected':''}" onclick="selectMode('infantil')">\u2B50 ${t.baby}</button>
         <button class="mode-btn colegio${gameMode==='colegio'?' selected':''}" onclick="selectMode('colegio')">\uD83D\uDCDA ${t.kids}</button>
         <button class="mode-btn instituto${gameMode==='instituto'?' selected':''}" onclick="selectMode('instituto')">\uD83C\uDF93 ${t.teenager}</button>
@@ -1469,7 +1473,7 @@ let gamePhase = 'carga'; // 'carga' | 'ataque'
 function updatePhaseDisplay(){
   const el=$('phase-display'), isLoad=gamePhase==='carga';
   const t = i18n[currentLang] || i18n.en;
-  el.innerHTML = (isLoad ? '\u26A1 ' : '\uD83D\uDD25 ') + '<span data-i18n="'+(isLoad?'load':'attack')+'" id="phase-load-label">' + (isLoad ? t.load : t.attack) + '</span>';
+  el.innerHTML = (isLoad ? '\u26A1 ' : '\uD83D\uDD25 ') + '<span data-i18n="'+(isLoad?'load':'attack')+'" id="phase-state-label">' + (isLoad ? t.load : t.attack) + '</span>';
   el.style.borderColor= isLoad ? '#4f4' : '#f84';
   el.style.color      = isLoad ? '#4f4' : '#f84';
   el.style.background = isLoad ? 'rgba(0,60,0,.4)' : 'rgba(60,20,0,.4)';
@@ -1628,6 +1632,7 @@ window.addEventListener('load',()=>{
       gtag('consent', 'update', { 'analytics_storage': 'granted' });
       loadGA();
     }
+    gtag('event', 'cookie_consent', { 'consent_result': accepted ? 'accepted' : 'rejected' });
   }
 
   (function initCookieBanner() {
@@ -1761,5 +1766,7 @@ window.addEventListener('load',()=>{
   wireShare();
 })();
 </script>
+<div id="thotteu-footer"></div>
+<script src="/assets/thotteu-footer.js"></script>
 </body>
 </html>
