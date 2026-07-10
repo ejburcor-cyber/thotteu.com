@@ -733,6 +733,7 @@ h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 
     <div id="intel-panel">
       <div>&#128225;</div>
       <div style="flex:1;text-align:center">
+        <div id="intel-prefix" style="color:#fca;font-size:.26rem;letter-spacing:1px;margin-bottom:2px">DEPLOY THE CANNON ON:</div>
         <div id="intel-target" style="color:#ff0;font-size:.5rem;letter-spacing:2px">—</div>
         <div id="intel-type" style="color:#fca;font-size:.28rem;margin-top:2px"></div>
       </div>
@@ -847,7 +848,7 @@ var I18N={
     ctrl1:'deploy cannon at location',ctrl2:'zoom in/out (3 levels)',ctrl3:'centre and zoom',
     cookie:'We use analytics cookies. They only activate with your consent.',
     accept:'ACCEPT',reject:'REJECT',
-    hintCont:'CONTINENT',hintCountry:'COUNTRY',
+    hintCont:'CONTINENT',hintCountry:'COUNTRY',targetPrefix:'Deploy the cannon on:',
     lore:'YEAR 2052. Project Heimdall detected the alien fleet. Project Enceladus confirmed their refuelling complete. Now Project Horus begins — the strategic deployment of our cannon network across Earth. Intelligence reports are coming in. Each report identifies a target location. Your mission: find it on the world map and deploy the cannon before time runs out. Study the map. Trust the compass. Save the world.',
     types:{country:'Country',capital:'Capital',city:'City',state:'State',region:'Region',mountain:'Mountain',river:'River',sea:'Sea / Gulf',canal:'Canal / Strait',desert:'Desert',forest:'Rainforest',feature:'Feature',ocean:'Ocean',continent:'Continent',pole:'Pole',lake:'Lake',plain:'Plain / Plateau',bay:'Bay / Gulf',island:'Island',archipelago:'Archipelago'},
   },
@@ -866,7 +867,7 @@ var I18N={
     ctrl1:'desplegar ca\u00f1\u00f3n en la ubicaci\u00f3n',ctrl2:'zoom acercar/alejar (3 niveles)',ctrl3:'centrar y hacer zoom',
     cookie:'Usamos cookies anal\u00edticas. Solo se activan con tu consentimiento.',
     accept:'ACEPTAR',reject:'RECHAZAR',
-    hintCont:'CONTINENTE',hintCountry:'PA\u00cdS',
+    hintCont:'CONTINENTE',hintCountry:'PA\u00cdS',targetPrefix:'Despliega el ca\u00f1\u00f3n en:',
     lore:'A\u00d1O 2052. El Proyecto Heimdall detect\u00f3 la flota alienígena. El Proyecto Enc\u00e9lado confirm\u00f3 que su repostaje est\u00e1 completo. Ahora comienza el Proyecto Horus — el despliegue estrat\u00e9gico de nuestra red de ca\u00f1ones por la Tierra. Los informes de inteligencia llegan uno tras otro. Cada informe identifica una ubicaci\u00f3n objetivo. Tu misi\u00f3n: encontrarla en el mapa y desplegar el ca\u00f1\u00f3n antes de que acabe el tiempo.',
     types:{country:'Pa\u00eds',capital:'Capital',city:'Ciudad',state:'Estado',region:'Regi\u00f3n',mountain:'Monta\u00f1a',river:'R\u00edo',sea:'Mar / Golfo',canal:'Canal / Estrecho',desert:'Desierto',forest:'Selva / Bosque',feature:'Accidente',ocean:'Oc\u00e9ano',continent:'Continente',pole:'Polo',lake:'Lago',plain:'Llanura / Meseta',bay:'Bah\u00eda / Golfo',island:'Isla',archipelago:'Archipi\u00e9lago'},
   },
@@ -885,7 +886,7 @@ var I18N={
     ctrl1:'d\u00e9ployer le canon',ctrl2:'zoom (3 niveaux)',ctrl3:'centrer et zoomer',
     cookie:'Nous utilisons des cookies analytiques.',
     accept:'ACCEPTER',reject:'REFUSER',
-    hintCont:'CONTINENT',hintCountry:'PAYS',
+    hintCont:'CONTINENT',hintCountry:'PAYS',targetPrefix:'D\u00e9ployez le canon sur\u00a0:',
     lore:'ANN\u00c9E 2052. Le Projet Heimdall a d\u00e9tect\u00e9 la flotte extraterrestre. Le Projet Encelade a confirm\u00e9 leur ravitaillement complet. Maintenant commence le Projet Horus. Les rapports de renseignement arrivent. Chaque rapport identifie un emplacement cible. Votre mission : le trouver sur la carte et d\u00e9ployer le canon avant la fin du temps.',
     types:{country:'Pays',capital:'Capitale',city:'Ville',state:'\u00c9tat',region:'R\u00e9gion',mountain:'Montagne',river:'Fleuve',sea:'Mer / Golfe',canal:'Canal / D\u00e9troit',desert:'D\u00e9sert',forest:'For\u00eat',feature:'G\u00e9ographie',ocean:'Oc\u00e9an',continent:'Continent',pole:'P\u00f4le',lake:'Lac',plain:'Plaine / Plateau',bay:'Baie / Golfe',island:'\u00cele',archipelago:'Archipel'},
   },
@@ -904,7 +905,7 @@ var I18N={
     ctrl1:'implantar ca\u00f1\u00e3o na localiza\u00e7\u00e3o',ctrl2:'zoom (3 n\u00edveis)',ctrl3:'centrar e zoom',
     cookie:'Usamos cookies anal\u00edticos.',
     accept:'ACEITAR',reject:'REJEITAR',
-    hintCont:'CONTINENTE',hintCountry:'PA\u00cdS',
+    hintCont:'CONTINENTE',hintCountry:'PA\u00cdS',targetPrefix:'Implante o canh\u00e3o em:',
     lore:'ANO 2052. O Projeto Heimdall detetou a frota extraterrestre. O Projeto Enc\u00e9lado confirmou o seu reabastecimento completo. Agora come\u00e7a o Projeto Horus. Os relat\u00f3rios de intelig\u00eancia chegam. Cada relat\u00f3rio identifica uma localiza\u00e7\u00e3o alvo. A sua miss\u00e3o: encontr\u00e1-la no mapa e implantar o ca\u00f1\u00e3o antes do tempo acabar.',
     types:{country:'Pa\u00eds',capital:'Capital',city:'Cidade',state:'Estado',region:'Regi\u00e3o',mountain:'Montanha',river:'Rio',sea:'Mar / Golfo',canal:'Canal / Estreito',desert:'Deserto',forest:'Floresta',feature:'Acidente',ocean:'Oceano',continent:'Continente',pole:'Polo',lake:'Lago',plain:'Plain\u00edcie / Planalto',bay:'Ba\u00eda / Golfo',island:'Ilha',archipelago:'Arquip\u00e9lago'},
   },
@@ -923,12 +924,155 @@ var I18N={
     ctrl1:'desplegar ca\u00f1\u00f3 a la ubicaci\u00f3',ctrl2:'zoom (3 nivells)',ctrl3:'centrar i zoom',
     cookie:'Usem galetes anal\u00edtiques.',
     accept:'ACCEPTAR',reject:'REBUTJAR',
-    hintCont:'CONTINENT',hintCountry:'PA\u00cdS',
+    hintCont:'CONTINENT',hintCountry:'PA\u00cdS',targetPrefix:'Desplega el can\u00f3 a:',
     lore:'ANY 2052. El Projecte Heimdall va detectar la flota extraterrestre. El Projecte Enc\u00e8lad va confirmar el seu repostatge complet. Ara comen\u00e7a el Projecte Horus. Els informes d\'intel\u00b7lig\u00e8ncia arriben. Cada informe identifica una ubicaci\u00f3 objectiu. La teua missi\u00f3: trobar-la al mapa i desplegar el can\u00f3 abans que acabe el temps.',
     types:{country:'Pa\u00eds',capital:'Capital',city:'Ciutat',state:'Estat',region:'Regi\u00f3',mountain:'Muntanya',river:'Riu',sea:'Mar / Golf',canal:'Canal / Estret',desert:'Desert',forest:'Selva / Bosc',feature:'Accident',ocean:'Oce\u00e0',continent:'Continent',pole:'Pol',lake:'Llac',plain:'Plana / Altiplà',bay:'Badia / Golf',island:'Illa',archipelago:'Arxip\u00e8lag'},
   },
 };
 function t(k){return (I18N[currentLang]||I18N.en)[k]||(I18N.en[k]||k);}
+
+// ── NAME TRANSLATIONS (continents, oceans, countries) ──────────────────────
+var CONTINENT_I18N={
+  "North America":{es:"Norteamérica",fr:"Amérique du Nord",pt:"América do Norte",ca:"Amèrica del Nord"},
+  "South America":{es:"Sudamérica",fr:"Amérique du Sud",pt:"América do Sul",ca:"Amèrica del Sud"},
+  "Europe":{es:"Europa",fr:"Europe",pt:"Europa",ca:"Europa"},
+  "Asia":{es:"Asia",fr:"Asie",pt:"Ásia",ca:"Àsia"},
+  "Africa":{es:"África",fr:"Afrique",pt:"África",ca:"Àfrica"},
+  "Oceania":{es:"Oceanía",fr:"Océanie",pt:"Oceania",ca:"Oceania"},
+  "Antarctica":{es:"Antártida",fr:"Antarctique",pt:"Antártida",ca:"Antàrtida"},
+};
+var OCEAN_I18N={
+  "Pacific Ocean":{es:"Océano Pacífico",fr:"Océan Pacifique",pt:"Oceano Pacífico",ca:"Oceà Pacífic"},
+  "Atlantic Ocean":{es:"Océano Atlántico",fr:"Océan Atlantique",pt:"Oceano Atlântico",ca:"Oceà Atlàntic"},
+  "Indian Ocean":{es:"Océano Índico",fr:"Océan Indien",pt:"Oceano Índico",ca:"Oceà Índic"},
+  "Arctic Ocean":{es:"Océano Ártico",fr:"Océan Arctique",pt:"Oceano Ártico",ca:"Oceà Àrtic"},
+  "Southern Ocean":{es:"Océano Austral",fr:"Océan Austral",pt:"Oceano Austral",ca:"Oceà Austral"},
+};
+var COUNTRY_I18N={
+  "Afghanistan":{es:"Afganistán",fr:"Afghanistan",pt:"Afeganistão",ca:"Afganistan"},
+  "Algeria":{es:"Argelia",fr:"Algérie",pt:"Argélia",ca:"Algèria"},
+  "Angola":{es:"Angola",fr:"Angola",pt:"Angola",ca:"Angola"},
+  "Antarctica":{es:"Antártida",fr:"Antarctique",pt:"Antártida",ca:"Antàrtida"},
+  "Argentina":{es:"Argentina",fr:"Argentine",pt:"Argentina",ca:"Argentina"},
+  "Armenia":{es:"Armenia",fr:"Arménie",pt:"Arménia",ca:"Armènia"},
+  "Australia":{es:"Australia",fr:"Australie",pt:"Austrália",ca:"Austràlia"},
+  "Austria":{es:"Austria",fr:"Autriche",pt:"Áustria",ca:"Àustria"},
+  "Azerbaijan":{es:"Azerbaiyán",fr:"Azerbaïdjan",pt:"Azerbaijão",ca:"Azerbaidjan"},
+  "Bangladesh":{es:"Bangladés",fr:"Bangladesh",pt:"Bangladesh",ca:"Bangladesh"},
+  "Belgium":{es:"Bélgica",fr:"Belgique",pt:"Bélgica",ca:"Bèlgica"},
+  "Bolivia":{es:"Bolivia",fr:"Bolivie",pt:"Bolívia",ca:"Bolívia"},
+  "Brazil":{es:"Brasil",fr:"Brésil",pt:"Brasil",ca:"Brasil"},
+  "Bulgaria":{es:"Bulgaria",fr:"Bulgarie",pt:"Bulgária",ca:"Bulgària"},
+  "Cameroon":{es:"Camerún",fr:"Cameroun",pt:"Camarões",ca:"Camerun"},
+  "Canada":{es:"Canadá",fr:"Canada",pt:"Canadá",ca:"Canadà"},
+  "Chad":{es:"Chad",fr:"Tchad",pt:"Chade",ca:"Txad"},
+  "Chile":{es:"Chile",fr:"Chili",pt:"Chile",ca:"Xile"},
+  "China":{es:"China",fr:"Chine",pt:"China",ca:"Xina"},
+  "Colombia":{es:"Colombia",fr:"Colombie",pt:"Colômbia",ca:"Colòmbia"},
+  "Croatia":{es:"Croacia",fr:"Croatie",pt:"Croácia",ca:"Croàcia"},
+  "Cuba":{es:"Cuba",fr:"Cuba",pt:"Cuba",ca:"Cuba"},
+  "Czech Republic":{es:"República Checa",fr:"République tchèque",pt:"República Checa",ca:"República Txeca"},
+  "DR Congo":{es:"RD Congo",fr:"RD Congo",pt:"RD Congo",ca:"RD Congo"},
+  "Denmark":{es:"Dinamarca",fr:"Danemark",pt:"Dinamarca",ca:"Dinamarca"},
+  "Ecuador":{es:"Ecuador",fr:"Équateur",pt:"Equador",ca:"Equador"},
+  "Egypt":{es:"Egipto",fr:"Égypte",pt:"Egito",ca:"Egipte"},
+  "Ethiopia":{es:"Etiopía",fr:"Éthiopie",pt:"Etiópia",ca:"Etiòpia"},
+  "Finland":{es:"Finlandia",fr:"Finlande",pt:"Finlândia",ca:"Finlàndia"},
+  "France":{es:"Francia",fr:"France",pt:"França",ca:"França"},
+  "Georgia":{es:"Georgia",fr:"Géorgie",pt:"Geórgia",ca:"Geòrgia"},
+  "Germany":{es:"Alemania",fr:"Allemagne",pt:"Alemanha",ca:"Alemanya"},
+  "Ghana":{es:"Ghana",fr:"Ghana",pt:"Gana",ca:"Ghana"},
+  "Greece":{es:"Grecia",fr:"Grèce",pt:"Grécia",ca:"Grècia"},
+  "Hungary":{es:"Hungría",fr:"Hongrie",pt:"Hungria",ca:"Hongria"},
+  "Iceland":{es:"Islandia",fr:"Islande",pt:"Islândia",ca:"Islàndia"},
+  "India":{es:"India",fr:"Inde",pt:"Índia",ca:"Índia"},
+  "Indonesia":{es:"Indonesia",fr:"Indonésie",pt:"Indonésia",ca:"Indonèsia"},
+  "Iran":{es:"Irán",fr:"Iran",pt:"Irão",ca:"Iran"},
+  "Iraq":{es:"Irak",fr:"Irak",pt:"Iraque",ca:"Iraq"},
+  "Ireland":{es:"Irlanda",fr:"Irlande",pt:"Irlanda",ca:"Irlanda"},
+  "Italy":{es:"Italia",fr:"Italie",pt:"Itália",ca:"Itàlia"},
+  "Japan":{es:"Japón",fr:"Japon",pt:"Japão",ca:"Japó"},
+  "Jordan":{es:"Jordania",fr:"Jordanie",pt:"Jordânia",ca:"Jordània"},
+  "Kazakhstan":{es:"Kazajistán",fr:"Kazakhstan",pt:"Cazaquistão",ca:"Kazakhstan"},
+  "Kenya":{es:"Kenia",fr:"Kenya",pt:"Quénia",ca:"Kenya"},
+  "Lebanon":{es:"Líbano",fr:"Liban",pt:"Líbano",ca:"Líban"},
+  "Libya":{es:"Libia",fr:"Libye",pt:"Líbia",ca:"Líbia"},
+  "Madagascar":{es:"Madagascar",fr:"Madagascar",pt:"Madagáscar",ca:"Madagascar"},
+  "Mali":{es:"Malí",fr:"Mali",pt:"Mali",ca:"Mali"},
+  "Mauritania":{es:"Mauritania",fr:"Mauritanie",pt:"Mauritânia",ca:"Mauritània"},
+  "Mexico":{es:"México",fr:"Mexique",pt:"México",ca:"Mèxic"},
+  "Mongolia":{es:"Mongolia",fr:"Mongolie",pt:"Mongólia",ca:"Mongòlia"},
+  "Morocco":{es:"Marruecos",fr:"Maroc",pt:"Marrocos",ca:"Marroc"},
+  "Mozambique":{es:"Mozambique",fr:"Mozambique",pt:"Moçambique",ca:"Moçambic"},
+  "Myanmar":{es:"Myanmar",fr:"Birmanie",pt:"Mianmar",ca:"Myanmar"},
+  "Namibia":{es:"Namibia",fr:"Namibie",pt:"Namíbia",ca:"Namíbia"},
+  "Nepal":{es:"Nepal",fr:"Népal",pt:"Nepal",ca:"Nepal"},
+  "Netherlands":{es:"Países Bajos",fr:"Pays-Bas",pt:"Países Baixos",ca:"Països Baixos"},
+  "New Zealand":{es:"Nueva Zelanda",fr:"Nouvelle-Zélande",pt:"Nova Zelândia",ca:"Nova Zelanda"},
+  "Niger":{es:"Níger",fr:"Niger",pt:"Níger",ca:"Níger"},
+  "Nigeria":{es:"Nigeria",fr:"Nigéria",pt:"Nigéria",ca:"Nigèria"},
+  "Norway":{es:"Noruega",fr:"Norvège",pt:"Noruega",ca:"Noruega"},
+  "Oman":{es:"Omán",fr:"Oman",pt:"Omã",ca:"Oman"},
+  "Pakistan":{es:"Pakistán",fr:"Pakistan",pt:"Paquistão",ca:"Pakistan"},
+  "Paraguay":{es:"Paraguay",fr:"Paraguay",pt:"Paraguai",ca:"Paraguai"},
+  "Peru":{es:"Perú",fr:"Pérou",pt:"Peru",ca:"Perú"},
+  "Philippines":{es:"Filipinas",fr:"Philippines",pt:"Filipinas",ca:"Filipines"},
+  "Poland":{es:"Polonia",fr:"Pologne",pt:"Polónia",ca:"Polònia"},
+  "Portugal":{es:"Portugal",fr:"Portugal",pt:"Portugal",ca:"Portugal"},
+  "Romania":{es:"Rumanía",fr:"Roumanie",pt:"Roménia",ca:"Romania"},
+  "Russia":{es:"Rusia",fr:"Russie",pt:"Rússia",ca:"Rússia"},
+  "Saudi Arabia":{es:"Arabia Saudí",fr:"Arabie Saoudite",pt:"Arábia Saudita",ca:"Aràbia Saudita"},
+  "Senegal":{es:"Senegal",fr:"Sénégal",pt:"Senegal",ca:"Senegal"},
+  "Serbia":{es:"Serbia",fr:"Serbie",pt:"Sérvia",ca:"Sèrbia"},
+  "Singapore":{es:"Singapur",fr:"Singapour",pt:"Singapura",ca:"Singapur"},
+  "South Africa":{es:"Sudáfrica",fr:"Afrique du Sud",pt:"África do Sul",ca:"Sud-àfrica"},
+  "South Korea":{es:"Corea del Sur",fr:"Corée du Sud",pt:"Coreia do Sul",ca:"Corea del Sud"},
+  "Spain":{es:"España",fr:"Espagne",pt:"Espanha",ca:"Espanya"},
+  "Sudan":{es:"Sudán",fr:"Soudan",pt:"Sudão",ca:"Sudan"},
+  "Sweden":{es:"Suecia",fr:"Suède",pt:"Suécia",ca:"Suècia"},
+  "Switzerland":{es:"Suiza",fr:"Suisse",pt:"Suíça",ca:"Suïssa"},
+  "Syria":{es:"Siria",fr:"Syrie",pt:"Síria",ca:"Síria"},
+  "Tanzania":{es:"Tanzania",fr:"Tanzanie",pt:"Tanzânia",ca:"Tanzània"},
+  "Thailand":{es:"Tailandia",fr:"Thaïlande",pt:"Tailândia",ca:"Tailàndia"},
+  "Tunisia":{es:"Túnez",fr:"Tunisie",pt:"Tunísia",ca:"Tunísia"},
+  "Turkey":{es:"Turquía",fr:"Turquie",pt:"Turquia",ca:"Turquia"},
+  "UK":{es:"Reino Unido",fr:"Royaume-Uni",pt:"Reino Unido",ca:"Regne Unit"},
+  "USA":{es:"EE. UU.",fr:"États-Unis",pt:"EUA",ca:"EUA"},
+  "Ukraine":{es:"Ucrania",fr:"Ukraine",pt:"Ucrânia",ca:"Ucraïna"},
+  "United Kingdom":{es:"Reino Unido",fr:"Royaume-Uni",pt:"Reino Unido",ca:"Regne Unit"},
+  "United States":{es:"Estados Unidos",fr:"États-Unis",pt:"Estados Unidos",ca:"Estats Units"},
+  "Uruguay":{es:"Uruguay",fr:"Uruguay",pt:"Uruguai",ca:"Uruguai"},
+  "Uzbekistan":{es:"Uzbekistán",fr:"Ouzbékistan",pt:"Usbequistão",ca:"Uzbekistan"},
+  "Venezuela":{es:"Venezuela",fr:"Venezuela",pt:"Venezuela",ca:"Veneçuela"},
+  "Vietnam":{es:"Vietnam",fr:"Vietnam",pt:"Vietname",ca:"Vietnam"},
+  "Zambia":{es:"Zambia",fr:"Zambie",pt:"Zâmbia",ca:"Zàmbia"},
+  "Zimbabwe":{es:"Zimbabue",fr:"Zimbabwe",pt:"Zimbabué",ca:"Zimbabwe"},
+};
+function translateName(name,type){
+  if(!name) return name;
+  if(currentLang==='en') return name;
+  if(name.indexOf('/')>=0){
+    return name.split('/').map(function(n){return translateName(n.trim(),type);}).join('/');
+  }
+  var table;
+  if(type==='continent') table=CONTINENT_I18N;
+  else if(type==='ocean') table=OCEAN_I18N;
+  else if(type==='country') table=COUNTRY_I18N;
+  else return name;
+  var entry=table[name];
+  return entry&&entry[currentLang]?entry[currentLang]:name;
+}
+function translateCountryRef(name){
+  // For a plain country-name reference (e.g. currentTarget.country / .cont fallback)
+  if(!name) return name;
+  if(currentLang==='en') return name;
+  if(name.indexOf('/')>=0){
+    return name.split('/').map(function(n){return translateCountryRef(n.trim());}).join('/');
+  }
+  if(COUNTRY_I18N[name]&&COUNTRY_I18N[name][currentLang]) return COUNTRY_I18N[name][currentLang];
+  if(CONTINENT_I18N[name]&&CONTINENT_I18N[name][currentLang]) return CONTINENT_I18N[name][currentLang];
+  return name;
+}
 
 // ═══════════════════════════════════════════════════
 // OBJECTIVES
@@ -6366,18 +6510,38 @@ var COUNTRY_ISO={
   'United Kingdom':'GB','United States':'US','Uruguay':'UY','Uzbekistan':'UZ','Venezuela':'VE',
   'Vietnam':'VN','Zambia':'ZM','Zimbabwe':'ZW'
 };
-function isoToFlagEmoji(iso2){
-  if(!iso2||iso2.length!==2) return '';
-  var A=0x1F1E6;
-  return String.fromCodePoint(A+(iso2.toUpperCase().charCodeAt(0)-65), A+(iso2.toUpperCase().charCodeAt(1)-65));
+function countryFlagIso(name){
+  if(!name) return '';
+  if(name.indexOf('/')>=0) return ''; // handled per-part by caller
+  return COUNTRY_ISO[name.trim()]||'';
 }
-function countryFlag(name){
+// HTML <img> flag (for HTML elements like intel-target / hint buttons)
+function countryFlagImgHTML(name,size){
   if(!name) return '';
   if(name.indexOf('/')>=0){
-    return name.split('/').map(function(n){return countryFlag(n.trim());}).join('');
+    return name.split('/').map(function(n){return countryFlagImgHTML(n.trim(),size);}).join('');
   }
-  var iso=COUNTRY_ISO[name.trim()];
-  return iso?isoToFlagEmoji(iso):'';
+  var iso=countryFlagIso(name);
+  if(!iso) return '';
+  size=size||16;
+  var h=Math.round(size*0.75);
+  return '<img src="https://flagcdn.com/'+size+'x'+h+'/'+iso.toLowerCase()+'.png" width="'+size+'" height="'+h+'" alt="" style="vertical-align:middle;margin-left:5px;border:1px solid rgba(255,255,255,.3);border-radius:2px">';
+}
+// SVG <image> flag (for markers drawn on the world map)
+function appendCountryFlagSVG(g,name,x,y){
+  if(!name) return;
+  var isos=name.indexOf('/')>=0?name.split('/').map(function(n){return countryFlagIso(n.trim());}):[countryFlagIso(name)];
+  isos=isos.filter(Boolean);
+  isos.forEach(function(iso,i){
+    var img=document.createElementNS('http://www.w3.org/2000/svg','image');
+    img.setAttributeNS('http://www.w3.org/1999/xlink','href','https://flagcdn.com/16x12/'+iso.toLowerCase()+'.png');
+    img.setAttribute('href','https://flagcdn.com/16x12/'+iso.toLowerCase()+'.png');
+    img.setAttribute('x',x+(i*9));
+    img.setAttribute('y',y-8);
+    img.setAttribute('width','8');
+    img.setAttribute('height','6');
+    g.appendChild(img);
+  });
 }
 // Zoom & pan
 var zoomLevel=1; // 1=world, 2=region, 3=detail
@@ -6635,11 +6799,18 @@ function nextTarget(){
   if(!pool.length){usedIds=[];pool=OBJECTIVES.slice();}
   currentTarget=pool[Math.floor(Math.random()*pool.length)];
   usedIds.push(currentTarget.id);
+  renderTargetUI();
+}
+
+function renderTargetUI(){
+  if(!currentTarget) return;
+  var tl=I18N[currentLang]||I18N.en;
   // Show in intel panel
-  var targetFlag=currentTarget.type==='country'?countryFlag(currentTarget.name):'';
-  document.getElementById('intel-target').textContent=currentTarget.name+(targetFlag?(' '+targetFlag):'');
+  var displayName=translateName(currentTarget.name,currentTarget.type);
+  var targetFlagHTML=currentTarget.type==='country'?countryFlagImgHTML(currentTarget.name,16):'';
+  document.getElementById('intel-target').innerHTML=displayName+targetFlagHTML;
   var td=document.getElementById('intel-type');
-  var types=(I18N[currentLang]||I18N.en).types||{};
+  var types=tl.types||{};
   if(td) td.textContent=types[currentTarget.type]||currentTarget.type;
   // Show hints based on level
   var hp=document.getElementById('hint-panel');
@@ -6647,13 +6818,12 @@ function nextTarget(){
   var hkb=document.getElementById('hint-country-btn');
   if(diffLevel===1||diffLevel===2){
     hp.style.display='flex';
-    var tl=I18N[currentLang]||I18N.en;
-    if(hcb){hcb.textContent=(tl.hintCont||'CONTINENT')+': '+currentTarget.cont;hcb.classList.remove('active');}
+    if(hcb){hcb.textContent=(tl.hintCont||'CONTINENT')+': '+translateCountryRef(currentTarget.cont);hcb.classList.remove('active');}
     if(hkb){
       hkb.style.display=diffLevel===1?'inline-block':'none';
       var hintTxt=currentTarget.country||currentTarget.cont;
-      var hintFlag=currentTarget.country?countryFlag(currentTarget.country):'';
-      if(hkb){hkb.textContent=(tl.hintCountry||'COUNTRY')+': '+hintTxt+(hintFlag?(' '+hintFlag):'');hkb.classList.remove('active');}
+      var hintFlagHTML=currentTarget.country?countryFlagImgHTML(currentTarget.country,14):'';
+      if(hkb){hkb.innerHTML=(tl.hintCountry||'COUNTRY')+': '+translateCountryRef(hintTxt)+hintFlagHTML;hkb.classList.remove('active');}
     }
   }else{
     if(hp) hp.style.display='none';
@@ -6742,7 +6912,7 @@ function onMapClick(e){
     var flash=document.getElementById('score-flash');
     if(flash){flash.textContent='+10';flash.style.opacity='1';setTimeout(function(){flash.style.opacity='0';},800);}
     // Mark on map
-    addMarker(tp.x,tp.y,currentTarget.name,true);
+    addMarker(tp.x,tp.y,currentTarget.name,true,currentTarget.type);
     setTimeout(function(){nextTarget();},1200);
   }else{
     // Wrong flash
@@ -6751,7 +6921,7 @@ function onMapClick(e){
   }
 }
 
-function addMarker(x,y,name,correct){
+function addMarker(x,y,name,correct,type){
   var g=document.getElementById('markers-group');
   if(!g) return;
   var circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
@@ -6764,8 +6934,9 @@ function addMarker(x,y,name,correct){
     text.setAttribute('x',x+7); text.setAttribute('y',y+4);
     text.setAttribute('font-size','7'); text.setAttribute('fill','#00ff88');
     text.setAttribute('font-family','sans-serif');
-    text.textContent=name;
+    text.textContent=translateName(name,type);
     g.appendChild(text);
+    if(type==='country') appendCountryFlagSVG(g,name,x+7,y+4);
   }
 }
 
@@ -6876,12 +7047,13 @@ function applyLang(lang){
     't-score':tl.score,'t-best':tl.best,'t-found':tl.found,
     't-diffLabel':tl.diffLabel,'t-diffEasy':tl.diffEasy,'t-diffMid':tl.diffMid,'t-diffHard':tl.diffHard,
     't-ctrl1':tl.ctrl1,'t-ctrl2':tl.ctrl2,'t-ctrl3':tl.ctrl3,
-    't-cookie':tl.cookie,
+    't-cookie':tl.cookie,'intel-prefix':tl.targetPrefix,
   };
   Object.keys(items).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=items[id];});
   var sb=document.getElementById('start-btn');if(sb)sb.textContent=tl.startBtn;
   document.querySelectorAll('.lang-option').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});
   renderHOF();
+  renderTargetUI();
 }
 function setLang(lang){applyLang(lang);startTypewriter(lang);gtag('event','language_change',{'language':lang});if(window.ThotteuFooter)window.ThotteuFooter.render(lang);var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');}
 
