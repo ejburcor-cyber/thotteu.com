@@ -19,8 +19,8 @@
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;padding-top:6px;min-height:100vh;font-family:"Press Start 2P",monospace;user-select:none}
 .back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:7px 12px;font-family:"Press Start 2P",monospace;font-size:.45rem;color:#fca;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50}
 .back-btn:hover{border-color:#fff;color:#fff}
-.title-block{position:relative;width:900px;max-width:100%;margin:0 auto;text-align:center}
-h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,220,255,.6)}
+.title-block{position:relative;width:900px;max-width:100%;margin:0 auto;text-align:center;padding:0 76px;box-sizing:border-box}
+h1{color:#fff;font-size:clamp(.62rem,3.6vw,1.05rem);margin-bottom:3px;letter-spacing:clamp(1px,.6vw,3px);text-shadow:0 0 20px rgba(100,220,255,.6);word-break:break-word}
 .subtitle{color:#aef;font-size:.42rem;letter-spacing:2px;margin-bottom:5px}
 .lang-selector{position:absolute;top:4px;right:8px}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:"Press Start 2P",monospace;font-size:.5rem;color:#fca;display:flex;align-items:center;gap:6px}
@@ -55,6 +55,13 @@ h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow
 #canvas-fg{position:absolute;top:0;left:0;display:block;pointer-events:auto;cursor:none!important}
 /* ── COLOUR WHEEL HUD ── */
 #colour-wheel-wrap{position:absolute;bottom:12px;right:12px;z-index:20;pointer-events:none}
+/* ── COLOUR INFO PANEL (below the game board) ── */
+#colour-info-panel{display:none;width:900px;max-width:100%;margin:8px auto 0;background:rgba(0,0,15,.85);border:1px solid rgba(160,220,255,.25);border-radius:6px;padding:10px 14px;box-sizing:border-box}
+#colour-info-label{font-family:'Press Start 2P',monospace;font-size:.34rem;color:#fa0;letter-spacing:1.5px;margin-bottom:6px}
+#colour-info-main{display:flex;align-items:center;gap:12px}
+#colour-info-swatch{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.5);flex-shrink:0;transition:background .15s}
+#colour-info-name{font-family:'Press Start 2P',monospace;font-size:.42rem;color:#fff;letter-spacing:1px;margin-bottom:4px}
+#colour-info-desc{font-family:'Press Start 2P',monospace;font-size:.32rem;color:rgba(200,230,255,.75);line-height:1.7}
 /* ── TIMER BAR ── */
 #timer-bar-wrap{position:absolute;top:0;left:0;right:0;height:5px;z-index:20;pointer-events:none}
 #timer-bar{height:100%;background:#fa0;transition:width .1s linear;width:100%}
@@ -264,6 +271,17 @@ h1{color:#fff;font-size:1.05rem;margin-bottom:3px;letter-spacing:3px;text-shadow
     <div id="ufo-count">&#128760; 0/0</div>
     <div id="colour-wheel-wrap"></div>
   </div>
+
+  <div id="colour-info-panel">
+    <div id="colour-info-label">SELECTED COLOUR</div>
+    <div id="colour-info-main">
+      <div id="colour-info-swatch"></div>
+      <div>
+        <div id="colour-info-name">1/7 &middot; RED</div>
+        <div id="colour-info-desc">Primary colour. Longest wavelength of visible light. (~700 nm)</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="ad-slot">
@@ -336,7 +354,7 @@ var I={
     cookieText:'We use analytics cookies. They only activate with your consent.',
     cookieAccept:'ACCEPT',cookieReject:'REJECT',
     pwaTitle:'INSTALL AS APP',pwaDesc:'Play offline from your home screen.',pwaInstall:'INSTALL',
-    shareTitle:'Share Thotteu \u00b7 Chromatic Enceladus',
+    shareTitle:'Share Thotteu \u00b7 Chromatic Enceladus',shareDesc:'Share with anyone who might enjoy it.',
     lore:'YEAR 2051. Following Project Heimdall, alien fleets have been observed converging on Enceladus — Saturn\'s icy moon. Their purpose was unknown. A chromatic cannon network has been deployed across the ice surface. White light, when passed through a prism, reveals what lies beneath. The UFOs are camouflaged in the ice, each resonating at a specific colour frequency. You are our chromatic operator. Scan the surface, tune your beam, and photograph every UFO before time runs out.',
   },
   es:{
@@ -355,7 +373,7 @@ var I={
     cookieText:'Usamos cookies anal\u00edticas. Solo se activan con tu consentimiento.',
     cookieAccept:'ACEPTAR',cookieReject:'RECHAZAR',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Juega sin conexi\u00f3n.',pwaInstall:'INSTALAR',
-    shareTitle:'Comparte Thotteu \u00b7 Chromatic Enceladus',
+    shareTitle:'Comparte Thotteu \u00b7 Chromatic Enceladus',shareDesc:'Comp\u00e1rtelo con quien pueda disfrutarlo.',
     lore:'A\u00d1O 2051. Tras el Proyecto Heimdall, se ha observado que flotas alienígenas convergen en Enc\u00e9lado, la luna helada de Saturno. Su prop\u00f3sito era desconocido. Se ha desplegado una red de ca\u00f1ones crom\u00e1ticos por la superficie de hielo. La luz blanca, al pasar por un prisma, revela lo que hay debajo. Los UFOs est\u00e1n camuflados en el hielo, cada uno resonando a una frecuencia de color espec\u00edfica. Eres nuestro operador crom\u00e1tico. Escanea la superficie, sintoniza tu haz y fotograf\u00eda cada UFO antes de que se acabe el tiempo.',
   },
   fr:{
@@ -374,7 +392,7 @@ var I={
     cookieText:'Nous utilisons des cookies analytiques.',
     cookieAccept:'ACCEPTER',cookieReject:'REFUSER',
     pwaTitle:'INSTALLER EN APP',pwaDesc:'Jouez hors ligne.',pwaInstall:'INSTALLER',
-    shareTitle:'Partage Thotteu \u00b7 Chromatic Enceladus',
+    shareTitle:'Partage Thotteu \u00b7 Chromatic Enceladus',shareDesc:'Partagez-le avec ceux qui pourraient l\u2019appr\u00e9cier.',
     lore:'ANN\u00c9E 2051. Suite au Projet Heimdall, des flottes extraterrestres ont \u00e9t\u00e9 observ\u00e9es convergeant vers Encelade. Un r\u00e9seau de canons chromatiques a \u00e9t\u00e9 d\u00e9ploy\u00e9. La lumi\u00e8re blanche, pass\u00e9e \u00e0 travers un prisme, r\u00e9v\u00e8le ce qui se trouve en dessous. Les OVNIS sont camoufl\u00e9s dans la glace. Vous \u00eates notre op\u00e9rateur chromatique.',
   },
   pt:{
@@ -393,7 +411,7 @@ var I={
     cookieText:'Usamos cookies anal\u00edticos.',
     cookieAccept:'ACEITAR',cookieReject:'REJEITAR',
     pwaTitle:'INSTALAR COMO APP',pwaDesc:'Jogue offline.',pwaInstall:'INSTALAR',
-    shareTitle:'Compartilhe Thotteu \u00b7 Chromatic Enceladus',
+    shareTitle:'Compartilhe Thotteu \u00b7 Chromatic Enceladus',shareDesc:'Partilhe com quem possa gostar.',
     lore:'ANO 2051. Ap\u00f3s o Projeto Heimdall, flotas extraterrestres foram observadas a convergir para Enc\u00e9lado. Uma rede de ca\u00f1\u00f5es crom\u00e1ticos foi implantada. A luz branca, ao passar por um prisma, revela o que est\u00e1 por baixo. \u00c9 o nosso operador crom\u00e1tico. Digitaliza a superf\u00edcie, afina o teu feixe e fotografa cada UFO antes de o tempo acabar.',
   },
   ca:{
@@ -412,7 +430,7 @@ var I={
     cookieText:'Usem galetes anal\u00edtiques.',
     cookieAccept:'ACCEPTAR',cookieReject:'REBUTJAR',
     pwaTitle:'INSTAL\u00b7LAR COM A APP',pwaDesc:'Juga sense connexi\u00f3.',pwaInstall:'INSTAL\u00b7LAR',
-    shareTitle:'Comparteix Thotteu \u00b7 Chromatic Enceladus',
+    shareTitle:'Comparteix Thotteu \u00b7 Chromatic Enceladus',shareDesc:'Comparteix-ho amb qui li pugui agradar.',
     lore:'ANY 2051. Despr\u00e9s del Projecte Heimdall, flotes extraterrestres han sigut observades convergint a Enc\u00e8lad. Una xarxa de canons crom\u00e0tics ha sigut desplegada. La llum blanca, en passar per un prisma, revela el que hi ha davall. Ets el nostre operador crom\u00e0tic. Escaneja la superf\u00edcie, sintonitza el teu feix i fotografia cada UFO abans que s\'acabe el temps.',
   },
 };
@@ -432,6 +450,39 @@ var COLOURS=[
   {name:'Violet', hex:'#9900cc',r:153,g:0,  b:204},
 ];
 var NUM_COLOURS=COLOURS.length;
+
+// Didactic info shown below the game board for the currently selected colour.
+// Index matches COLOURS order (0=Red … 6=Violet).
+var COLOUR_WAVELENGTH=['~700 nm','~620 nm','~580 nm','~530 nm','~490 nm','~470 nm','~400 nm'];
+var COLOUR_NAMES={
+  en:['Red','Orange','Yellow','Green','Cyan','Blue','Violet'],
+  es:['Rojo','Naranja','Amarillo','Verde','Cian','Azul','Violeta'],
+  fr:['Rouge','Orange','Jaune','Vert','Cyan','Bleu','Violet'],
+  pt:['Vermelho','Laranja','Amarelo','Verde','Ciano','Azul','Violeta'],
+  ca:['Vermell','Taronja','Groc','Verd','Cian','Blau','Violeta'],
+};
+var COLOUR_INFO={
+  en:['Primary colour. Longest wavelength of visible light.','Mix of Red + Yellow.','Primary colour (in pigments).','Mix of Blue + Yellow.','Mix of Blue + Green.','Primary colour.','Mix of Red + Blue. Shortest wavelength of visible light.'],
+  es:['Color primario. La mayor longitud de onda de la luz visible.','Mezcla de Rojo + Amarillo.','Color primario (en pigmentos).','Mezcla de Azul + Amarillo.','Mezcla de Azul + Verde.','Color primario.','Mezcla de Rojo + Azul. La menor longitud de onda de la luz visible.'],
+  fr:['Couleur primaire. La plus grande longueur d\u2019onde de la lumière visible.','Mélange de Rouge + Jaune.','Couleur primaire (en pigments).','Mélange de Bleu + Jaune.','Mélange de Bleu + Vert.','Couleur primaire.','Mélange de Rouge + Bleu. La plus courte longueur d\u2019onde de la lumière visible.'],
+  pt:['Cor primária. O maior comprimento de onda da luz visível.','Mistura de Vermelho + Amarelo.','Cor primária (em pigmentos).','Mistura de Azul + Amarelo.','Mistura de Azul + Verde.','Cor primária.','Mistura de Vermelho + Azul. O menor comprimento de onda da luz visível.'],
+  ca:['Color primari. La longitud d\u2019ona més gran de la llum visible.','Barreja de Vermell + Groc.','Color primari (en pigments).','Barreja de Blau + Groc.','Barreja de Blau + Verd.','Color primari.','Barreja de Vermell + Blau. La longitud d\u2019ona més curta de la llum visible.'],
+};
+var COLOUR_PANEL_LABEL={en:'SELECTED COLOUR',es:'COLOR SELECCIONADO',fr:'COULEUR SÉLECTIONNÉE',pt:'COR SELECIONADA',ca:'COLOR SELECCIONAT'};
+
+function updateColourInfoPanel(){
+  var panel=document.getElementById('colour-info-panel');
+  if(!panel) return;
+  var lang=(COLOUR_NAMES[currentLang])?currentLang:'en';
+  var name=COLOUR_NAMES[lang][colourIdx];
+  var info=COLOUR_INFO[lang][colourIdx];
+  var wave=COLOUR_WAVELENGTH[colourIdx];
+  var c=COLOURS[colourIdx];
+  document.getElementById('colour-info-label').textContent=COLOUR_PANEL_LABEL[lang]||COLOUR_PANEL_LABEL.en;
+  document.getElementById('colour-info-swatch').style.background=c.hex;
+  document.getElementById('colour-info-name').textContent=(colourIdx+1)+'/'+NUM_COLOURS+' \u00b7 '+name.toUpperCase();
+  document.getElementById('colour-info-desc').textContent=info+'  ('+wave+')';
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // GAME STATE
@@ -856,6 +907,17 @@ function drawColourWheel(){
     fgX.fill();
     fgX.strokeStyle='rgba(255,255,255,0.3)';fgX.lineWidth=0.5;fgX.stroke();
   });
+  // Marker (number) at the middle of each segment, to identify each colour at a glance
+  fgX.font='6px "Press Start 2P"';fgX.textAlign='center';fgX.textBaseline='middle';
+  COLOURS.forEach(function(c,i){
+    var midAng=(i+0.5)/NUM_COLOURS*Math.PI*2-Math.PI/2;
+    var mx=cx+Math.cos(midAng)*r*0.62, my=cy+Math.sin(midAng)*r*0.62;
+    // luminance-based contrast so the number is legible on any background colour
+    var lum=(c.r*299+c.g*587+c.b*114)/1000;
+    fgX.fillStyle=lum>140?'rgba(0,0,0,.85)':'rgba(255,255,255,.9)';
+    fgX.fillText(String(i+1),mx,my);
+  });
+  fgX.textBaseline='alphabetic';
   // Active indicator
   var activeAng=(colourIdx+0.5)/NUM_COLOURS*Math.PI*2-Math.PI/2;
   fgX.strokeStyle='#fff';fgX.lineWidth=2;
@@ -869,7 +931,7 @@ function drawColourWheel(){
   fgX.fillStyle='rgba(0,0,0,0.7)';
   fgX.fillRect(cx-32,cy+r+4,64,14);
   fgX.fillStyle='#fff';fgX.font='5px "Press Start 2P"';fgX.textAlign='center';
-  fgX.fillText(COLOURS[colourIdx].name.toUpperCase(),cx,cy+r+13);
+  fgX.fillText((colourIdx+1)+'. '+COLOURS[colourIdx].name.toUpperCase(),cx,cy+r+13);
   fgX.restore();
 }
 
@@ -907,9 +969,11 @@ function onStartMission(){
 
 function startGame(){
   score=0;missPenalty=0;colourIdx=0;
+  gtag('event','game_start',{'game_name':'enceladus'});
   document.getElementById('score-display').textContent=0;
   document.getElementById('overlay').style.display='none';
   document.getElementById('game-canvas-wrap').style.display='block';
+  var cip=document.getElementById('colour-info-panel'); if(cip) cip.style.display='block';
   // Init canvas
   bgC=document.getElementById('canvas-bg');
   fgC=document.getElementById('canvas-fg');
@@ -918,7 +982,6 @@ function startGame(){
   generateIce();
   placeObjects();
   state='playing';
-  gtag('event','game_start',{'game_name':'enceladus'});
   gameStartTime=Date.now();
   timeLeft=LEVEL_CFG[diffLevel].time;
   updateHUD();
@@ -929,13 +992,24 @@ function startGame(){
   // Wire events
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
-  // Single wheel listener on wrap — prevents scroll and changes colour once
-  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){
+  bindWheelOnce();
+  updateColourInfoPanel();
+  document.getElementById('phase-label').textContent='';
+}
+
+// Attaches the mouse-wheel colour listener exactly once, no matter how many
+// times startGame()/restartGame() run — game-canvas-wrap is never recreated,
+// so re-adding this listener on every restart used to stack duplicates and
+// made each scroll tick advance the colour by 2, 3, 4... steps.
+function bindWheelOnce(){
+  var wrap=document.getElementById('game-canvas-wrap');
+  if(!wrap||wrap._wheelBound) return;
+  wrap._wheelBound=true;
+  wrap.addEventListener('wheel',function(e){
     e.preventDefault();
     e.stopPropagation();
     onWheel(e);
   },{passive:false});
-  document.getElementById('phase-label').textContent='';
 }
 
 function startTimer(){
@@ -987,6 +1061,7 @@ function onWheel(e){
   e.preventDefault();
   var dir=e.deltaY>0?1:-1;
   colourIdx=(colourIdx+dir+NUM_COLOURS)%NUM_COLOURS;
+  updateColourInfoPanel();
   playColourChange();
 }
 
@@ -1097,6 +1172,7 @@ function showResult(isWin){
   stopAnim();
   var canvasWrap=document.getElementById('game-canvas-wrap');
   canvasWrap.style.display='none';
+  var cip=document.getElementById('colour-info-panel'); if(cip) cip.style.display='none';
   var ov=document.getElementById('overlay');
   ov.style.display='flex';
   ov.style.width='900px';
@@ -1133,12 +1209,7 @@ function restartGame(){
   fgX=fgC.getContext('2d');
   fgC.addEventListener('mousemove',onMouseMove);
   fgC.addEventListener('click',onCanvasClick);
-  // Single wheel listener on wrap — prevents scroll and changes colour once
-  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    onWheel(e);
-  },{passive:false});
+  bindWheelOnce();
   startGame();
 }
 
@@ -1213,15 +1284,19 @@ function applyLang(lang){
     't-diffLabel':t('diffLabel'),
     't-diffEasy':t('diffEasy'),'t-diffMid':t('diffMid'),'t-diffHard':t('diffHard'),
     'back-btn-el':t('backBtn'),
+    'enc-share-title':'\u{1F4E4} '+t('shareTitle'),'enc-share-desc':t('shareDesc'),
+    'enc-pwa-title':'\u2756 '+t('pwaTitle'),'enc-pwa-desc':t('pwaDesc'),
   };
   Object.keys(items).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=items[id];});
   var sb=document.getElementById('start-btn');if(sb)sb.textContent=t('startBtn');
+  var pb=document.getElementById('enc-pwa-btn');if(pb)pb.textContent='\u2756 '+t('pwaInstall');
   document.querySelectorAll('.lang-option').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang);});
   if(state==='result'&&lastResultWin!==null) showResult(lastResultWin);
   renderHOF();
 }
 function setLang(lang){
   applyLang(lang);startTypewriter(lang);
+  updateColourInfoPanel();
   gtag('event','language_change',{'language':lang});
   if(window.ThotteuFooter)window.ThotteuFooter.render(lang);
   var dd=document.getElementById('lang-dropdown');if(dd)dd.classList.remove('open');
