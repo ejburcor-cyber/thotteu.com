@@ -32,7 +32,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
-h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,200,255,.6)}
+h1{color:#fff;font-size:clamp(.6rem,3.6vw,1.1rem);margin-bottom:4px;letter-spacing:clamp(1px,.6vw,3px);text-shadow:0 0 20px rgba(100,200,255,.6);word-break:break-word}
 #game-wrap{position:relative}
 canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.15);cursor:pointer}
 #hud{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 4px;margin-bottom:4px}
@@ -88,7 +88,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 .general-briefing-text{font-size:.42rem;line-height:1.8;color:#cde}
 .general-briefing-label{color:#4af;font-size:.36rem;letter-spacing:1px;margin-bottom:4px;display:block}
 #surrender-btn{display:none;position:absolute;top:48px;right:6px;background:rgba(180,0,0,.85);color:#fff;border:1px solid #f44;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:.38rem;padding:6px 10px;cursor:pointer;letter-spacing:1px;z-index:20}
-.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
+.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center;padding:0 76px;box-sizing:border-box}
 .ad-slot{width:100%;max-width:728px;margin:10px auto 0;text-align:center}
 .ad-slot-label{color:rgba(68,170,255,.3);font-size:.35rem;letter-spacing:1px;margin-bottom:4px;font-family:'Press Start 2P',monospace}
 .ad-placeholder{background:rgba(0,5,20,.7);border:1px dashed rgba(68,170,255,.25);display:flex;align-items:center;justify-content:center;color:rgba(68,170,255,.25);font-size:.38rem;letter-spacing:1px;font-family:'Press Start 2P',monospace}
@@ -231,8 +231,8 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 </div>
 <div id="hof-standalone"></div>
 <div class="share-block" id="mnemosine-share-block">
-  <div class="share-block-title" id="mnemosine-share-title">&#128228; Comparte Thotteu · Project Mnemosine</div>
-  <p id="mnemosine-share-desc" style="font-family:'Press Start 2P',monospace;font-size:.38rem;color:rgba(68,170,255,.7);letter-spacing:.5px;margin-bottom:10px;line-height:1.7">Comparte la herramienta con quien pueda gustarle. Envíale el enlace.</p>
+  <div class="share-block-title" id="mnemosine-share-title" data-i18n="shareTitle">&#128228; Comparte Thotteu · Project Mnemosine</div>
+  <p id="mnemosine-share-desc" data-i18n="shareDesc" style="font-family:'Press Start 2P',monospace;font-size:.38rem;color:rgba(68,170,255,.7);letter-spacing:.5px;margin-bottom:10px;line-height:1.7">Comparte la herramienta con quien pueda gustarle. Envíale el enlace.</p>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <div style="flex-shrink:0;padding:5px;background:#fff;border:2px solid rgba(68,170,255,.6);box-shadow:0 0 0 4px rgba(68,170,255,.15),inset 0 0 0 2px rgba(68,170,255,.25);border-radius:4px">
       <img id="mnemosine-qr-preview" src="" alt="QR Thotteu" width="90" height="90"
@@ -264,10 +264,10 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 </div>
 
 <div class="pwa-block" id="mnemosine-pwa-block">
-  <div class="pwa-block-title">&#11015; INSTALL AS APP</div>
-  <div class="pwa-block-desc" id="mnemosine-pwa-desc">Play offline, from your home screen &mdash; no browser needed.</div>
+  <div class="pwa-block-title" data-i18n="pwaTitle">&#11015; INSTALL AS APP</div>
+  <div class="pwa-block-desc" id="mnemosine-pwa-desc" data-i18n="pwaDesc">Play offline, from your home screen &mdash; no browser needed.</div>
   <div id="mnemosine-pwa-install-row">
-    <button class="pwa-install-btn" id="mnemosine-btn-install-pwa">&#11015; <span id="mnemosine-install-label">INSTALL</span></button>
+    <button class="pwa-install-btn" id="mnemosine-btn-install-pwa">&#11015; <span id="mnemosine-install-label" data-i18n="pwaInstall">INSTALL</span></button>
   </div>
   <ul class="pwa-hints">
     <li><strong style="color:#4df">Android (Chrome):</strong> menu &rarr; &ldquo;Add to Home screen&rdquo;</li>
@@ -402,6 +402,8 @@ var i18n = {
   en: {
     title:'PROJECT MNEMOSINE',
     subtitle:'DECODE THE SIGNAL — MATCH EVERY LETTER',
+    shareTitle:'\u{1F4E4} Share Thotteu \u00b7 Project Mnemosine',shareDesc:'Share this with anyone who might enjoy it. Send them the link.',
+    pwaTitle:'\u2B07 INSTALL AS APP',pwaDesc:'Play offline, from your home screen \u2014 no browser needed.',pwaInstall:'INSTALL',
     score:'SCORE', pairs:'PAIRS', time:'TIME', attempts:'ATTEMPTS',
     instructions:'INSTRUCTIONS',
     instructionsBody:'Click two tiles to reveal what is underneath.<br>EASY: match each UPPERCASE letter with its lowercase twin (e.g. A &harr; a).<br>MEDIUM/HARD: also match number symbols with their written name (e.g. 5 &harr; FIVE).<br>Matched pairs stay revealed &mdash; wrong pairs flip back after 5s or your next click.<br>You have 50 attempts to clear all 15 pairs.',
@@ -433,6 +435,8 @@ var i18n = {
   es: {
     title:'PROJECT MNEMOSINE',
     subtitle:'DESCIFRA LA SEÑAL — EMPAREJA CADA LETRA',
+    shareTitle:'\u{1F4E4} Comparte Thotteu \u00b7 Project Mnemosine',shareDesc:'Comparte la herramienta con quien pueda gustarle. Envíale el enlace.',
+    pwaTitle:'\u2B07 INSTALAR COMO APP',pwaDesc:'Juega sin conexión, desde tu pantalla de inicio \u2014 sin navegador.',pwaInstall:'INSTALAR',
     score:'PUNTOS', pairs:'PAREJAS', time:'TIEMPO', attempts:'INTENTOS',
     instructions:'INSTRUCCIONES',
     instructionsBody:'Haz clic en dos casillas para revelar lo que hay debajo.<br>FÁCIL: empareja cada letra MAYÚSCULA con su gemela minúscula (ej. A &harr; a).<br>MEDIO/DIFÍCIL: también empareja el símbolo del número con su nombre escrito (ej. 5 &harr; CINCO).<br>Las parejas correctas quedan reveladas &mdash; las incorrectas se tapan tras 5s o tu siguiente clic.<br>Tienes 50 intentos para completar las 15 parejas.',
@@ -1112,11 +1116,6 @@ window.addEventListener('load', ()=>{
     btn.onclick=function(){if(_dp){_dp.prompt();_dp.userChoice.then(function(r){_dp=null;if(r.outcome==="accepted")btn.style.display="none";})}}
   }
   window.addEventListener("appinstalled",function(){if(btn)btn.style.display="none";});
-  var _origAL=typeof applyLang==="function"?applyLang:null;
-  if(_origAL){applyLang=function(lang){_origAL(lang);
-    var d=document.getElementById("mnemosine-pwa-desc");if(d)d.textContent=lang==="es"?"Juega sin conexión, desde tu pantalla de inicio — sin navegador.":"Play offline, from your home screen — no browser needed.";
-    var l=document.getElementById("mnemosine-install-label");if(l)l.textContent=lang==="es"?"INSTALAR":"INSTALL";
-  };}
 })();
 </script>
 <div id="thotteu-footer"></div>

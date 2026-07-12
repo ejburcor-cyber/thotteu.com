@@ -26,7 +26,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;min-height:100vh;font-family:'Press Start 2P',monospace}
-h1{color:#fff;font-size:1.1rem;margin-bottom:4px;letter-spacing:3px;text-shadow:0 0 20px rgba(100,200,255,.6)}
+h1{color:#fff;font-size:clamp(.62rem,3.6vw,1.1rem);margin-bottom:4px;letter-spacing:clamp(1px,.6vw,3px);text-shadow:0 0 20px rgba(100,200,255,.6);word-break:break-word}
 #game-wrap{position:relative}
 canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.4),0 0 60px rgba(68,170,255,.15);cursor:none}
 #hud{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 4px;margin-bottom:4px}
@@ -57,7 +57,7 @@ canvas{display:block;border:3px solid #4af;box-shadow:0 0 30px rgba(68,170,255,.
 #hall-of-fame,#hof-standalone{width:700px;max-width:100%;border:1px solid rgba(68,170,255,.25);background:rgba(0,5,20,.7);padding:10px 16px}
 #hall-of-fame{margin-top:6px}
 #hof-standalone{margin:10px auto 0}
-.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center}
+.title-block{position:relative;width:700px;max-width:100%;margin:0 auto;text-align:center;padding:0 76px;box-sizing:border-box}
 .lang-selector{position:absolute;top:4px;right:8px;display:inline-block}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #4af;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:.5rem;color:#4df;display:flex;align-items:center;gap:6px}
 .lang-btn-toggle:hover{border-color:#7cf}
@@ -330,6 +330,7 @@ $('highscore').textContent = highScore;
 var i18n = {
   en: {
     title:'PROJECT HEIMDALL',
+    shareTitle:'\u{1F4E4} Share Thotteu \u00b7 Project Heimdall',shareDesc:'Share this with anyone who might enjoy it. Send them the link.',
     subtitle:'SPOT THE UNKNOWN BEFORE THEY SPOT YOU',
     score:'SCORE', best:'BEST', captures:'CAPTURES',
     finaleWarning:'UFO APPROACHING — WE\'VE BEEN SPOTTED!',
@@ -362,6 +363,7 @@ var i18n = {
   },
   es: {
     title:'PROJECT HEIMDALL',
+    shareTitle:'\u{1F4E4} Comparte Thotteu \u00b7 Project Heimdall',shareDesc:'Comparte la herramienta con quien pueda gustarle. Env\u00edale el enlace.',
     subtitle:'DETECTA LO DESCONOCIDO ANTES DE QUE TE DETECTEN',
     score:'PUNTOS', best:'MEJOR', captures:'CAPTURAS',
     finaleWarning:'¡UFO ACERCÁNDOSE — NOS HAN DETECTADO!',
@@ -394,6 +396,7 @@ var i18n = {
   },
   fr: {
     title:'PROJECT HEIMDALL',
+    shareTitle:'\u{1F4E4} Partagez Thotteu \u00b7 Project Heimdall',shareDesc:'Partagez-le avec ceux qui pourraient l\u2019appr\u00e9cier. Envoyez-leur le lien.',
     subtitle:'REPÉREZ L\'INCONNU AVANT D\'ÊTRE REPÉRÉ',
     score:'SCORE', best:'MEILLEUR', captures:'CAPTURES',
     finaleWarning:'UN OVNI APPROCHE — NOUS SOMMES REPÉRÉS !',
@@ -426,6 +429,7 @@ var i18n = {
   },
   pt: {
     title:'PROJECT HEIMDALL',
+    shareTitle:'\u{1F4E4} Compartilhe Thotteu \u00b7 Project Heimdall',shareDesc:'Compartilhe com quem possa gostar. Envie o link.',
     subtitle:'DETECTE O DESCONHECIDO ANTES QUE ELE TE DETECTE',
     score:'PONTOS', best:'MELHOR', captures:'CAPTURAS',
     finaleWarning:'UM OVNI SE APROXIMA — FOMOS DETECTADOS!',
@@ -458,6 +462,7 @@ var i18n = {
   },
   ca: {
     title:'PROJECT HEIMDALL',
+    shareTitle:'\u{1F4E4} Comparteix Thotteu \u00b7 Project Heimdall',shareDesc:'Comparteix-ho amb qui li pugui agradar. Envia-li l\u2019enlla\u00e7.',
     subtitle:'DETECTA EL DESCONEGUT ABANS QUE ET DETECTEN',
     score:'PUNTS', best:'MILLOR', captures:'CAPTURES',
     finaleWarning:'UN OVNI S\'APROPA — ENS HAN DETECTAT!',
@@ -1079,8 +1084,8 @@ window.addEventListener('load', ()=>{
 </div>
 <div id="hof-standalone"></div>
 <div class="share-block" id="heimdall-share-block">
-  <div class="share-block-title" id="heimdall-share-title">&#128228; Comparte Thotteu · Project Heimdall</div>
-  <p id="heimdall-share-desc" style="font-family:'Press Start 2P',monospace;font-size:.38rem;color:rgba(68,170,255,.7);letter-spacing:.5px;margin-bottom:10px;line-height:1.7">Comparte la herramienta con quien pueda gustarle. Envíale el enlace.</p>
+  <div class="share-block-title" id="heimdall-share-title" data-i18n="shareTitle">&#128228; Comparte Thotteu · Project Heimdall</div>
+  <p id="heimdall-share-desc" data-i18n="shareDesc" style="font-family:'Press Start 2P',monospace;font-size:.38rem;color:rgba(68,170,255,.7);letter-spacing:.5px;margin-bottom:10px;line-height:1.7">Comparte la herramienta con quien pueda gustarle. Envíale el enlace.</p>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <!-- QR in isolated white box with double border -->
     <div style="flex-shrink:0;padding:5px;background:#fff;border:2px solid rgba(68,170,255,.6);box-shadow:0 0 0 4px rgba(68,170,255,.15),inset 0 0 0 2px rgba(68,170,255,.25);border-radius:4px">

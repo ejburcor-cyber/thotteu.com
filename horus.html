@@ -19,8 +19,8 @@
 body{background:#0a0a1a;display:flex;flex-direction:column;align-items:center;padding-top:6px;min-height:100vh;font-family:"Press Start 2P",monospace;user-select:none}
 .back-btn{position:fixed;top:12px;left:12px;background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:7px 12px;font-family:"Press Start 2P",monospace;font-size:.45rem;color:#fca;text-decoration:none;display:flex;align-items:center;gap:6px;z-index:50;transition:border-color .2s,color .2s}
 .back-btn:hover{border-color:#fff;color:#fff}
-.title-block{position:relative;width:900px;max-width:100%;margin:0 auto;text-align:center}
-h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 0 20px rgba(255,200,50,.5)}
+.title-block{position:relative;width:900px;max-width:100%;margin:0 auto;text-align:center;padding:0 76px;box-sizing:border-box}
+h1{color:#fff;font-size:clamp(.6rem,3.6vw,1rem);margin-bottom:3px;letter-spacing:clamp(1px,.6vw,3px);text-shadow:0 0 20px rgba(255,200,50,.5);word-break:break-word}
 .subtitle{color:#fca;font-size:.4rem;letter-spacing:2px;margin-bottom:5px}
 .lang-selector{position:absolute;top:4px;right:8px}
 .lang-btn-toggle{background:#0d1020;border:1.5px solid #fa0;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:"Press Start 2P",monospace;font-size:.5rem;color:#fca;display:flex;align-items:center;gap:6px}
@@ -190,11 +190,11 @@ h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 
     </div>
     <p style="color:#fa0;font-size:.38rem;letter-spacing:1px;margin-top:4px" id="t-diffLabel">SELECT DIFFICULTY</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
-      <button class="level-btn active" id="btn-easy" onclick="selectLevel(1)"><span id="t-diffEasy">&#11088; EASY</span></button>
-      <button class="level-btn" id="btn-mid" onclick="selectLevel(2)"><span id="t-diffMid">&#11088;&#11088; MEDIUM</span></button>
-      <button class="level-btn" id="btn-hard" onclick="selectLevel(3)"><span id="t-diffHard">&#11088;&#11088;&#11088; HARD</span></button>
+      <button class="level-btn active" id="btn-easy"><span id="t-diffEasy">&#11088; EASY</span></button>
+      <button class="level-btn" id="btn-mid"><span id="t-diffMid">&#11088;&#11088; MEDIUM</span></button>
+      <button class="level-btn" id="btn-hard"><span id="t-diffHard">&#11088;&#11088;&#11088; HARD</span></button>
     </div>
-    <button id="start-btn" onclick="onStartMission()">START MISSION</button>
+    <button id="start-btn">START MISSION</button>
   </div>
 
   <div id="game-canvas-wrap">
@@ -760,8 +760,8 @@ h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 
 </div>
 <div id="hof-standalone"></div>
 <div class="share-block">
-  <div class="share-block-title">&#128228; Share Thotteu &middot; Project Horus</div>
-  <p style="font-family:'Press Start 2P',monospace;font-size:.35rem;color:rgba(255,160,0,.7);margin-bottom:10px;line-height:1.7">Challenge a friend to beat your score.</p>
+  <div class="share-block-title" id="share-title">&#128228; Share Thotteu &middot; Project Horus</div>
+  <p id="share-desc" style="font-family:'Press Start 2P',monospace;font-size:.35rem;color:rgba(255,160,0,.7);margin-bottom:10px;line-height:1.7">Challenge a friend to beat your score.</p>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <div style="flex-shrink:0;padding:5px;background:#fff;border:2px solid rgba(255,160,0,.6);border-radius:4px">
       <div id="qr-loading" style="width:90px;height:90px;display:flex;align-items:center;justify-content:center;font-size:.5rem;color:rgba(255,160,0,.5)">...</div>
@@ -779,9 +779,9 @@ h1{color:#fff;font-size:1rem;margin-bottom:3px;letter-spacing:3px;text-shadow:0 
   </div>
 </div>
 <div class="pwa-block">
-  <div class="pwa-block-title">&#10070; INSTALL AS APP</div>
+  <div class="pwa-block-title" id="pwa-title">&#10070; INSTALL AS APP</div>
   <p class="pwa-block-desc" id="pwa-desc">Play offline from your home screen.</p>
-  <button class="pwa-install-btn" id="pwa-btn" style="display:none">&#10070; INSTALL</button>
+  <button class="pwa-install-btn" id="pwa-btn" style="display:none">&#10070; <span id="pwa-install-txt">INSTALL</span></button>
 </div>
 <div class="ad-slot" style="margin-bottom:30px">
   <div class="ad-slot-label">ADVERTISEMENT</div>
@@ -835,6 +835,8 @@ var GENERAL_IMG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHQAAACWBAMAAAD9O
 var I18N={
   en:{
     subtitle:'DEPLOY THE CANNON — GEOGRAPHY MISSION',
+    shareTitle:'\u{1F4E4} Share Thotteu \u00b7 Project Horus',shareDesc:'Challenge a friend to beat your score.',
+    pwaTitle:'\u2756 INSTALL AS APP',pwaDesc:'Play offline from your home screen.',pwaInstall:'INSTALL',
     startBtn:'START MISSION',score:'SCORE',best:'BEST',found:'found',
     diffLabel:'SELECT DIFFICULTY',
     diffEasy:'\u2b50 EASY',diffMid:'\u2b50\u2b50 MEDIUM',diffHard:'\u2b50\u2b50\u2b50 HARD',
@@ -854,6 +856,8 @@ var I18N={
   },
   es:{
     subtitle:'DESPLIEGA EL CA\u00d1\u00d3N — MISI\u00d3N DE GEOGRAF\u00cdA',
+    shareTitle:'\u{1F4E4} Comparte Thotteu \u00b7 Project Horus',shareDesc:'Reta a un amigo a superar tu puntuaci\u00f3n.',
+    pwaTitle:'\u2756 INSTALAR COMO APP',pwaDesc:'Juega sin conexi\u00f3n desde tu pantalla de inicio.',pwaInstall:'INSTALAR',
     startBtn:'INICIAR MISI\u00d3N',score:'PUNTOS',best:'MEJOR',found:'encontrados',
     diffLabel:'SELECCIONA DIFICULTAD',
     diffEasy:'\u2b50 F\u00c1CIL',diffMid:'\u2b50\u2b50 MEDIO',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
@@ -873,6 +877,8 @@ var I18N={
   },
   fr:{
     subtitle:'D\u00c9PLOYEZ LE CANON — MISSION G\u00c9OGRAPHIE',
+    shareTitle:'\u{1F4E4} Partagez Thotteu \u00b7 Project Horus',shareDesc:'D\u00e9fiez un ami de battre votre score.',
+    pwaTitle:'\u2756 INSTALLER EN APP',pwaDesc:'Jouez hors ligne depuis votre \u00e9cran d\u2019accueil.',pwaInstall:'INSTALLER',
     startBtn:'LANCER LA MISSION',score:'POINTS',best:'MEILLEUR',found:'trouv\u00e9s',
     diffLabel:'CHOISIR DIFFICULT\u00c9',
     diffEasy:'\u2b50 FACILE',diffMid:'\u2b50\u2b50 MOYEN',diffHard:'\u2b50\u2b50\u2b50 DIFFICILE',
@@ -892,6 +898,8 @@ var I18N={
   },
   pt:{
     subtitle:'DESPLEGUE O CA\u00d1\u00d3O — MISS\u00c3O GEOGRAFIA',
+    shareTitle:'\u{1F4E4} Compartilhe Thotteu \u00b7 Project Horus',shareDesc:'Desafie um amigo a superar sua pontua\u00e7\u00e3o.',
+    pwaTitle:'\u2756 INSTALAR COMO APP',pwaDesc:'Jogue offline a partir da sua tela inicial.',pwaInstall:'INSTALAR',
     startBtn:'INICIAR MISS\u00c3O',score:'PONTOS',best:'MELHOR',found:'encontrados',
     diffLabel:'SELECIONAR DIFICULDADE',
     diffEasy:'\u2b50 F\u00c1CIL',diffMid:'\u2b50\u2b50 M\u00c9DIO',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
@@ -911,6 +919,8 @@ var I18N={
   },
   ca:{
     subtitle:'DESPLEGUA EL CA\u00d1\u00d3 — MISSI\u00d3 GEOGRAFIA',
+    shareTitle:'\u{1F4E4} Comparteix Thotteu \u00b7 Project Horus',shareDesc:'Reta un amic a superar la teva puntuaci\u00f3.',
+    pwaTitle:'\u2756 INSTAL\u00b7LAR COM A APP',pwaDesc:'Juga sense connexi\u00f3 des de la pantalla d\u2019inici.',pwaInstall:'INSTAL\u00b7LAR',
     startBtn:'INICIAR MISSI\u00d3',score:'PUNTS',best:'MILLOR',found:'trobats',
     diffLabel:'SELECCIONA DIFICULTAT',
     diffEasy:'\u2b50 F\u00c0CIL',diffMid:'\u2b50\u2b50 MITJ\u00c0',diffHard:'\u2b50\u2b50\u2b50 DIF\u00cdCIL',
@@ -6744,13 +6754,17 @@ function startGame(){
   zoomLevel=1; viewX=SVG_W/2; viewY=SVG_H/2;
   applyZoom();
   updateLabels();
-  // Wire events
+  // Wire events (guarded so replays / double-clicks never stack duplicate listeners)
   var svg=document.getElementById('map-svg');
-  svg.addEventListener('wheel',onMapWheel,{passive:false});
-  svg.addEventListener('dblclick',onMapDblClick);
-  svg.addEventListener('mousemove',onMapMouseMove);
-  svg.addEventListener('click',onMapClick);
-  document.getElementById('game-canvas-wrap').addEventListener('wheel',function(e){e.preventDefault();},{passive:false});
+  var wrap=document.getElementById('game-canvas-wrap');
+  if(!svg._eventsWired){
+    svg._eventsWired=true;
+    svg.addEventListener('wheel',onMapWheel,{passive:false});
+    svg.addEventListener('dblclick',onMapDblClick);
+    svg.addEventListener('mousemove',onMapMouseMove);
+    svg.addEventListener('click',onMapClick);
+    wrap.addEventListener('wheel',function(e){e.preventDefault();},{passive:false});
+  }
   startHeliAnim();
   startTimer();
   nextTarget();
@@ -7048,6 +7062,8 @@ function applyLang(lang){
     't-diffLabel':tl.diffLabel,'t-diffEasy':tl.diffEasy,'t-diffMid':tl.diffMid,'t-diffHard':tl.diffHard,
     't-ctrl1':tl.ctrl1,'t-ctrl2':tl.ctrl2,'t-ctrl3':tl.ctrl3,
     't-cookie':tl.cookie,'intel-prefix':tl.targetPrefix,
+    'share-title':tl.shareTitle,'share-desc':tl.shareDesc,
+    'pwa-title':tl.pwaTitle,'pwa-desc':tl.pwaDesc,'pwa-install-txt':tl.pwaInstall,
   };
   Object.keys(items).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=items[id];});
   var sb=document.getElementById('start-btn');if(sb)sb.textContent=tl.startBtn;
