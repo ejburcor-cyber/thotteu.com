@@ -545,7 +545,8 @@ function generateMap(){
   // 2. ONE river — starts from a mountain cell on the left half, flows east
   // River runs along ONE full axis of the map, road runs along the OTHER —
   // exactly like a real map (river East–West, road North–South, or vice
-  // versa), each edge to edge, crossing each other at one clean bridge.
+  // versa), each edge to edge, crossing each other at one clean, STRAIGHT
+  // bridge (no zig-zag right at the crossing — that looked wrong).
   const riverHorizontal=Math.random()<0.5;
 
   function tracePath(mainLen,crossMin,crossMax,startCross,meanderChance,avoidFn){
@@ -568,7 +569,17 @@ function generateMap(){
     return path;
   }
 
-  // 2. RIVER — full span, mild meander, starts near a mountain if possible
+  // Force a short straight run in a path around one index (used to make
+  // the bridge crossing straight instead of landing mid-zig-zag). Skips
+  // any index that would land on a mountain, to stay safe.
+  function straightenAround(path,atIndex,windowSize,mountainCheckFn){
+    const val=path[atIndex];
+    for(let i=Math.max(0,atIndex-windowSize);i<=Math.min(path.length-1,atIndex+windowSize);i++){
+      if(!mountainCheckFn||!mountainCheckFn(i,val)) path[i]=val;
+    }
+  }
+
+  // 2. RIVER path — full span, mild meander, starts near a mountain if possible
   const mtnCells=[];
   for(let y=4;y<ROWS-4;y++) for(let x=1;x<Math.floor(COLS/3);x++) if(grid[y][x]===T.MOUNTAIN) mtnCells.push([x,y]);
   const riverMainLen=riverHorizontal?COLS:ROWS;
@@ -577,14 +588,8 @@ function generateMap(){
     ?(riverHorizontal?mtnCells[Math.floor(Math.random()*mtnCells.length)][1]:mtnCells[Math.floor(Math.random()*mtnCells.length)][0])
     :Math.floor((riverHorizontal?ROWS:COLS)/2);
   const riverPath=tracePath(riverMainLen,2,riverCrossMax,riverStart,0.18,null);
-  const riverCells=[];
-  for(let m=0;m<riverMainLen;m++){
-    const x=riverHorizontal?m:riverPath[m], y=riverHorizontal?riverPath[m]:m;
-    grid[y][x]=T.RIVER; riverCells.push({x,y});
-  }
 
-  // 3. ONE road — the OTHER axis, edge to edge, actively steering around
-  // mountains instead of cutting through them.
+  // 3. ROAD path — the OTHER axis, edge to edge, steering around mountains
   const roadHorizontal=!riverHorizontal;
   const roadMainLen=roadHorizontal?COLS:ROWS;
   const roadCrossMin=4, roadCrossMax=(roadHorizontal?ROWS:COLS)-5;
@@ -594,6 +599,51 @@ function generateMap(){
     return grid[y][x]===T.MOUNTAIN;
   };
   const roadPath=tracePath(roadMainLen,roadCrossMin,roadCrossMax,roadStart,0.22,isMountainAt);
+
+  // Find where the two paths actually meet (river's cross-value at a given
+  // main coordinate equals the road's position there)
+  function riverCrossesAt(x,y){
+    return riverHorizontal?riverPath[x]===y:riverPath[y]===x;
+  }
+  let crossRoadM=null;
+  for(let m=0;m<roadMainLen;m++){
+    const x=roadHorizontal?m:roadPath[m], y=roadHorizontal?roadPath[m]:m;
+    if(riverCrossesAt(x,y)){crossRoadM=m;break;}
+  }
+
+  if(crossRoadM!==null){
+    // Natural crossing found — straighten both paths right at that point
+    const x=roadHorizontal?crossRoadM:roadPath[crossRoadM], y=roadHorizontal?roadPath[crossRoadM]:crossRoadM;
+    const crossRiverM=riverHorizontal?x:y;
+    straightenAround(roadPath,crossRoadM,2,null);
+    straightenAround(riverPath,crossRiverM,2,null);
+    // Remove any OTHER, incidental overlaps away from the chosen crossing —
+    // two full-span meandering paths can accidentally touch more than once.
+    // Done AFTER both paths are finalised/straightened, so it checks against
+    // their final shape rather than a version that's about to change.
+    for(let m=0;m<roadMainLen;m++){
+      if(Math.abs(m-crossRoadM)<=2) continue;
+      const x=roadHorizontal?m:roadPath[m], y=roadHorizontal?roadPath[m]:m;
+      if(riverCrossesAt(x,y)){
+        const c=roadPath[m];
+        const cUp=c-1, cDown=c+1;
+        const upXY=[roadHorizontal?m:cUp, roadHorizontal?cUp:m];
+        const downXY=[roadHorizontal?m:cDown, roadHorizontal?cDown:m];
+        const upOk=cUp>=roadCrossMin&&!isMountainAt(m,cUp)&&!riverCrossesAt(upXY[0],upXY[1]);
+        const downOk=cDown<=roadCrossMax&&!isMountainAt(m,cDown)&&!riverCrossesAt(downXY[0],downXY[1]);
+        if(upOk) roadPath[m]=cUp;
+        else if(downOk) roadPath[m]=cDown;
+        // if neither side works, leave it — rare, results in one extra small bridge
+      }
+    }
+  }
+
+  // Write both paths to the grid now that they're finalised
+  const riverCells=[];
+  for(let m=0;m<riverMainLen;m++){
+    const x=riverHorizontal?m:riverPath[m], y=riverHorizontal?riverPath[m]:m;
+    grid[y][x]=T.RIVER; riverCells.push({x,y});
+  }
   const roadCells=[];
   for(let m=0;m<roadMainLen;m++){
     const x=roadHorizontal?m:roadPath[m], y=roadHorizontal?roadPath[m]:m;
@@ -601,9 +651,9 @@ function generateMap(){
     roadCells.push({x,y});
   }
 
-  // Guarantee a crossing: with two full-span perpendicular paths this
-  // almost always happens naturally, but if the meander missed it, add one
-  // short, clean connector at the closest approach between the two paths.
+  // Guarantee a crossing: if the (possibly re-straightened) paths still
+  // never actually touch, add one short, straight connector at the
+  // closest approach between the two.
   if(!roadCells.some(rd=>grid[rd.y][rd.x]===T.BRIDGE)){
     let bridgeCell=null,bridgeRoadCell=null,minDist=999;
     riverCells.forEach(rc=>{
@@ -673,6 +723,10 @@ function isRoadTile(x,y){
   if(x<0||x>=COLS||y<0||y>=ROWS) return false;
   return grid[y][x]===T.ROAD||grid[y][x]===T.BRIDGE;
 }
+function isRiverTile(x,y){
+  if(x<0||x>=COLS||y<0||y>=ROWS) return false;
+  return grid[y][x]===T.RIVER||grid[y][x]===T.BRIDGE;
+}
 
 function drawMap(ctx){
   for(let y=0;y<ROWS;y++){
@@ -689,11 +743,16 @@ function drawMap(ctx){
         ctx.fillStyle='rgba(255,255,255,0.35)';
         ctx.fillRect(x*CW+1,y*CH+1,CW-2,1);
       } else if(t===T.RIVER){
-        // river: dark blue fill + lighter centre stripe
+        // river: dark blue fill + lighter stripe following its real direction,
+        // thicker than before, and filling the whole tile at turns so the
+        // path reads as one continuous line instead of stepped segments
         ctx.fillStyle='#0a2a6a';
         ctx.fillRect(x*CW,y*CH,CW,CH);
+        const rHoriz=isRiverTile(x-1,y)||isRiverTile(x+1,y);
+        const rVert=isRiverTile(x,y-1)||isRiverTile(x,y+1);
         ctx.fillStyle='#2a5aaa';
-        ctx.fillRect(x*CW,y*CH+1,CW,CH-2);
+        if(rHoriz||(!rHoriz&&!rVert)) ctx.fillRect(x*CW,y*CH+1,CW,CH-2);
+        if(rVert) ctx.fillRect(x*CW+1,y*CH,CW-2,CH);
       } else if(t===T.ROAD){
         // road: plain terrain background + beige stripe following the real direction of the road
         ctx.fillStyle='#2a4a1a';
@@ -702,15 +761,15 @@ function drawMap(ctx){
         const vert=isRoadTile(x,y-1)||isRoadTile(x,y+1);
         if(horiz||(!horiz&&!vert)){
           ctx.fillStyle='#8a7a50';
-          ctx.fillRect(x*CW,y*CH+2,CW,CH-4);
+          ctx.fillRect(x*CW,y*CH+1,CW,CH-2);
           ctx.fillStyle='#aa9a60';
-          ctx.fillRect(x*CW,y*CH+3,CW,CH-6);
+          ctx.fillRect(x*CW,y*CH+2,CW,CH-4);
         }
         if(vert){
           ctx.fillStyle='#8a7a50';
-          ctx.fillRect(x*CW+2,y*CH,CW-4,CH);
+          ctx.fillRect(x*CW+1,y*CH,CW-2,CH);
           ctx.fillStyle='#aa9a60';
-          ctx.fillRect(x*CW+3,y*CH,CW-6,CH);
+          ctx.fillRect(x*CW+2,y*CH,CW-4,CH);
         }
       } else if(t===T.BRIDGE){
         // River below
