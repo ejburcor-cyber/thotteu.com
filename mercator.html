@@ -543,80 +543,90 @@ function generateMap(){
   }
 
   // 2. ONE river — starts from a mountain cell on the left half, flows east
+  // River runs along ONE full axis of the map, road runs along the OTHER —
+  // exactly like a real map (river East–West, road North–South, or vice
+  // versa), each edge to edge, crossing each other at one clean bridge.
+  const riverHorizontal=Math.random()<0.5;
+
+  function tracePath(mainLen,crossMin,crossMax,startCross,meanderChance,avoidFn){
+    const path=[];
+    let c=startCross;
+    for(let m=0;m<mainLen;m++){
+      if(avoidFn&&avoidFn(m,c)){
+        const upOk=c-1>=crossMin&&!avoidFn(m,c-1);
+        const downOk=c+1<=crossMax&&!avoidFn(m,c+1);
+        if(upOk&&downOk) c+=Math.random()<0.5?-1:1;
+        else if(upOk) c-=1;
+        else if(downOk) c+=1;
+        // if boxed in on both sides, keep going straight (rare)
+      } else if(Math.random()<meanderChance){
+        const nc=c+(Math.random()<0.5?-1:1);
+        if(nc>=crossMin&&nc<=crossMax&&(!avoidFn||!avoidFn(m,nc))) c=nc;
+      }
+      path.push(c);
+    }
+    return path;
+  }
+
+  // 2. RIVER — full span, mild meander, starts near a mountain if possible
   const mtnCells=[];
   for(let y=4;y<ROWS-4;y++) for(let x=1;x<Math.floor(COLS/3);x++) if(grid[y][x]===T.MOUNTAIN) mtnCells.push([x,y]);
-  const riverSrc=mtnCells.length?mtnCells[Math.floor(Math.random()*mtnCells.length)]:[1,Math.floor(ROWS/2)];
-  let ry=riverSrc[1];
-  // store river cells for bridge placement
+  const riverMainLen=riverHorizontal?COLS:ROWS;
+  const riverCrossMax=(riverHorizontal?ROWS:COLS)-3;
+  const riverStart=mtnCells.length
+    ?(riverHorizontal?mtnCells[Math.floor(Math.random()*mtnCells.length)][1]:mtnCells[Math.floor(Math.random()*mtnCells.length)][0])
+    :Math.floor((riverHorizontal?ROWS:COLS)/2);
+  const riverPath=tracePath(riverMainLen,2,riverCrossMax,riverStart,0.18,null);
   const riverCells=[];
-  for(let x=riverSrc[0];x<COLS;x++){
-    grid[ry][x]=T.RIVER; riverCells.push({x,y:ry});
-    if(x>riverSrc[0]&&x<COLS-2&&Math.random()<0.18){
-      const dy=Math.random()<0.5?-1:1,ny=ry+dy;
-      if(ny>2&&ny<ROWS-3){ry=ny;grid[ry][x]=T.RIVER;riverCells.push({x,y:ry});}
-    }
+  for(let m=0;m<riverMainLen;m++){
+    const x=riverHorizontal?m:riverPath[m], y=riverHorizontal?riverPath[m]:m;
+    grid[y][x]=T.RIVER; riverCells.push({x,y});
   }
 
-  // 3. ONE road — winds left to right with organic curves and actively
-  // steers around mountains, but stays clear of the river along its whole
-  // course (curving alongside it looked like a second, parallel road). A
-  // single short, perpendicular spur connects it to the river at one point
-  // — that's the actual bridge.
-  const refCell=riverCells[Math.floor(Math.random()*riverCells.length)];
-  const rowDir=Math.random()<0.5?1:-1;
-  let roadY=refCell.y+rowDir*(6+Math.floor(Math.random()*6)); // start 6–11 rows from the river
-  roadY=Math.max(4,Math.min(ROWS-5,roadY));
-  const riverYByX={};
-  riverCells.forEach(rc=>{riverYByX[rc.x]=rc.y;});
+  // 3. ONE road — the OTHER axis, edge to edge, actively steering around
+  // mountains instead of cutting through them.
+  const roadHorizontal=!riverHorizontal;
+  const roadMainLen=roadHorizontal?COLS:ROWS;
+  const roadCrossMin=4, roadCrossMax=(roadHorizontal?ROWS:COLS)-5;
+  const roadStart=roadCrossMin+Math.floor(Math.random()*(roadCrossMax-roadCrossMin));
+  const isMountainAt=(m,c)=>{
+    const x=roadHorizontal?m:c, y=roadHorizontal?c:m;
+    return grid[y][x]===T.MOUNTAIN;
+  };
+  const roadPath=tracePath(roadMainLen,roadCrossMin,roadCrossMax,roadStart,0.22,isMountainAt);
   const roadCells=[];
-  for(let x=0;x<COLS;x++){
-    const nearRiverY=riverYByX[x];
-    const tooClose=nearRiverY!==undefined&&Math.abs(nearRiverY-roadY)<5;
-    if(grid[roadY][x]===T.MOUNTAIN||tooClose){
-      // Steer away from a mountain — or away from the river, so the road
-      // never runs alongside it — whichever applies.
-      const wantAwayFromRiver=tooClose&&nearRiverY!==undefined;
-      const upOk=roadY-1>=4&&grid[roadY-1][x]!==T.MOUNTAIN;
-      const downOk=roadY+1<=ROWS-5&&grid[roadY+1][x]!==T.MOUNTAIN;
-      let preferUp=upOk, preferDown=downOk;
-      if(wantAwayFromRiver&&upOk&&downOk){
-        // move toward whichever side is further from the river
-        preferUp=Math.abs((roadY-1)-nearRiverY)>Math.abs((roadY+1)-nearRiverY);
-        preferDown=!preferUp;
-      }
-      if(preferUp&&preferDown) roadY+=Math.random()<0.5?-1:1;
-      else if(preferUp) roadY-=1;
-      else if(preferDown) roadY+=1;
-    } else if(Math.random()<0.22){
-      // gentle organic meander — same spirit as the river, but never wanders
-      // into a mountain (forest is fine — nice for atmosphere) or toward the river
-      const ny=roadY+(Math.random()<0.5?-1:1);
-      const stillFar=riverYByX[x]===undefined||Math.abs(riverYByX[x]-ny)>=5;
-      if(ny>=4&&ny<=ROWS-5&&grid[ny][x]!==T.MOUNTAIN&&stillFar) roadY=ny;
-    }
-    grid[roadY][x]=T.ROAD;
-    roadCells.push({x,y:roadY});
+  for(let m=0;m<roadMainLen;m++){
+    const x=roadHorizontal?m:roadPath[m], y=roadHorizontal?roadPath[m]:m;
+    grid[y][x]=(grid[y][x]===T.RIVER)?T.BRIDGE:T.ROAD;
+    roadCells.push({x,y});
   }
 
-  // The one true crossing: find the closest approach between road and
-  // river, then drop a single short, perpendicular spur to meet it.
-  let bridgeCell=null,bridgeRoadCell=null,minDist=999;
-  riverCells.forEach(rc=>{
-    roadCells.forEach(rd=>{
-      const d=Math.abs(rc.x-rd.x)+Math.abs(rc.y-rd.y);
-      if(d<minDist){minDist=d;bridgeCell=rc;bridgeRoadCell=rd;}
+  // Guarantee a crossing: with two full-span perpendicular paths this
+  // almost always happens naturally, but if the meander missed it, add one
+  // short, clean connector at the closest approach between the two paths.
+  if(!roadCells.some(rd=>grid[rd.y][rd.x]===T.BRIDGE)){
+    let bridgeCell=null,bridgeRoadCell=null,minDist=999;
+    riverCells.forEach(rc=>{
+      roadCells.forEach(rd=>{
+        const d=Math.abs(rc.x-rd.x)+Math.abs(rc.y-rd.y);
+        if(d<minDist){minDist=d;bridgeCell=rc;bridgeRoadCell=rd;}
+      });
     });
-  });
-  if(bridgeCell&&bridgeRoadCell){
-    const bx=bridgeCell.x, by=bridgeCell.y;
-    [-1,0,1].forEach(dx=>{
-      const nx=bx+dx;
-      if(riverCells.some(rc=>rc.x===nx&&rc.y===by)) grid[by][nx]=T.BRIDGE;
-    });
-    if(by!==bridgeRoadCell.y){
-      const step=by<bridgeRoadCell.y?1:-1;
-      for(let y=by+step;y!==bridgeRoadCell.y;y+=step){
-        if(grid[y][bx]===T.PLAIN||grid[y][bx]===T.FOREST) grid[y][bx]=T.ROAD;
+    if(bridgeCell&&bridgeRoadCell){
+      const bx=bridgeCell.x, by=bridgeCell.y;
+      [-1,0,1].forEach(d=>{
+        const nx=riverHorizontal?bx+d:bx, ny=riverHorizontal?by:by+d;
+        if(riverCells.some(rc=>rc.x===nx&&rc.y===ny)) grid[ny][nx]=T.BRIDGE;
+      });
+      // Short straight spur from the crossing to the nearest road cell
+      if(bx!==bridgeRoadCell.x||by!==bridgeRoadCell.y){
+        let cx=bx, cy=by;
+        const stepX=Math.sign(bridgeRoadCell.x-bx), stepY=Math.sign(bridgeRoadCell.y-by);
+        while(cx!==bridgeRoadCell.x||cy!==bridgeRoadCell.y){
+          if(cx!==bridgeRoadCell.x) cx+=stepX;
+          if(cy!==bridgeRoadCell.y) cy+=stepY;
+          if(grid[cy][cx]===T.PLAIN||grid[cy][cx]===T.FOREST) grid[cy][cx]=T.ROAD;
+        }
       }
     }
   }
